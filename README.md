@@ -1,2 +1,20 @@
-# twist-virtual-scroller
-Virtual Scrolling for Twist!
+# Twist Virtual Scroller
+
+This is a library containing a virtual scroller component for [Twist](https://github.com/adobe/twist), including some example layout algorithms such as Knuth-Plass.
+
+See the [twist-virtual-scroller documentation](docs/index.md) for usage and API details.
+
+## Setup
+
+To use the virtual scroller in your Twist application, you'll need to install `@twist/virtual-scroller` from NPM, and also add it to the libraries in your `.twistrc` file. For example, if you're using [React-Twist](https://github.com/adobe/react-twist) with the virtual scroller, a minimal `.twistrc` file will look like:
+
+```json
+{
+    "libraries": [
+        "@twist/react",
+        "@twist/virtual-scroller"
+    ]
+}
+```
+
+Note that the virtual scroller provides UI components, and so requires an implementation of Twist components - this means that it can't be used just with Twist core, but requires a framework implementation, like [React-Twist](https://github.com/adobe/react-twist).
