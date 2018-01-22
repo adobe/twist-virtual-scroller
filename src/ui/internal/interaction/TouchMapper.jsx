@@ -13,7 +13,7 @@
 
 import { SignalDispatcher } from '@twist/core';
 import BrowserUtils from '../utils/BrowserUtils';
-import Timer from '../utils/Timer';
+import Timer from './Timer';
 import TouchManager from './TouchManager';
 
 function prioritySort(interactionA, interactionB) {

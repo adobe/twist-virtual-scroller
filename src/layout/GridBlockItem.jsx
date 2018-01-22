@@ -12,7 +12,7 @@
  */
 
 import PaginatedBlockItem from './PaginatedBlockItem';
-import PaginatedList from '../utils/PaginatedList';
+import PaginatedList from './internal/PaginatedList';
 
 /**
  * A layout that arranges its children into a grid. Items are placed on a row horizontally

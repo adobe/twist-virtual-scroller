@@ -12,9 +12,11 @@
  */
 
 import { ObjectId } from '@twist/core';
-import Scroll from './Scroll';
-import VirtualScrollRoot from './VirtualScrollRoot';
-import RecyclerView from './RecyclerView';
+import ScrollContainer from './internal/ScrollContainer';
+import RecyclerView from './internal/RecyclerView';
+
+// This is the connector from the "virtual" layout configuration to the "physical" view
+import VirtualScrollRoot from '../layout/internal/VirtualScrollRoot';
 
 /**
  * Return the next-lowest offset quantized to `pageSize`, after subtracting `additionalPageCount` pages.

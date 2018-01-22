@@ -13,20 +13,6 @@
 
 import PlaceholderItem from './PlaceholderItem';
 
-class Deferred {
-    constructor() {
-        this.promise = new Promise((resolve, reject) => this._deferredApi = { resolve, reject });
-    }
-
-    resolve(value) {
-        this._deferredApi.resolve(value);
-    }
-
-    reject(value) {
-        this._deferredApi.reject(value);
-    }
-}
-
 /**
  * A LazyItem can be used to hold space for an element that needs to load asynchronously.
  * When its loader's promise resolves, the placeholder space is replaced with the actual children of the LazyItem.
@@ -73,14 +59,14 @@ export default class LazyItem {
         }
 
         this.loading = true;
-        this.rejection = new Deferred();
-        loader(this.rejection.promise).then((data) => {
+        let abortPromise = new Promise(resolve => this.abortLoading = resolve);
+        loader(abortPromise).then((data) => {
             if (this.isDisposed) {
                 // Too late ignore the result.
                 return;
             }
             this.data = data;
-            this.rejection = null;
+            this.abortLoading = null;
             this.loading = false;
             this.expanded = true;
         }, (err) => {
@@ -94,9 +80,9 @@ export default class LazyItem {
      * Abort the loading process, usually because the view is no longer visible.
      */
     stop() {
-        if (this.rejection) {
-            this.rejection.resolve();
-            this.rejection = null;
+        if (this.abortLoading) {
+            this.abortLoading();
+            this.abortLoading = null;
             this.loading = false;
         }
     }

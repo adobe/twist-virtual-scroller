@@ -11,17 +11,17 @@
  *
  */
 
-import TouchMapper from '../interaction/TouchMapper';
-import TouchManager from '../interaction/TouchManager';
-import ScrollInteraction from '../interaction/ScrollInteraction';
+import TouchMapper from './internal/interaction/TouchMapper';
+import TouchManager from './internal/interaction/TouchManager';
+import ScrollInteraction from './internal/interaction/ScrollInteraction';
 
-import KeyboardManager from '../keyboard/KeyboardManager';
+import KeyboardManager from './internal/keyboard/KeyboardManager';
 
-import ScrollAnimation from '../animation/ScrollAnimation';
-import AutoScrollAnimation from '../animation/AutoScrollAnimation';
+import ScrollAnimation from './internal/animation/ScrollAnimation';
+import AutoScrollAnimation from './internal/animation/AutoScrollAnimation';
 
-import ScrollLess from './Scroll.less';
-import BrowserUtils from '../utils/BrowserUtils';
+import ScrollLess from './ScrollContainer.less';
+import BrowserUtils from './internal/utils/BrowserUtils';
 
 // Only Macs can smooth scroll using the touch pad.
 var wheelAlwaysAnimates = BrowserUtils.global.navigator ? BrowserUtils.global.navigator.platform !== 'MacIntel' : false;
@@ -49,7 +49,7 @@ function isDefined(x) {
 }
 
 /**
- * The Scroll component simulates a scrollable view. It intercepts mouse events (and, optionally,
+ * The ScrollContainer component simulates a scrollable view. It intercepts mouse events (and, optionally,
  * keyboard events), interprets them as scroll events, and repositions the inner view accordingly.
  * NOTE: You probably want to use {@link VirtualScroll} directly, rather than this class.
  *
@@ -67,7 +67,7 @@ function isDefined(x) {
  * we may need to implement native scrolling as a fallback.
  */
 @Component({ events: [ 'scroll' ], fork: true })
-export default class Scroll {
+export default class ScrollContainer {
 
     @Attribute('class') className;
     @Attribute style;

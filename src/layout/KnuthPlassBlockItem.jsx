@@ -12,8 +12,8 @@
  */
 
 import PaginatedBlockItem from './PaginatedBlockItem';
-import PaginatedList from '../utils/PaginatedList';
-import KnuthPlass from '../utils/KnuthPlass';
+import PaginatedList from './internal/PaginatedList';
+import KnuthPlass from './internal/KnuthPlass';
 
 /**
  * A layout that arranges its children like words in a paragraph: from left to right,
