@@ -11,12 +11,12 @@
  *
  */
 
-/* global describe it */
+/* global describe it afterEach */
 
 import assert from 'assert';
 import { TaskQueue } from '@twist/core';
 import { render } from '../../Utils';
-import { VirtualItem, StickyItem, VirtualItemView, VirtualScroll, VBlockItem, HBlockItem } from '../../index';
+import { VirtualItem, StickyItem, VirtualItemView, VirtualScroll, VBlockItem, HBlockItem } from '@twist/virtual-scroller';
 
 describe('BlockItem', () => {
     const SCROLL_AMOUNT = 40;
@@ -55,7 +55,7 @@ describe('BlockItem', () => {
 
         let vs, sticky;
 
-        render(
+        let domNode = render(
             <VirtualScroll ref={vs} mapping={{ item: ItemView }} vertical-scroll={true} horizontal-scroll={true}
                 style={`height: ${HEIGHT}px; width: ${WIDTH}px;`}>
                 <using value={BlockClass} as={BlockClass}>
@@ -71,7 +71,7 @@ describe('BlockItem', () => {
 
         cb(vs, function getItemViewDiv(index) {
             // We use `index + 1` because the 0th element is the VBlockItem.
-            return jsx.node.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
+            return domNode.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
         }, sticky);
     }
 

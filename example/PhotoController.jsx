@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 Adobe Systems Incorporated. All rights reserved.
+ *  Copyright 2016 Adobe Systems Incorporated. All rights reserved.
  *  This file is licensed to you under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License. You may obtain a copy
  *  of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -11,16 +11,25 @@
  *
  */
 
-/* global describe it */
+import { ObservableMap } from '@twist/core';
 
-import assert from 'assert';
-import { GridBlockItem } from '@twist/virtual-scroller';
+class PhotoController {
+    constructor() {
+        this.selection = new ObservableMap;
+    }
 
-describe('GridBlockItem', () => {
-    it('layout', () => {
-        let item = new GridBlockItem();
+    isSelected(item) {
+        return item && this.selection.has(item.id);
+    }
 
-        item.updateLayout(50, 50);
-        assert.equal(item.width, 50);
-    });
-});
+    toggleSelection(item) {
+        if (this.selection.has(item.id)) {
+            this.selection.delete(item.id);
+        }
+        else {
+            this.selection.set(item.id, true);
+        }
+    }
+}
+
+export default new PhotoController;

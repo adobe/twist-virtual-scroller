@@ -14,7 +14,7 @@
 /* global describe it */
 
 import assert from 'assert';
-import { PlaceholderItem } from '../../index';
+import { PlaceholderItem } from '@twist/virtual-scroller';
 
 describe('PlaceholderItem', () => {
     it('layout', () => {

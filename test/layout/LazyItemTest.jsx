@@ -11,12 +11,12 @@
  *
  */
 
-/* global describe it */
+/* global describe it afterEach */
 
 import assert from 'assert';
-import { TaskQueue } from '@twist/core'; 
+import { TaskQueue } from '@twist/core';
 import { render } from '../../Utils';
-import { LazyItem, VirtualItem, VirtualItemView, VirtualScroll, VBlockItem } from '../../index';
+import { LazyItem, VirtualItem, VirtualItemView, VirtualScroll, VBlockItem } from '@twist/virtual-scroller';
 
 describe('LazyItem', () => {
 
@@ -50,7 +50,7 @@ describe('LazyItem', () => {
             }
         }
 
-        render(
+        let domNode = render(
             <VirtualScroll mapping={{ item: ItemView }} style={`height: 100px; width: ${REAL_WIDTH}px;`}>
                 <VBlockItem>
                     <LazyItem loader={loader} lazy-width={LAZY_WIDTH} lazy-height={LAZY_HEIGHT}>
@@ -64,7 +64,7 @@ describe('LazyItem', () => {
 
         function getItemViewDiv(index) {
             // We use `index + 1` because the 0th element is the VBlockItem.
-            return jsx.node.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
+            return domNode.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
         }
 
         assert.equal(parseInt(getItemViewDiv(0).style.width), LAZY_WIDTH);

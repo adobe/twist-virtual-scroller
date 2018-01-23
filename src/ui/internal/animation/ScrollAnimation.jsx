@@ -53,7 +53,7 @@ export default class ScrollAnimation extends SignalDispatcher {
         }
     }
 
-    scroll(fromLeft, fromTop, toLeft, toTop, scrollInfo = null) {
+    scroll(fromLeft, fromTop, toLeft, toTop, duration = 100) {
         this.stop();
 
         var data = this.animationData = new AnimationData(fromLeft, fromTop);
@@ -65,7 +65,7 @@ export default class ScrollAnimation extends SignalDispatcher {
         this.animation.on('tick', () => this.trigger('update', data.left, data.top));
         this.animation.on('end', () => this.animationData = null);
 
-        this.animation.commit(scrollInfo ? scrollInfo.duration : 100);
+        this.animation.commit(duration);
     }
 
     stop() {

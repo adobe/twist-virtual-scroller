@@ -11,11 +11,11 @@
  *
  */
 
-/* global describe it */
+/* global describe it afterEach */
 
 import assert from 'assert';
 import { render } from '../../../Utils';
-import { VBlockItem, VirtualScroll, VirtualItemView, VirtualItem } from '../../../../index';
+import { VBlockItem, VirtualScroll, VirtualItemView, VirtualItem } from '@twist/virtual-scroller';
 import FakeTime from '../../../mocks/FakeTime';
 
 describe('AutoScrollAnimation', () => {
@@ -41,7 +41,7 @@ describe('AutoScrollAnimation', () => {
         let vs;
         let HEIGHT = 200;
 
-        render(
+        let domNode = render(
             <VirtualScroll ref={vs} mapping={{ item: ItemView }} vertical-scroll={true} style={`height: ${HEIGHT}px; width: 200px;`}>
                 <VBlockItem>
                     <repeat collection={[ 1, 2, 3, 4, 5, 6 ]} as={data}>
@@ -52,7 +52,7 @@ describe('AutoScrollAnimation', () => {
         );
 
         let anim = vs.scroll.autoScrollAnimation;
-        let bounds = jsx.node.getBoundingClientRect();
+        let bounds = domNode.getBoundingClientRect();
 
         let time = new FakeTime();
 

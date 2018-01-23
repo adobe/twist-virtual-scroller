@@ -11,11 +11,11 @@
  *
  */
 
-/* global describe it */
+/* global describe it afterEach */
 
 import assert from 'assert';
 import { render } from '../../Utils';
-import { VirtualItem, VirtualItemView, VirtualScroll,  VKnuthPlassBlockItem, HKnuthPlassBlockItem } from '../../index';
+import { VirtualItem, VirtualItemView, VirtualScroll,  VKnuthPlassBlockItem, HKnuthPlassBlockItem } from '@twist/virtual-scroller';
 
 describe('KnuthPlassBlockItem', () => {
     const HEIGHT = 200;
@@ -41,7 +41,7 @@ describe('KnuthPlassBlockItem', () => {
             }
         }
 
-        render(
+        let domNode = render(
             <VirtualScroll mapping={{ item: ItemView }} style={`height: ${HEIGHT}px; width: ${WIDTH}px;`}>
                 <using value={KnuthPlassClass} as={KnuthPlassClass}>
                     <KnuthPlassClass size={SIZE}>
@@ -55,7 +55,7 @@ describe('KnuthPlassBlockItem', () => {
 
         cb(function getItemViewDiv(index) {
             // We use `index + 1` because the 0th element is the VKnuthPlassBlockItem.
-            return jsx.node.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
+            return domNode.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
         });
     }
 

@@ -62,7 +62,7 @@ class ViewInfo {
  * The VirtualScroll component allows you to display long, scrollable lists without sacrificing performance.
  * See the docs for more usage information.
  */
-@Component
+@Component({ events: [ 'log' ] })
 export default class VirtualScroll {
 
     @Attribute style;
@@ -73,7 +73,12 @@ export default class VirtualScroll {
     @Attribute focusOnAttach = true;
     @Attribute autoScroll = false;
 
-    @Attribute scrollInfo = { animation: false, duration: 100, friction: 100, keyboardEnabled: true, keyboardMove: 40 };
+    @Attribute animation = false;
+    @Attribute animationDuration = 100;
+    @Attribute keyboardEnabled = true;
+    @Attribute keyboardMove = 40;
+    @Attribute animationEnabled; // Read-only attribute
+
     @Attribute scrollBarSize = 7;
     @Attribute scrollBarMargin = 5;
     @Attribute scrollBarPadding = 0;
@@ -81,7 +86,7 @@ export default class VirtualScroll {
     @Attribute verticalScroll = false;
     @Attribute horizontalScroll = false;
 
-    @Attribute scrollComponent = Scroll;
+    @Attribute scrollComponent = ScrollContainer;
 
     @Attribute allowHtmlDrag = false;
 
@@ -404,10 +409,6 @@ export default class VirtualScroll {
         stickyContainers.forEach((container) => container.updateSticky(view));
     }
 
-    onScroll() {
-        this.refresh();
-    }
-
     getVirtualItem(dataItem) {
         var bookmark = {
             dataItem
@@ -531,25 +532,29 @@ export default class VirtualScroll {
     }
 
     render() {
-
         return <g>
             <using value={ this.scrollComponent } as={ ScrollComponent }>
                 <ScrollComponent
                     { ...this.undeclaredAttributes() }
                     ref={ this.scroll }
                     style={ this.style }
-                    focus-on-attach={ this.focusOnAttach }
-                    content-width={ this.contentWidth }
-                    content-height={ this.contentHeight }
-                    vertical-scroll={ this.verticalScroll }
-                    horizontal-scroll={ this.horizontalScroll }
-                    scroll-info={ this.scrollInfo }
-                    scroll-bar-size={ this.scrollBarSize }
-                    scroll-bar-margin={ this.scrollBarMargin }
-                    scroll-bar-padding={ this.scrollBarPadding }
-                    on-scroll={ this.onScroll() }
-                    auto-scroll={ this.autoScroll }
-                    allow-html-drag={ this.allowHtmlDrag }>
+                    animation={ this.animation }
+                    animationDuration={ this.animationDuration }
+                    bind:animationEnabled={ this.animationEnabled }
+                    keyboardEnabled={ this.animationDuration }
+                    keyboardMove={ this.keyboadMove }
+                    focusOnAttach={ this.focusOnAttach }
+                    contentWidth={ this.contentWidth }
+                    contentHeight={ this.contentHeight }
+                    verticalScroll={ this.verticalScroll }
+                    horizontalScroll={ this.horizontalScroll }
+                    scrollBarSize={ this.scrollBarSize }
+                    scrollBarMargin={ this.scrollBarMargin }
+                    scrollBarPadding={ this.scrollBarPadding }
+                    onScroll={ () => this.refresh() }
+                    onLog={ message => this.trigger('log', message) }
+                    autoScroll={ this.autoScroll }
+                    allowHtmlDrag={ this.allowHtmlDrag }>
 
                     <repeat collection={ this.viewTypes } as={ typeInfo }>
                         <RecyclerView collection={ typeInfo.items } view={ typeInfo.viewType } />

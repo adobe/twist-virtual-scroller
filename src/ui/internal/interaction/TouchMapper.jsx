@@ -33,10 +33,10 @@ export default class TouchMapper extends SignalDispatcher {
 
     interactionsList = [];
 
-    constructor(enabledInputs, touchManagerClass = TouchManager, allowHtmlDrag = false) {
+    constructor(enabledInputs, allowHtmlDrag = false) {
         super();
 
-        this.touchManager = this.link(new touchManagerClass());
+        this.touchManager = this.link(new TouchManager());
         this.touchManager.allowHtmlDrag = allowHtmlDrag;
 
         if (enabledInputs) {

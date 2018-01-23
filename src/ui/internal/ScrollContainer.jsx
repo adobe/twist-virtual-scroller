@@ -12,7 +12,6 @@
  */
 
 import TouchMapper from './internal/interaction/TouchMapper';
-import TouchManager from './internal/interaction/TouchManager';
 import ScrollInteraction from './internal/interaction/ScrollInteraction';
 
 import KeyboardManager from './internal/keyboard/KeyboardManager';
@@ -66,7 +65,7 @@ function isDefined(x) {
  * TODO: Per @achicu, the Edge browser may not emit "wheel" events properly -- if that's the case,
  * we may need to implement native scrolling as a fallback.
  */
-@Component({ events: [ 'scroll' ], fork: true })
+@Component({ events: [ 'scroll', 'log' ], fork: true })
 export default class ScrollContainer {
 
     @Attribute('class') className;
@@ -74,13 +73,12 @@ export default class ScrollContainer {
     @Attribute verticalScroll = true;
     @Attribute horizontalScroll = true;
 
-    @Attribute scrollInfo = {
-        animation: false,
-        duration: 100,
-        friction: 100,
-        keyboardEnabled: true,
-        keyboardMove: KEYBOARD_UP_DOWN,
-    };
+    @Attribute animation = false;
+    @Attribute animationDuration = 100;
+    @Attribute keyboardEnabled = true;
+    @Attribute keyboardMove = KEYBOARD_UP_DOWN;
+    @Attribute animationEnabled; // Read-only attribute
+
     @Attribute handleKeyboardGlobally = false;
 
     @Attribute contentWidth = 0;
@@ -130,11 +128,9 @@ export default class ScrollContainer {
 
     constructor() {
         super();
-        var touchMapper = this.scope.touchMapper;
-        if (!touchMapper) {
-            touchMapper = this.scope.touchMapper = this.link(new TouchMapper(this.inputConfig, TouchManager, this.allowHtmlDrag));
-        }
-        this.scrollInteraction = this.link(new ScrollInteraction(touchMapper, this));
+
+        this.scope.touchMapper = this.scope.touchMapper || this.link(new TouchMapper(this.inputConfig, this.allowHtmlDrag));
+        this.scrollInteraction = this.link(new ScrollInteraction(this.scope.touchMapper, this));
 
         this.watch(() => this.style, this.updateSize);
         this.watch(() => this.className, this.updateSize);
@@ -146,13 +142,11 @@ export default class ScrollContainer {
         this.watch(() => this.scrollBarMargin, this.updateScroll);
         this.watch(() => this.scrollBarPadding, this.updateScroll);
 
-
         this.listenTo(this.autoScrollAnimation, 'update', this.onAutoScrollUpdate);
         this.listenTo(this.animation, 'update', this.onAnimationUpdate);
 
-        if (this.scrollInfo && this.scrollInfo.keyboardEnabled) {
+        if (this.keyboardEnabled) {
             this.keyboardManager = this.link(new KeyboardManager(this, this.keyHandlers));
-            this.keyboardMove = this.scrollInfo && this.scrollInfo.keyboardMove ? this.scrollInfo.keyboardMove : KEYBOARD_UP_DOWN;
         }
     }
 
@@ -163,7 +157,7 @@ export default class ScrollContainer {
     }
 
     scrollKeyboardAnimated(left, top) {
-        if (this.animationEnabled) {
+        if (this.animation === 'keyboard' || this.animation === 'enabled') {
             this.animateTo(left, top);
         }
         else {
@@ -172,22 +166,7 @@ export default class ScrollContainer {
     }
 
     animateTo(left, top) {
-        this.animation.scroll(this.displayScrollLeft, this.displayScrollTop, left, top, this.scrollInfo);
-    }
-
-    get animationEnabled() {
-        if (this.scrollInfo) {
-            return this.scrollInfo.animation === 'keyboard' || this.scrollInfo.animation === 'enabled';
-        }
-        return false;
-    }
-
-    onFocus() {
-        this.focused = true;
-    }
-
-    onBlur() {
-        this.focused = false;
+        this.animation.scroll(this.displayScrollLeft, this.displayScrollTop, left, top, this.animationDuration);
     }
 
     updateAutoScroll() {
@@ -471,11 +450,11 @@ export default class ScrollContainer {
         this.removeScrolling();
     }
 
+    @Bind
     onMouseWheel(event) {
         var animationData = this.animation.animationData;
         this.animation.stop();
 
-        var scrollInfo = this.scrollInfo;
         var deltaX = 0, deltaY = 0;
         var useAnimation = false;
 
@@ -483,9 +462,7 @@ export default class ScrollContainer {
         if (deltaMode === undefined) {
             useAnimation = true;
             deltaY = -event.wheelDelta / 120;
-            if (scrollInfo) {
-                scrollInfo.log = `deltaMode=undefined, event.wheelDelta=${event.wheelDelta}`;
-            }
+            this.trigger('log', `deltaMode=undefined, event.wheelDelta=${event.wheelDelta}`);
         }
         else {
             // FIXME: what is page supposed to be?
@@ -494,17 +471,10 @@ export default class ScrollContainer {
 
             deltaX = event.deltaX * ratio;
             deltaY = event.deltaY * ratio;
-            if (scrollInfo) {
-                scrollInfo.log = `deltaMode=${event.deltaMode}, event.deltaX=${event.deltaX} event.deltaY=${event.deltaY} event.wheelDelta=${event.wheelDelta}`;
-            }
+            this.trigger('log', `deltaMode=${event.deltaMode}, event.deltaX=${event.deltaX} event.deltaY=${event.deltaY} event.wheelDelta=${event.wheelDelta}`);
         }
 
-        if (scrollInfo) {
-            if (scrollInfo.animation !== 'auto') {
-                useAnimation = scrollInfo.animation === 'enabled';
-            }
-            scrollInfo.animationStatus = useAnimation;
-        }
+        this.animationEnabled = useAnimation = this.animation === 'enabled' || useAnimation;
 
         // Large delta values don't work nicely with animation.
         if (useAnimation && (Math.abs(deltaX) > 100 || Math.abs(deltaY) > 100)) {
@@ -542,7 +512,7 @@ export default class ScrollContainer {
         this.userEvent = true;
 
         if (useAnimation) {
-            this.animation.scroll(this.requestedScrollLeft, this.requestedScrollTop, requestLeft, requestTop, scrollInfo);
+            this.animation.scroll(this.requestedScrollLeft, this.requestedScrollTop, requestLeft, requestTop, this.animationDuration);
         }
         else {
             this.request(requestLeft, requestTop);
@@ -672,9 +642,9 @@ export default class ScrollContainer {
             class={{ [ScrollLess.scrollActive]: this.scrollActive }}
             style={ this.style }
             tabindex="1"
-            on-focus={ (event) => this.onFocus(event) }
-            on-blur={ (event) => this.onBlur(event) }
-            on-wheel={ (event) => this.onMouseWheel(event) }>
+            onFocus={ () => this.focused = true }
+            onBlur={ () => this.focused = false }
+            onWheel={ this.onMouseWheel }>
 
             <div class={ ScrollLess.overflowView }
                 style-width={ this.innerWidth }
@@ -708,7 +678,7 @@ export default class ScrollContainer {
             <if condition={this.horizontalScroll}>
                 <div class={ScrollLess.scrollbar}
                     class="twist-scrollbar-horizontal"
-                    on-mouseover={ this.thumbHover() }>
+                    onMouseover={ this.thumbHover() }>
 
                     <div ref={ this.horizontalTrack } class={ ScrollLess.track }
                         style-transform={ this.horizontalTrackTransform }

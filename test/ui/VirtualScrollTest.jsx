@@ -11,12 +11,12 @@
  *
  */
 
-/* global describe it */
+/* global describe it afterEach */
 
 import assert from 'assert';
 import { render } from '../Utils';
 import { ObservableArray, TaskQueue } from '@twist/core';
-import { VirtualScroll, VirtualItemView, VirtualItem, VBlockItem, HBlockItem } from '../../index';
+import { VirtualScroll, VirtualItemView, VirtualItem, VBlockItem, HBlockItem } from '@twist/virtual-scroller';
 import RecyclerView from '../../src/ui/internal/RecyclerView';
 
 class SimpleBlockItem extends VirtualItem {
@@ -49,7 +49,7 @@ describe('Virtual Scroll', () => {
         // Start by making a list with fewer items than can be displayed in the visible area.
         const children = new ObservableArray([ 0, 1, 2 ]);
 
-        render(
+        const domNode = render(
             <VirtualScroll style={'height: ' + SCROLL_HEIGHT + 'px'} vertical-scroll={true} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
                     <repeat collection={children} as={item}>
@@ -61,7 +61,7 @@ describe('Virtual Scroll', () => {
 
         // Sanity-check the DOM tree.
 
-        const scrollOuterView = jsx.node.firstElementChild;
+        const scrollOuterView = domNode.firstElementChild;
         assert.equal(parseInt(scrollOuterView.style.height), SCROLL_HEIGHT);
 
         const scrollOverflowView = scrollOuterView.firstElementChild;
@@ -264,7 +264,7 @@ describe('Virtual Scroll', () => {
     it('scrollToElement works in a vertical layout', () => {
         const collection = new Array(1000).keys();
 
-        let vs, jsx, vItem;
+        let vs, vItem;
 
         // Test align top
         render(
@@ -313,7 +313,7 @@ describe('Virtual Scroll', () => {
     it('scrollToElement works in a horizontal layout', () => {
         const collection = new Array(1000).keys();
 
-        let vs, jsx, vItem;
+        let vs, vItem;
 
         // Test align left
         render(
@@ -362,7 +362,7 @@ describe('Virtual Scroll', () => {
     it('elementVisibility works in a vertical layout', () => {
         const collection = new Array(1000).keys();
 
-        let vs, jsx, vItem;
+        let vs, vItem;
 
         // Test align top
         render(
@@ -404,7 +404,7 @@ describe('Virtual Scroll', () => {
     it('elementVisibility works in a horizontal layout', () => {
         const collection = new Array(1000).keys();
 
-        let vs, jsx, vItem;
+        let vs, vItem;
 
         // Test align top
         render(

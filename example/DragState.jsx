@@ -11,9 +11,15 @@
  *
  */
 
-export default class ScrollInfo {
-    @Observable animation = 'auto';
-    @Observable duration = 100;
-    @Observable log = '\n';
-    @Observable animationStatus;
+export default class DragState {
+    @Observable dragging = false;
+    @Observable items
+    @Observable mouseX
+    @Observable mouseY
+    @Observable offsetX
+    @Observable offsetY
+    @Observable width
+    @Observable height
+    @Observable leftItem
+    @Observable rightItem
 }

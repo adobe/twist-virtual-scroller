@@ -107,7 +107,7 @@ function compileEvent(keyStrokes) {
 
 function parseKeys() {
     return Object.keys(KeyboardBindings).map((name) => {
-        const keyStrokes = bindings[name];
+        const keyStrokes = KeyboardBindings[name];
         if (typeof keyStrokes === 'object') {
             return {
                 name: keyStrokes.name,
@@ -123,7 +123,7 @@ function parseKeys() {
 
 export default class KeyboardParser {
 
-    constructor(bindings) {
+    constructor() {
         this.keys = parseKeys();
     }
 

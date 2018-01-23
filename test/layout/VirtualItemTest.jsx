@@ -14,7 +14,7 @@
 /* global describe it */
 
 import assert from 'assert';
-import { VirtualItem } from '../../index';
+import { VirtualItem } from '@twist/virtual-scroller';
 
 describe('VirtualItem', () => {
     it('metrics', () => {

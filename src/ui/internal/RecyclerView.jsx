@@ -132,10 +132,11 @@ export default class RecyclerView {
     }
 
     render() {
-        var ItemView = this.view;
-        return <repeat collection={ this.views } as={ view }>
-            <ItemView virtual-item={ view.virtualItem } />
-        </repeat>;
+        return <using value={ this.view } as={ ItemView }>
+            <repeat collection={ this.views } as={ view }>
+                <ItemView virtualItem={ view.virtualItem } />
+            </repeat>
+        </using>;
     }
 
 }

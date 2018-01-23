@@ -11,7 +11,7 @@
  *
  */
 
-/* global describe it */
+/* global describe it afterEach */
 
 import assert from 'assert';
 import { render } from '../../Utils';
@@ -34,27 +34,27 @@ describe('RecyclerView', () => {
 
     it('recycles views', () => {
         const collection = new ObservableArray([ 1, 2, 3 ]);
-        render(<RecyclerView capacity={4} view={RecycledView} collection={collection} />);
+        const domNode = render(<RecyclerView capacity={4} view={RecycledView} collection={collection} />);
 
         // Four views should be created, even though we only have three items.
-        assert.equal(jsx.node.outerHTML, `<div><div>1</div><div>2</div><div>3</div><div>-</div></div>`);
+        assert.equal(domNode.outerHTML, `<div><div>1</div><div>2</div><div>3</div><div>-</div></div>`);
         collection.push(4);
         TaskQueue.run();
 
         // Adding a fourth replaces the last item's contents.
-        assert.equal(jsx.node.outerHTML, `<div><div>1</div><div>2</div><div>3</div><div>4</div></div>`);
+        assert.equal(domNode.outerHTML, `<div><div>1</div><div>2</div><div>3</div><div>4</div></div>`);
 
         collection.pop();
         TaskQueue.run();
 
         // Removing the last item reverts it to an unused state.
-        assert.equal(jsx.node.outerHTML, `<div><div>1</div><div>2</div><div>3</div><div>-</div></div>`);
+        assert.equal(domNode.outerHTML, `<div><div>1</div><div>2</div><div>3</div><div>-</div></div>`);
 
         collection.push(4);
         collection.push(5);
         TaskQueue.run();
 
         // Expanding it past its capacity causes it to add additional views.
-        assert.equal(jsx.node.outerHTML, `<div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div></div>`);
+        assert.equal(domNode.outerHTML, `<div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div></div>`);
     });
 });

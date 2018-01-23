@@ -11,12 +11,12 @@
  *
  */
 
-/* global describe it */
+/* global describe it afterEach */
 
 import assert from 'assert';
 import { TaskQueue } from '@twist/core';
 import { render } from '../../Utils';
-import { VirtualItem, StickyItem, VirtualItemView, VirtualScroll, VBlockItem } from '../../index';
+import { VirtualItem, StickyItem, VirtualItemView, VirtualScroll, VBlockItem } from '@twist/virtual-scroller';
 
 describe('StickyItem', () => {
 
@@ -118,8 +118,6 @@ describe('StickyItem', () => {
         assertStickyOffsetAtScroll(SECTION_HEIGHT + STICKY_HEIGHT + 1, 'B', SECTION_HEIGHT + STICKY_HEIGHT + 1);
         assertStickyOffsetAtScroll(SECTION_HEIGHT * 2 + STICKY_HEIGHT, 'B', SECTION_HEIGHT * 2 + STICKY_HEIGHT);
         assertStickyOffsetAtScroll(SECTION_HEIGHT * 2 + STICKY_HEIGHT + 1, 'B', SECTION_HEIGHT * 2 + STICKY_HEIGHT);
-
-        jsx.dispose();
     });
 
 });

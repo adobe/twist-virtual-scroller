@@ -45,7 +45,7 @@ export default class BrowserUtils {
     }
 
     @Memoize
-    static get globalStyle {
+    static get globalStyle() {
         if (typeof window !== 'undefined') {
             return window.getComputedStyle(document.createElement('div'));
         }
@@ -53,7 +53,7 @@ export default class BrowserUtils {
     }
 
     @Memoize
-    static get global {
+    static get global() {
         if (typeof window !== 'undefined') {
             return window;
         }

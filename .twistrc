@@ -1,5 +1,6 @@
 {
     "libraries": [
-        "@twist/core"
+        "@twist/core",
+        "@twist/react" // TEMP: Need to add abstract decorators to Twist Core
     ]
 }

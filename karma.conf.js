@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 Adobe Systems Incorporated. All rights reserved.
+ *  Copyright 2016 Adobe Systems Incorporated. All rights reserved.
  *  This file is licensed to you under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License. You may obtain a copy
  *  of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -11,47 +11,13 @@
  *
  */
 
-const ReactTwistPlugin = require('@twist/react-webpack-plugin');
-const autoprefixer = require('autoprefixer');
 const path = require('path');
-const webpack = require('webpack');
 
-const config = new ReactTwistPlugin();
-
-if (process.env.NODE_ENV === 'test') {
-    config.addBabelPlugin('istanbul');
-}
-
-const isProduction = process.env.NODE_ENV === 'production';
+process.env.NODE_ENV = 'test';
 
 module.exports = function(config) {
     config.set({
-        webpack: {
-            resolve: {
-                extensions: [ '.js', '.jsx' ],
-            },
-            devtool: 'cheap-module-eval-source-map',
-            module: {
-                rules: [ {
-                    test: /\.less$/,
-                    use: [ {
-                        loader: 'style-loader'
-                    }, {
-                        loader: 'css-loader',
-                        options: { sourceMap: true, importLoaders: 1 }
-                    }, {
-                        loader: 'postcss-loader',
-                        options: { plugins: [ autoprefixer(config.getOption('targets')) ] }
-                    }, {
-                        loader: 'less-loader',
-                        options: { sourceMap: true }
-                    } ]
-                } ]
-            },
-            plugins: [
-                config
-            ]
-        },
+        webpack: require(path.join(__dirname, 'webpack.config.js')),
 
         files: [
             'test/IncludeAll.jsx',
@@ -70,7 +36,7 @@ module.exports = function(config) {
             dir: 'testing/',
             reporters: [
                 { type: 'html', subdir: 'coverage' },
-                { type: 'text-summary' }
+                { type: 'text' }
             ],
         },
 

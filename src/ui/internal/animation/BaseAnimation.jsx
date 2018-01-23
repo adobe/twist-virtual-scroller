@@ -138,7 +138,6 @@ export default class BaseAnimation extends SignalDispatcher {
 
         this.timer.stop();
 
-        var changesById = this.changesById;
         this.active = false;
 
         if (!preserveValues) {
