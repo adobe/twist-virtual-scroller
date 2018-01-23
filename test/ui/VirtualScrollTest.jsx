@@ -50,7 +50,7 @@ describe('Virtual Scroll', () => {
         const children = new ObservableArray([ 0, 1, 2 ]);
 
         const domNode = render(
-            <VirtualScroll style={'height: ' + SCROLL_HEIGHT + 'px'} vertical-scroll={true} mapping={{ 'any': ItemView }}>
+            <VirtualScroll style={'height: ' + SCROLL_HEIGHT + 'px'} verticalScroll={true} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
                     <repeat collection={children} as={item}>
                         <SimpleBlockItem data={item} />
@@ -128,7 +128,7 @@ describe('Virtual Scroll', () => {
         let vs;
 
         render(
-            <VirtualScroll ref={vs} style={'height: ' + SCROLL_HEIGHT + 'px'} vertical-scroll={true} mapping={{ 'any': ItemView }}>
+            <VirtualScroll ref={vs} style={'height: ' + SCROLL_HEIGHT + 'px'} verticalScroll={true} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
                     <repeat collection={children} as={item}>
                         <SimpleBlockItem data={item} />
@@ -163,7 +163,7 @@ describe('Virtual Scroll', () => {
         let vs;
 
         render(
-            <VirtualScroll ref={vs} style={'height: ' + SCROLL_HEIGHT + 'px'} vertical-scroll={true} mapping={{ 'any': ItemView }}>
+            <VirtualScroll ref={vs} style={'height: ' + SCROLL_HEIGHT + 'px'} verticalScroll={true} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
                     <repeat collection={children} as={item}>
                         <SimpleBlockItem data={item} />
@@ -211,7 +211,7 @@ describe('Virtual Scroll', () => {
         @Component
         class VS {
             render() {
-                return <VirtualScroll ref={vs} style={'height: ' + model.height + 'px'} vertical-scroll={true} mapping={{ 'any': ItemView }}>
+                return <VirtualScroll ref={vs} style={'height: ' + model.height + 'px'} verticalScroll={true} mapping={{ 'any': ItemView }}>
                     <VBlockItem>
                         <repeat collection={[ 1, 2, 3 ]} as={item}>
                             <SimpleBlockItem data={item} />

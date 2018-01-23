@@ -7,6 +7,7 @@
   "main": "index.js",
   "scripts": {
     "test": "karma start --browsers Firefox --single-run",
+    "test:watch": "karma start --browsers Firefox",
     "linter": "eslint --ext .js,.jsx .",
     "linter:fix": "eslint --ext .js,.jsx . --fix"
   },

@@ -99,10 +99,10 @@ export default class LazyItem {
             </if>
             <else>
                 <PlaceholderItem
-                    on-expand={ this.expand() }
-                    on-stop={ this.stop() }
-                    lazy-width={ this.lazyWidth }
-                    lazy-height={ this.lazyHeight } />
+                    onExpand={ this.expand() }
+                    onStop={ this.stop() }
+                    lazyWidth={ this.lazyWidth }
+                    lazyHeight={ this.lazyHeight } />
             </else>
         </g>;
     }

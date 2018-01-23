@@ -14,7 +14,7 @@
 /* global describe it afterEach */
 
 import assert from 'assert';
-import { render } from '../../Utils';
+import { render } from '../Utils';
 import { VirtualItem, VirtualItemView, VirtualScroll,  VKnuthPlassBlockItem, HKnuthPlassBlockItem } from '@twist/virtual-scroller';
 
 describe('KnuthPlassBlockItem', () => {

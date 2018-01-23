@@ -37,7 +37,7 @@ export default class BaseAnimation extends SignalDispatcher {
     }
 
     computeChangeKey(object, property) {
-        return '_' + ObjectId(object) + ':' + property;
+        return '_' + ObjectId.get(object) + ':' + property;
     }
 
     canAnimate(value) {

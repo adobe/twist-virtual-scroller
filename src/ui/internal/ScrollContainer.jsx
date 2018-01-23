@@ -11,16 +11,16 @@
  *
  */
 
-import TouchMapper from './internal/interaction/TouchMapper';
-import ScrollInteraction from './internal/interaction/ScrollInteraction';
+import TouchMapper from './interaction/TouchMapper';
+import ScrollInteraction from './interaction/ScrollInteraction';
 
-import KeyboardManager from './internal/keyboard/KeyboardManager';
+import KeyboardManager from './keyboard/KeyboardManager';
 
-import ScrollAnimation from './internal/animation/ScrollAnimation';
-import AutoScrollAnimation from './internal/animation/AutoScrollAnimation';
+import ScrollAnimation from './animation/ScrollAnimation';
+import AutoScrollAnimation from './animation/AutoScrollAnimation';
 
 import ScrollLess from './ScrollContainer.less';
-import BrowserUtils from './internal/utils/BrowserUtils';
+import BrowserUtils from './utils/BrowserUtils';
 
 // Only Macs can smooth scroll using the touch pad.
 var wheelAlwaysAnimates = BrowserUtils.global.navigator ? BrowserUtils.global.navigator.platform !== 'MacIntel' : false;
@@ -46,6 +46,9 @@ function translate(x, y) {
 function isDefined(x) {
     return x !== null && x !== undefined;
 }
+
+const _scrollAnimation = Symbol('scrollAnimation');
+const _autoScrollAnimation = Symbol('autoScrollAnimation')
 
 /**
  * The ScrollContainer component simulates a scrollable view. It intercepts mouse events (and, optionally,
@@ -75,9 +78,9 @@ export default class ScrollContainer {
 
     @Attribute animation = false;
     @Attribute animationDuration = 100;
+    @Attribute animationEnabled; // Read-only attribute
     @Attribute keyboardEnabled = true;
     @Attribute keyboardMove = KEYBOARD_UP_DOWN;
-    @Attribute animationEnabled; // Read-only attribute
 
     @Attribute handleKeyboardGlobally = false;
 
@@ -123,8 +126,8 @@ export default class ScrollContainer {
     // Notification that the last scroll event is triggered by the user.
     userEvent = false;
 
-    animation = this.link(new ScrollAnimation);
-    autoScrollAnimation = this.link(new AutoScrollAnimation);
+    [_scrollAnimation] = this.link(new ScrollAnimation);
+    [_autoScrollAnimation] = this.link(new AutoScrollAnimation);
 
     constructor() {
         super();
@@ -142,8 +145,8 @@ export default class ScrollContainer {
         this.watch(() => this.scrollBarMargin, this.updateScroll);
         this.watch(() => this.scrollBarPadding, this.updateScroll);
 
-        this.listenTo(this.autoScrollAnimation, 'update', this.onAutoScrollUpdate);
-        this.listenTo(this.animation, 'update', this.onAnimationUpdate);
+        this.listenTo(this[_scrollAnimation], 'update', this.onAnimationUpdate);
+        this.listenTo(this[_autoScrollAnimation], 'update', this.onAutoScrollUpdate);
 
         if (this.keyboardEnabled) {
             this.keyboardManager = this.link(new KeyboardManager(this, this.keyHandlers));
@@ -166,17 +169,17 @@ export default class ScrollContainer {
     }
 
     animateTo(left, top) {
-        this.animation.scroll(this.displayScrollLeft, this.displayScrollTop, left, top, this.animationDuration);
+        this[_scrollAnimation].scroll(this.displayScrollLeft, this.displayScrollTop, left, top, this.animationDuration);
     }
 
     updateAutoScroll() {
         let touches = this.scope.touchMapper.touchManager.touches;
         if (touches.length === 1) {
             let { clientX: x, clientY: y } = touches.at(0).event;
-            this.autoScrollAnimation.setCoords(x, y);
+            this[_autoScrollAnimation].setCoords(x, y);
         }
         else {
-            this.autoScrollAnimation.clear();
+            this[_autoScrollAnimation].clear();
         }
     }
 
@@ -186,7 +189,7 @@ export default class ScrollContainer {
             this.listenTo(this.scope.touchMapper.touchManager, 'update', this.onUpdate);
             this.listenTo(this.scope.touchMapper.touchManager, 'end', this.onEnd);
 
-            this.autoScrollAnimation.start(this.element.getBoundingClientRect(), {
+            this[_autoScrollAnimation].start(this.element.getBoundingClientRect(), {
                 autoScrollRegionSize: this.autoScrollRegionSize,
                 minVelocity: this.autoScrollMinVelocity,
                 maxVelocity: this.autoScrollMaxVelocity,
@@ -202,7 +205,7 @@ export default class ScrollContainer {
     onEnd() {
         this.stopListening(this.scope.touchMapper.touchManager, 'update', this.onUpdate);
         this.stopListening(this.scope.touchMapper.touchManager, 'end', this.onEnd);
-        this.autoScrollAnimation.stop();
+        this[_autoScrollAnimation].stop();
     }
 
     @Bind
@@ -337,7 +340,7 @@ export default class ScrollContainer {
                 left: delta.velocityX ? delta.velocityX : 0,
                 top: delta.velocityY ? delta.velocityY : 0
             };
-            this.animation.start(this.displayScrollLeft, this.displayScrollTop, velocity);
+            this[_scrollAnimation].start(this.displayScrollLeft, this.displayScrollTop, velocity);
         }
     }
 
@@ -413,7 +416,7 @@ export default class ScrollContainer {
 
     scrollTo(left, top, immediate = false, userEvent = false) {
         this.userEvent = userEvent;
-        this.animation.stop();
+        this[_scrollAnimation].stop();
 
         left = this.horizontalScroll ? Math.min(Math.max(0, left), Math.max(0, this.contentWidth - this.innerWidth)) : 0;
         top = this.verticalScroll ? Math.min(Math.max(0, top), Math.max(0, this.contentHeight - this.innerHeight)) : 0;
@@ -452,8 +455,8 @@ export default class ScrollContainer {
 
     @Bind
     onMouseWheel(event) {
-        var animationData = this.animation.animationData;
-        this.animation.stop();
+        var animationData = this[_scrollAnimation].animationData;
+        this[_scrollAnimation].stop();
 
         var deltaX = 0, deltaY = 0;
         var useAnimation = false;
@@ -512,7 +515,7 @@ export default class ScrollContainer {
         this.userEvent = true;
 
         if (useAnimation) {
-            this.animation.scroll(this.requestedScrollLeft, this.requestedScrollTop, requestLeft, requestTop, this.animationDuration);
+            this[_scrollAnimation].scroll(this.requestedScrollLeft, this.requestedScrollTop, requestLeft, requestTop, this.animationDuration);
         }
         else {
             this.request(requestLeft, requestTop);
@@ -641,7 +644,7 @@ export default class ScrollContainer {
             class={ this.className }
             class={{ [ScrollLess.scrollActive]: this.scrollActive }}
             style={ this.style }
-            tabindex="1"
+            tabIndex="1"
             onFocus={ () => this.focused = true }
             onBlur={ () => this.focused = false }
             onWheel={ this.onMouseWheel }>
@@ -658,7 +661,7 @@ export default class ScrollContainer {
             <if condition={this.verticalScroll}>
                 <div class={ScrollLess.scrollbar}
                     class="twist-scrollbar-vertical"
-                    on-mouseover={ this.thumbHover() }>
+                    onMouseOver={ this.thumbHover() }>
                     <div ref={ this.verticalTrack } class={ ScrollLess.track }
                         style-transform={ this.verticalTrackTransform }
                         style-width={ this.verticalTrackWidth }
@@ -678,7 +681,7 @@ export default class ScrollContainer {
             <if condition={this.horizontalScroll}>
                 <div class={ScrollLess.scrollbar}
                     class="twist-scrollbar-horizontal"
-                    onMouseover={ this.thumbHover() }>
+                    onMouseOver={ this.thumbHover() }>
 
                     <div ref={ this.horizontalTrack } class={ ScrollLess.track }
                         style-transform={ this.horizontalTrackTransform }

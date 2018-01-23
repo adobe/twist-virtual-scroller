@@ -66,7 +66,7 @@ export default class RecyclerView {
         for (let i = 0, l = collection.length; i < l; ++i) {
             // Let's figure out if we already have this item and mark it's slot busy.
             let item = collection[i];
-            let id = ObjectId(item);
+            let id = ObjectId.get(item);
             if (itemById.hasOwnProperty(id)) {
                 let slot = itemById[id];
                 newItemById[id] = slot;
@@ -84,7 +84,7 @@ export default class RecyclerView {
         // now that we know what slots cannot change, we can fill with new items.
         for (var i = 0, l = newItems.length; i < l; ++i) {
             let item = newItems[i];
-            let id = ObjectId(item);
+            let id = ObjectId.get(item);
 
             // Let's allocate a free slot to this item.
             for (; firstFreeSlot < busySlotsLength; ++firstFreeSlot) {

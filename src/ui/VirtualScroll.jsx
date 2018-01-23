@@ -278,7 +278,7 @@ export default class VirtualScroll {
         var pendingMap = {};
         var previousPendingItems = this.previousPendingItems;
         if (previousPendingItems) {
-            previousPendingItems.forEach((item) => pendingMap[ObjectId(item)] = item);
+            previousPendingItems.forEach((item) => pendingMap[ObjectId.get(item)] = item);
         }
 
         // Find any items that are pending (i.)
@@ -294,7 +294,7 @@ export default class VirtualScroll {
 
                 // If this item was pending during the previous layout pass, remove it from this list,
                 // which indicates that the item will remain visible and thus can continue pending if it needs to.
-                delete pendingMap[ObjectId(item)];
+                delete pendingMap[ObjectId.get(item)];
 
                 // If expand() returns true, it has begun lazily loading. We'll track this operation until it
                 // completes or its view falls out of the viewport.

@@ -15,7 +15,7 @@
 
 import assert from 'assert';
 import { TaskQueue } from '@twist/core';
-import { render } from '../../Utils';
+import { render } from '../Utils';
 import { LazyItem, VirtualItem, VirtualItemView, VirtualScroll, VBlockItem } from '@twist/virtual-scroller';
 
 describe('LazyItem', () => {

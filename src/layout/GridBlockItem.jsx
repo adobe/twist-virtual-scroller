@@ -52,7 +52,7 @@ export default class GridBlockItem extends PaginatedBlockItem {
         let top = this.top;
         let left = this.left;
 
-        this.forEach((item) => {
+        this.children.forEach((item) => {
 
             // If adding a new item horizontally would exceed the total
             // width then we create a new row and start over

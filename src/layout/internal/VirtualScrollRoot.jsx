@@ -11,7 +11,7 @@
  *
  */
 
-import OverlappingItem from './OverlappingItem';
+import OverlappingItem from '../OverlappingItem';
 
 @Prototype({
     type: 'root'

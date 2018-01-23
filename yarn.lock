@@ -98,8 +98,8 @@
     thread-loader "^1.1.2"
 
 "@twist/react@^0.1.0":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@twist/react/-/react-0.1.1.tgz#5721b54c65e7202d250cab04258257d45a5ce8d3"
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@twist/react/-/react-0.1.2.tgz#381e2a837087f34c8d4a8aa96437b47f85928dcd"
   dependencies:
     babel-plugin-transform-react-display-name "^6.25.0"
     babel-plugin-transform-react-jsx "^6.24.1"

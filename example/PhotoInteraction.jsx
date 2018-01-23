@@ -11,7 +11,10 @@
  *
  */
 
-import Interaction from 'torq-interaction/Interaction';
+//import Interaction from 'torq-interaction/Interaction';
+// TODO
+class Interaction {
+}
 
 export default class PhotoInteraction extends Interaction {
 

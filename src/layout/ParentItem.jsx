@@ -57,7 +57,7 @@ export default class ParentItem extends VirtualItem {
 
     updatePosition(deltaLeft, deltaTop) {
         super.updatePosition(deltaLeft, deltaTop);
-        this.forEach((item) => item.updatePosition(deltaLeft, deltaTop));
+        this.children.forEach((item) => item.updatePosition(deltaLeft, deltaTop));
     }
 
     needsLayout(width, height) {
@@ -74,7 +74,7 @@ export default class ParentItem extends VirtualItem {
         }
 
         collector.addItem(this);
-        this.forEach((item) => item.collect(collector));
+        this.children.forEach((item) => item.collect(collector));
         return true;
     }
 

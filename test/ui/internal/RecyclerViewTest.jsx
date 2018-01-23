@@ -22,7 +22,7 @@ import RecyclerView from '../../../src/ui/internal/RecyclerView';
 class RecycledView {
     @Attribute virtualItem;
     render() {
-        return <div>{this.virtualItem || '-'}</div>;
+        return <div>{ this.virtualItem || '-' }</div>;
     }
 }
 

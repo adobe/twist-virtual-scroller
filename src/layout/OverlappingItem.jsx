@@ -22,7 +22,7 @@ export default class OverlappingItem extends ParentItem {
     updateLayout(width, height) {
         this.width = 0;
         this.height = 0;
-        this.forEach((item) => {
+        this.children.forEach((item) => {
             item.parent = this;
             item.layout(this.left, this.top, width, height);
             this.width = Math.max(this.width, item.width);

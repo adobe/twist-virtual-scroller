@@ -13,7 +13,10 @@
 
 import { LazyItem, StickyItem, VirtualItem, VKnuthPlassBlockItem, VBlockItem, VirtualItemView, VirtualScroll } from '@twist/virtual-scroller';
 
-import TouchMapper from 'torq-interaction/TouchMapper';
+// import TouchMapper from 'torq-interaction/TouchMapper';
+// TODO
+class TouchMapper {
+}
 
 import PhotoInteraction from './PhotoInteraction';
 import PhotoController from './PhotoController';

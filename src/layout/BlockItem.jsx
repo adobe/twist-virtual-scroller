@@ -33,7 +33,7 @@ export default class BlockItem extends PaginatedBlockItem {
         if (this.direction === 'horizontal') {
             top = this.top;
             start = this.left;
-            this.forEach((item) => {
+            this.children.forEach((item) => {
                 item.parent = this;
 
                 item.layout(start, top, width, height);
@@ -60,7 +60,7 @@ export default class BlockItem extends PaginatedBlockItem {
         else {
             left = this.left;
             start = this.top;
-            this.forEach((item) => {
+            this.children.forEach((item) => {
                 item.parent = this;
 
                 item.layout(left, start, width, height);

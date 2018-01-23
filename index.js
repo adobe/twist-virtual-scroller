@@ -20,7 +20,7 @@ export { HBlockItem, VBlockItem } from './src/layout/BlockItem';
 export { default as GridBlockItem } from './src/layout/GridBlockItem';
 export { HKnuthPlassBlockItem, VKnuthPlassBlockItem } from './src/layout/KnuthPlassBlockItem';
 export { default as LazyItem } from './src/layout/LazyItem';
-export { default as OverlappingBlockItem } from './src/layout/OverlappingBlockItem';
+export { default as OverlappingItem } from './src/layout/OverlappingItem';
 export { default as PaginatedBlockItem } from './src/layout/PaginatedBlockItem';
 export { default as ParentItem } from './src/layout/ParentItem';
 export { default as PlaceholderItem } from './src/layout/PlaceholderItem';
