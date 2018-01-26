@@ -47,6 +47,7 @@ export default class LazyItem {
      * Begin the loading process, if necessary. This function is called whenever this item is added to the
      * visible list, which may occur many times while in view, so it must be careful to not fire multiple requests.
      */
+    @Bind
     expand() {
         if (this.expanded || this.loading) {
             return;
@@ -79,6 +80,7 @@ export default class LazyItem {
     /**
      * Abort the loading process, usually because the view is no longer visible.
      */
+    @Bind
     stop() {
         if (this.abortLoading) {
             this.abortLoading();
@@ -99,8 +101,8 @@ export default class LazyItem {
             </if>
             <else>
                 <PlaceholderItem
-                    onExpand={ this.expand() }
-                    onStop={ this.stop() }
+                    onExpand={ this.expand }
+                    onStop={ this.stop }
                     lazyWidth={ this.lazyWidth }
                     lazyHeight={ this.lazyHeight } />
             </else>

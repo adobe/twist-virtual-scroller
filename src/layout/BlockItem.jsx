@@ -58,6 +58,7 @@ export default class BlockItem extends PaginatedBlockItem {
             }
         }
         else {
+            console.log('Update VBlock layout', width, height)
             left = this.left;
             start = this.top;
             this.children.forEach((item) => {

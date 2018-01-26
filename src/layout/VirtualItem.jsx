@@ -90,7 +90,7 @@ export default class VirtualItem {
         }
     }
 
-    detached() {
+    componentWillUnmount() {
         this.setNeedsLayout();
     }
 

@@ -27,6 +27,7 @@ export default class OverlappingItem extends ParentItem {
             item.layout(this.left, this.top, width, height);
             this.width = Math.max(this.width, item.width);
             this.height = Math.max(this.height, item.height);
+            console.log('item', item.width, item.height)
         });
 
         super.updateLayout(width, height);

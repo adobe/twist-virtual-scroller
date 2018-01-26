@@ -78,8 +78,8 @@
     strip-json-comments "^2.0.1"
 
 "@twist/core@^0.1.0":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@twist/core/-/core-0.1.1.tgz#c59aa0d9096072e2774416342c3ebbe4f019b482"
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@twist/core/-/core-0.1.2.tgz#d769e1da0587a888477d6642698fdcba60ba3e1e"
 
 "@twist/eslint-plugin-core@^0.1.2":
   version "0.1.2"
@@ -98,8 +98,8 @@
     thread-loader "^1.1.2"
 
 "@twist/react@^0.1.0":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@twist/react/-/react-0.1.2.tgz#381e2a837087f34c8d4a8aa96437b47f85928dcd"
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@twist/react/-/react-0.1.4.tgz#7f4c9e782c586b9c0e83d629b901f5fe66686e45"
   dependencies:
     babel-plugin-transform-react-display-name "^6.25.0"
     babel-plugin-transform-react-jsx "^6.24.1"
@@ -1367,8 +1367,8 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000515, caniuse-db@^1.0.30000525, caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30000793"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000793.tgz#3c00c66e423a7a1907c7dd96769a78b2afa8a72e"
+  version "1.0.30000795"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000795.tgz#644f03fab00dd8bd1693e5e1e70d86b31c5cfece"
 
 caniuse-lite@^1.0.30000792:
   version "1.0.30000792"
@@ -3346,8 +3346,8 @@ istanbul@^0.4.0:
     wordwrap "^1.0.0"
 
 js-base64@^2.1.9:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.4.1.tgz#e02813181cd53002888e918935467acb2910e596"
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.4.2.tgz#1896da010ef8862f385d8887648e9b6dc4a7a2e9"
 
 js-tokens@^3.0.0, js-tokens@^3.0.2:
   version "3.0.2"
@@ -3996,8 +3996,8 @@ node-pre-gyp@^0.6.39:
     tar-pack "^3.4.0"
 
 nodent-compiler@>=3.1.0:
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/nodent-compiler/-/nodent-compiler-3.1.5.tgz#8c09289eacf7256bda89c2b88941681d5cccf80c"
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/nodent-compiler/-/nodent-compiler-3.1.6.tgz#1fd2b37625f127405d90ddc9cf7a059affef82f5"
   dependencies:
     acorn ">=2.5.2"
     acorn-es7-plugin ">=1.1.6"
@@ -5669,8 +5669,8 @@ time-stamp@^2.0.0:
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-2.0.0.tgz#95c6a44530e15ba8d6f4a3ecb8c3a3fac46da357"
 
 timers-browserify@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.4.tgz#96ca53f4b794a5e7c0e1bd7cc88a372298fa01e6"
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.6.tgz#241e76927d9ca05f4d959819022f5b3664b64bae"
   dependencies:
     setimmediate "^1.0.4"
 

@@ -14,9 +14,6 @@
 import { LazyItem, StickyItem, VirtualItem, VKnuthPlassBlockItem, VBlockItem, VirtualItemView, VirtualScroll } from '@twist/virtual-scroller';
 
 // import TouchMapper from 'torq-interaction/TouchMapper';
-// TODO
-class TouchMapper {
-}
 
 import PhotoInteraction from './PhotoInteraction';
 import PhotoController from './PhotoController';
@@ -29,14 +26,12 @@ class GroupHeaderItem extends StickyItem {
 }
 
 @Prototype({ type: 'photo' })
-export class PhotoItem extends VirtualItem {
+class PhotoItem extends VirtualItem {
 
     constructor(props, context) {
         super(props, context);
-
         this.layoutAttributes(() => this.aspectRatio);
     }
-
 
     get aspectRatio() {
         return this.data.aspectRatio;
@@ -48,13 +43,14 @@ class GroupHeaderView extends VirtualItemView {
     render() {
         return <div
             {...this.itemAttributes}
-            style="background: rgba(0, 0, 0, 0.3); color: white; font-weight: bold;"
-            text-content={ this.virtualItem ? this.virtualItem.data.text : null } />;
+            style="background: rgba(0, 0, 0, 0.3); color: white; font-weight: bold;">
+            { this.virtualItem ? this.virtualItem.data.text : null }
+        </div>;
     }
 }
 
 @Component
-export class PhotoView extends VirtualItemView {
+class PhotoView extends VirtualItemView {
 
     constructor() {
         super();
@@ -88,9 +84,10 @@ export class PhotoView extends VirtualItemView {
             }}>
             <div class={ PhotoVirtualScrollLess.photoViewInner } class={ this.insertClass }
                 style="width: 100%; height: 100%; padding: 10px; transform-style: preserve-3d; box-sizing: border-box"
-                text-content={ this.virtualItem ? this.virtualItem.data.text : null }
                 style-background={ this.virtualItem ? ((this.virtualItem.data.id % 2) ? '#ccc' : '#ddd') : null }
-            />
+            >
+                { this.virtualItem ? this.virtualItem.data.text : null }
+            </div>
         </div>;
     }
 }
@@ -105,7 +102,7 @@ var Mapping = {
     [GroupHeaderItem.type]: GroupHeaderView
 };
 
-@Component({ fork: true })
+@Component
 export default class PhotoVirtualScroll {
     @Attribute model;
 
@@ -117,9 +114,9 @@ export default class PhotoVirtualScroll {
     constructor(props, context) {
         super(props, context);
 
-        this.scope.touchMapper = this.link(new TouchMapper);
+        //this.scope.touchMapper = this.link(new TouchMapper);
         this.scope.dragState = this.link(new DragState);
-        this.interaction = this.link(new PhotoInteraction(this.scope.touchMapper, this.scope.dragState, this));
+        //this.interaction = this.link(new PhotoInteraction(this.scope.touchMapper, this.scope.dragState, this));
     }
 
     findDropInsertionPoint(event) {
@@ -168,6 +165,8 @@ export default class PhotoVirtualScroll {
     }
 
     render() {
+        console.log(this.model)
+
         return <g>
             <label>
                 Animate:&nbsp;
@@ -183,7 +182,7 @@ export default class PhotoVirtualScroll {
                 Duration
                 <input type="range" min={0} max={1000} bind:value={ this.animationDuration }  />
             </label>
-            <ScrollLog message={ this.debugLog } />
+            <ScrollLog view={ this } />
             <PhotoDrag dragState={ this.scope.dragState } />
             <VirtualScroll
                 ref={ this.scroller }
@@ -193,7 +192,7 @@ export default class PhotoVirtualScroll {
                 animation={ this.animation }
                 animationDuration={ this.animationDuration }
                 bind:animationEnabled={ this.animationEnabled }
-                onLog = { message => this.debugLog = message }
+                onLog={ message => this.debugLog = message }
                 autoScroll={ true }>
 
                 <VBlockItem margin={ 2 }>
@@ -209,10 +208,10 @@ export default class PhotoVirtualScroll {
 
 @Component
 class ScrollLog {
-    @Attribute message;
+    @Attribute view;
 
     render() {
-        return <pre>{ this.message }</pre>;
+        return <pre>{ this.view && this.view.message }</pre>;
     }
 }
 
@@ -221,6 +220,8 @@ class VirtualGroups {
     @Attribute model
 
     render() {
+        console.log('Render VirtualGroups', this.model, this.model.groups)
+
         return <repeat collection={ this.model.groups } as={ group, index }>
             <LazyItem key={ index } lazyHeight={ 500 }>
 

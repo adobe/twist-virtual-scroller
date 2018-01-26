@@ -31,8 +31,9 @@ export default class PhotoDrag {
                 style-top={ this.dragState.mouseY }
                 style-left={ this.dragState.mouseX }
                 style-opacity="0.8"
-                style-z-index="10"
-                text-content={ this.item ? this.item.text : null } />
+                style-z-index="10">
+                { this.item ? this.item.text : null }
+            </div>
         </if>;
     }
 }

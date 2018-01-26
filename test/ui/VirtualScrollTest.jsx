@@ -50,7 +50,7 @@ describe('Virtual Scroll', () => {
         const children = new ObservableArray([ 0, 1, 2 ]);
 
         const domNode = render(
-            <VirtualScroll style={'height: ' + SCROLL_HEIGHT + 'px'} verticalScroll={true} mapping={{ 'any': ItemView }}>
+            <VirtualScroll style-height={ SCROLL_HEIGHT + 'px' } verticalScroll={true} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
                     <repeat collection={children} as={item}>
                         <SimpleBlockItem data={item} />
@@ -64,11 +64,18 @@ describe('Virtual Scroll', () => {
         const scrollOuterView = domNode.firstElementChild;
         assert.equal(parseInt(scrollOuterView.style.height), SCROLL_HEIGHT);
 
+        console.log(scrollOuterView.firstElementChild)
+        console.log(parseInt(domNode.firstElementChild.style.height))
+
+        TaskQueue.run();
+
         const scrollOverflowView = scrollOuterView.firstElementChild;
         assert.equal(parseInt(scrollOverflowView.style.height), SCROLL_HEIGHT);
 
         const scrollInnerView = scrollOverflowView.firstElementChild;
         assert.equal(scrollInnerView.style.transform, 'translate3d(0px, 0px, 0px)');
+
+        console.log('HERE')
 
         // RecyclerView determines how many views will be available for rendering.
         // The first few of them will be visible (rendering each item), and the
@@ -120,6 +127,8 @@ describe('Virtual Scroll', () => {
         }
         assert.equal(visibleViewsCount, expectedNumberOfVisibleItems);
     });
+
+    return;
 
     it('scrollbar track clicks', () => {
         // Start by making a list with fewer items than can be displayed in the visible area.

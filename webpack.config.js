@@ -79,7 +79,7 @@ module.exports = {
         new webpack.ProvidePlugin({
             'React': 'react',
         }),
-        new webpack.optimize.UglifyJsPlugin({ sourceMap: !isProduction }),
+        //new webpack.optimize.UglifyJsPlugin({ sourceMap: !isProduction }),
         config,
         new HtmlWebpackPlugin({ title: 'sample-project' })
     ]

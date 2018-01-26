@@ -11,6 +11,8 @@
  *
  */
 
+import { TaskQueue } from '@twist/core';
+
 import TouchMapper from './interaction/TouchMapper';
 import ScrollInteraction from './interaction/ScrollInteraction';
 
@@ -302,7 +304,7 @@ export default class ScrollContainer {
         };
     }
 
-    attached() {
+    componentDidMount() {
         this.updateSize();
         this.resizeLink = this.link(BrowserUtils.addEventListener(window, 'resize', this.updateSize));
 
@@ -313,7 +315,7 @@ export default class ScrollContainer {
         this.listenTo(this.scope.touchMapper.touchManager, 'start', this.onStart);
     }
 
-    detached() {
+    componentWillUnmount() {
         if (this.resizeLink) {
             this.disposeLink(this.resizeLink);
             this.resizeLink = null;
@@ -344,7 +346,8 @@ export default class ScrollContainer {
         }
     }
 
-    updateSizeImpl() {
+    @Task(101)
+    updateSize() {
         if (!this.element) {
             return;
         }
@@ -353,11 +356,6 @@ export default class ScrollContainer {
         this.viewHeight = this.element.clientHeight;
 
         this.updateScroll();
-    }
-
-    @Task(101)
-    updateSize() {
-        this.updateSizeImpl();
     }
 
     get innerWidth() {
@@ -631,6 +629,7 @@ export default class ScrollContainer {
         return this.scrolling || this.trackHovered || this.scrollInteraction.active;
     }
 
+    @Bind
     thumbHover() {
         this.trackHovered = true;
         this.removeScrolling.cancel();
@@ -642,7 +641,7 @@ export default class ScrollContainer {
             ref={ this.element }
             class={ ScrollLess.outerView }
             class={ this.className }
-            class={{ [ScrollLess.scrollActive]: this.scrollActive }}
+            class-active={ this.scrollActive }
             style={ this.style }
             tabIndex="1"
             onFocus={ () => this.focused = true }
@@ -661,7 +660,7 @@ export default class ScrollContainer {
             <if condition={this.verticalScroll}>
                 <div class={ScrollLess.scrollbar}
                     class="twist-scrollbar-vertical"
-                    onMouseOver={ this.thumbHover() }>
+                    onMouseOver={ this.thumbHover }>
                     <div ref={ this.verticalTrack } class={ ScrollLess.track }
                         style-transform={ this.verticalTrackTransform }
                         style-width={ this.verticalTrackWidth }
@@ -681,7 +680,7 @@ export default class ScrollContainer {
             <if condition={this.horizontalScroll}>
                 <div class={ScrollLess.scrollbar}
                     class="twist-scrollbar-horizontal"
-                    onMouseOver={ this.thumbHover() }>
+                    onMouseOver={ this.thumbHover }>
 
                     <div ref={ this.horizontalTrack } class={ ScrollLess.track }
                         style-transform={ this.horizontalTrackTransform }
