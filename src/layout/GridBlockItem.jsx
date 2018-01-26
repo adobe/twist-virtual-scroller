@@ -71,6 +71,6 @@ export default class GridBlockItem extends PaginatedBlockItem {
         top += this.itemHeight + this.vMargin;
 
         this.width = width;
-        this.height = Math.max(0, top - this._top);
+        this.height = Math.max(0, top - this.top);
     }
 }

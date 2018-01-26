@@ -37,52 +37,51 @@ export default class BlockItem extends PaginatedBlockItem {
                 item.parent = this;
 
                 item.layout(start, top, width, height);
-                start += item._width + margin;
+                start += item.width + margin;
 
                 if (item.sticky) {
                     if (pendingSticky) {
-                        stickyList.add(pendingSticky, pendingSticky._left, item._left);
+                        stickyList.add(pendingSticky, pendingSticky.left, item.left);
                     }
                     pendingSticky = item;
                 }
                 else {
-                    list.add(item, item._left, item._left + item._width);
+                    list.add(item, item.left, item.left + item.width);
                 }
             });
 
-            this.width = Math.max(0, start - this._left - margin);
+            this.width = Math.max(0, start - this.left - margin);
             this.height = height;
 
             if (pendingSticky) {
-                stickyList.add(pendingSticky, pendingSticky._left, this._left + this._width);
+                stickyList.add(pendingSticky, pendingSticky.left, this.left + this.width);
             }
         }
         else {
-            console.log('Update VBlock layout', width, height)
             left = this.left;
             start = this.top;
             this.children.forEach((item) => {
                 item.parent = this;
 
                 item.layout(left, start, width, height);
-                start += item._height + margin;
+                start += item.height + margin;
 
                 if (item.sticky) {
                     if (pendingSticky) {
-                        stickyList.add(pendingSticky, pendingSticky._top, item._top);
+                        stickyList.add(pendingSticky, pendingSticky.top, item.top);
                     }
                     pendingSticky = item;
                 }
                 else {
-                    list.add(item, item._top, item._top + item._height);
+                    list.add(item, item.top, item.top + item.height);
                 }
             });
 
             this.width = width;
-            this.height = Math.max(0, start - this._top - margin);
+            this.height = Math.max(0, start - this.top - margin);
 
             if (pendingSticky) {
-                stickyList.add(pendingSticky, pendingSticky._top, this._top + this._height);
+                stickyList.add(pendingSticky, pendingSticky.top, this.top + this.height);
             }
         }
 

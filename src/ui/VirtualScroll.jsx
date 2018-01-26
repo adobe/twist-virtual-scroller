@@ -222,7 +222,6 @@ export default class VirtualScroll {
      * @param {Bookmark} bookmark
      */
     loadPage(viewLeft, viewRight, viewTop, viewBottom, width, height, force, bookmark) {
-        console.log('loadPage', viewLeft, viewRight, viewTop, viewBottom, width, height)
         // Determine the rectangle we'd like to render by quantizing it to a page-like offset, and
         // potentially adding an additional page-size of preload content. If this quantized area
         // is the same as last time, we don't need to do anything else right now.
@@ -243,14 +242,6 @@ export default class VirtualScroll {
         var margin = this.margin;
         var sourceItem = this.sourceItem;
         if (sourceItem) {
-
-            let print = (node, prefix = '') => {
-                console.log(`${node.constructor.name}(${node.width}, ${node.height}) ${node.children && node.children.length}`)
-                node.children && node.children.forEach(node => print(node, prefix + '    '))
-            }
-            print(sourceItem);
-
-
             // Tell our root item to layout itself within our current area, then update bookmarks if needed.
             sourceItem.layout(margin, margin, this.scroll.innerWidth - margin, this.scroll.innerHeight - margin);
             this.contentWidth = sourceItem.width + margin;

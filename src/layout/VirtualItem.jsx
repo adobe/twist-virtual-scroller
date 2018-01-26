@@ -35,6 +35,20 @@ export default class VirtualItem {
 
     @Observable isBookmark = false;
 
+    constructor() {
+        super();
+
+        // We need to trigger a layout whenever the children change
+        this.watch(() => this.children, () => {
+            // Look up the tree for the parent - we need to tell it to layout itself!
+            let layoutContainer = this;
+            while (layoutContainer && !layoutContainer.setChildNeedsLayout) {
+                layoutContainer = layoutContainer._parent;
+            }
+            layoutContainer && layoutContainer.setChildNeedsLayout();
+        });
+    }
+
     /**
      * Data needed to render the {@link VirtualItemView}.
      */
@@ -108,7 +122,7 @@ export default class VirtualItem {
     }
 
     needsLayout(width, height) {
-        return this._width !== width || this._height !== height;
+        return this.width !== width || this.height !== height;
     }
 
     updateLayout(width, height) {

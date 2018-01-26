@@ -22,14 +22,16 @@ import PhotoDrag from './PhotoDrag';
 import PhotoVirtualScrollLess from './PhotoVirtualScroll.less';
 
 @Prototype({ type: 'groupHeader' })
+@VirtualComponent
 class GroupHeaderItem extends StickyItem {
 }
 
 @Prototype({ type: 'photo' })
+@VirtualComponent
 class PhotoItem extends VirtualItem {
 
-    constructor(props, context) {
-        super(props, context);
+    constructor() {
+        super();
         this.layoutAttributes(() => this.aspectRatio);
     }
 
@@ -165,8 +167,6 @@ export default class PhotoVirtualScroll {
     }
 
     render() {
-        console.log(this.model)
-
         return <g>
             <label>
                 Animate:&nbsp;
@@ -220,11 +220,8 @@ class VirtualGroups {
     @Attribute model
 
     render() {
-        console.log('Render VirtualGroups', this.model, this.model.groups)
-
         return <repeat collection={ this.model.groups } as={ group, index }>
             <LazyItem key={ index } lazyHeight={ 500 }>
-
                 <GroupHeaderItem data={{ text: `Group ${group.id}` }} stickyHeight={ 50 } />
 
                 <VKnuthPlassBlockItem margin={ 2 } size={ 120 }>
