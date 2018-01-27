@@ -118,9 +118,9 @@
     babel-loader "^7.1.2"
     thread-loader "^1.1.2"
 
-"@twist/react@^0.1.0":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@twist/react/-/react-0.1.4.tgz#7f4c9e782c586b9c0e83d629b901f5fe66686e45"
+"@twist/react@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@twist/react/-/react-0.1.5.tgz#b5bdc89da5dcd9086d0175d2cdfe1a21f5cf1275"
   dependencies:
     babel-plugin-transform-react-display-name "^6.25.0"
     babel-plugin-transform-react-jsx "^6.24.1"

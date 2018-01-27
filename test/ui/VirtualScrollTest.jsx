@@ -19,6 +19,7 @@ import { ObservableArray, TaskQueue } from '@twist/core';
 import { VirtualScroll, VirtualItemView, VirtualItem, VBlockItem, HBlockItem } from '@twist/virtual-scroller';
 import RecyclerView from '../../src/ui/internal/RecyclerView';
 
+@VirtualComponent
 class SimpleBlockItem extends VirtualItem {
     static WIDTH = 40;
     static HEIGHT = 20;
@@ -49,10 +50,10 @@ describe('Virtual Scroll', () => {
         // Start by making a list with fewer items than can be displayed in the visible area.
         const children = new ObservableArray([ 0, 1, 2 ]);
 
-        const domNode = render(
-            <VirtualScroll style-height={ SCROLL_HEIGHT + 'px' } verticalScroll={true} mapping={{ 'any': ItemView }}>
+        const domNode = render.intoBody(() =>
+            <VirtualScroll style-test={ 'test' } style-height={ SCROLL_HEIGHT + 'px' } verticalScroll={true} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
-                    <repeat collection={children} as={item}>
+                    <repeat collection={ children } as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
                 </VBlockItem>
@@ -64,9 +65,6 @@ describe('Virtual Scroll', () => {
         const scrollOuterView = domNode.firstElementChild;
         assert.equal(parseInt(scrollOuterView.style.height), SCROLL_HEIGHT);
 
-        console.log(scrollOuterView.firstElementChild)
-        console.log(parseInt(domNode.firstElementChild.style.height))
-
         TaskQueue.run();
 
         const scrollOverflowView = scrollOuterView.firstElementChild;
@@ -75,29 +73,28 @@ describe('Virtual Scroll', () => {
         const scrollInnerView = scrollOverflowView.firstElementChild;
         assert.equal(scrollInnerView.style.transform, 'translate3d(0px, 0px, 0px)');
 
-        console.log('HERE')
-
         // RecyclerView determines how many views will be available for rendering.
         // The first few of them will be visible (rendering each item), and the
         // rest will be hidden until needed.
-        const recyclerCapacity = new RecyclerView().capacity;
-        assert.equal(scrollInnerView.children.length, recyclerCapacity);
+        let testRecycler;
+        render(<RecyclerView ref={testRecycler} />);
+        assert.equal(scrollInnerView.children.length, testRecycler.capacity, 'should have children equal to recycler capacity');
 
         // Each child should be rendered properly. Since we have not performed any scrolling or manipulation,
         // we can reasonably expect the visible DOM elements to be rendered in order. (This invariant no longer
         // holds when the view has been scrolled and views need to be recycled.)
         children.forEach((childText, index) => {
             const virtualItem = scrollInnerView.children[index];
-            assert.equal(parseInt(virtualItem.style.height), SimpleBlockItem.HEIGHT);
-            assert.equal(parseInt(virtualItem.style.width), SimpleBlockItem.WIDTH);
-            assert.equal(virtualItem.style.visibility, 'visible');
-            assert.equal(virtualItem.textContent, childText);
+            assert.equal(parseInt(virtualItem.style.height), SimpleBlockItem.HEIGHT, 'virtual item should have correct height');
+            assert.equal(parseInt(virtualItem.style.width), SimpleBlockItem.WIDTH, 'virtual item should have correct width');
+            assert.equal(virtualItem.style.visibility, 'visible', 'virtual item should be visible');
+            assert.equal(virtualItem.textContent, childText, 'virtual item should have correct text');
         });
 
         // The rest of the views should be hidden.
-        for (let i = children.length; i < recyclerCapacity; i++) {
+        for (let i = children.length; i < testRecycler.capacity; i++) {
             const unusedVirtualItem = scrollInnerView.children[i];
-            assert.equal(unusedVirtualItem.style.visibility, 'hidden');
+            assert.equal(unusedVirtualItem.style.visibility, 'hidden', 'virtual items outside recycler capacity should be hidden');
         }
 
         // Now, let's add more items.
@@ -108,7 +105,7 @@ describe('Virtual Scroll', () => {
 
         // We should still have the same number of views in the recycler, even though
         // we have more items in our collection.
-        assert.equal(scrollInnerView.children.length, recyclerCapacity);
+        assert.equal(scrollInnerView.children.length, testRecycler.capacity, 'should still have children equal to recycler capacity');
 
         // We've chosen SCROLL_HEIGHT to match to an integer number of items, for simplicity's sake.
         // There's one more item than that, though, because the last item's top touches the bottom of the
@@ -125,18 +122,16 @@ describe('Virtual Scroll', () => {
                 visibleViewsCount++;
             }
         }
-        assert.equal(visibleViewsCount, expectedNumberOfVisibleItems);
+        assert.equal(visibleViewsCount, expectedNumberOfVisibleItems, 'should have views equal to expected visible items');
     });
 
-    return;
-
-    it('scrollbar track clicks', () => {
+    xit('scrollbar track clicks', () => {
         // Start by making a list with fewer items than can be displayed in the visible area.
         const children = new ObservableArray([ ...Array(1000).keys() ]);
 
         let vs;
 
-        render(
+        render.intoBody(() =>
             <VirtualScroll ref={vs} style={'height: ' + SCROLL_HEIGHT + 'px'} verticalScroll={true} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
                     <repeat collection={children} as={item}>
@@ -165,13 +160,13 @@ describe('Virtual Scroll', () => {
         assert.equal(vs.scroll.displayScrollTop, 0);
     });
 
-    it('scrollbar thumb dragging', () => {
+    xit('scrollbar thumb dragging', () => {
         // Start by making a list with fewer items than can be displayed in the visible area.
         const children = new ObservableArray([ ...Array(1000).keys() ]);
 
         let vs;
 
-        render(
+        render.intoBody(() =>
             <VirtualScroll ref={vs} style={'height: ' + SCROLL_HEIGHT + 'px'} verticalScroll={true} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
                     <repeat collection={children} as={item}>
@@ -230,6 +225,7 @@ describe('Virtual Scroll', () => {
             }
         }
         render(<VS />);
+        TaskQueue.run();
 
         assert.equal(vs.scroll.viewHeight, model.height);
         model.height = 200;
@@ -276,7 +272,7 @@ describe('Virtual Scroll', () => {
         let vs, vItem;
 
         // Test align top
-        render(
+        render.intoBody(() =>
             <VirtualScroll ref={vs} vertical-scroll={true} horizontal-scroll={false} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
                     <repeat collection={collection} as={item}>
@@ -325,7 +321,7 @@ describe('Virtual Scroll', () => {
         let vs, vItem;
 
         // Test align left
-        render(
+        render.intoBody(() =>
             <VirtualScroll ref={vs} vertical-scroll={false} horizontal-scroll={true} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
                 <HBlockItem>
                     <repeat collection={collection} as={item}>
@@ -374,7 +370,7 @@ describe('Virtual Scroll', () => {
         let vs, vItem;
 
         // Test align top
-        render(
+        render.intoBody(() =>
             <VirtualScroll ref={vs} vertical-scroll={true} horizontal-scroll={false} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
                     <repeat collection={collection} as={item}>
@@ -416,7 +412,7 @@ describe('Virtual Scroll', () => {
         let vs, vItem;
 
         // Test align top
-        render(
+        render.intoBody(() =>
             <VirtualScroll ref={vs} vertical-scroll={false} horizontal-scroll={true} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
                 <HBlockItem>
                     <repeat collection={collection} as={item}>

@@ -20,12 +20,36 @@ import ReactDOM from 'react-dom';
  * easy to dispose later, via render.dispose();
  */
 let renderedElements = [];
-export function render(jsx) {
+export function render(jsx, parentElement) {
     var el = document.createElement('div');
-    ReactDOM.render(jsx, el);
+    if (parentElement) {
+        parentElement.appendChild(el);
+    }
+
+    if (typeof jsx === 'function') {
+        // Put it in a component
+        @Component
+        class RenderComponent {
+            render() {
+                return jsx();
+            }
+        }
+        ReactDOM.render(<RenderComponent />, el);
+    }
+    else {
+        ReactDOM.render(jsx, el);
+    }
+
     renderedElements.push(el);
     return el;
 }
+
+/**
+ * Shorthand for rendering into the document body
+ */
+render.intoBody = (jsx) => {
+    return render(jsx, document.body);
+};
 
 /**
  * Dispose any rendered JSX elements
@@ -33,6 +57,9 @@ export function render(jsx) {
 render.dispose = () => {
     renderedElements.forEach(el => {
         ReactDOM.unmountComponentAtNode(el);
+        if (el.parentNode) {
+            el.parentNode.removeChild(el);
+        }
     });
     renderedElements = [];
 };

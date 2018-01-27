@@ -211,7 +211,7 @@ class ScrollLog {
     @Attribute view;
 
     render() {
-        return <pre>{ this.view && this.view.message }</pre>;
+        return <pre>{ (this.view && this.view.debugLog) || ' ' }</pre>;
     }
 }
 

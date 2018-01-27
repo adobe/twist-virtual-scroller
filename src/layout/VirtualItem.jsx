@@ -35,20 +35,6 @@ export default class VirtualItem {
 
     @Observable isBookmark = false;
 
-    constructor() {
-        super();
-
-        // We need to trigger a layout whenever the children change
-        this.watch(() => this.children, () => {
-            // Look up the tree for the parent - we need to tell it to layout itself!
-            let layoutContainer = this;
-            while (layoutContainer && !layoutContainer.setChildNeedsLayout) {
-                layoutContainer = layoutContainer._parent;
-            }
-            layoutContainer && layoutContainer.setChildNeedsLayout();
-        });
-    }
-
     /**
      * Data needed to render the {@link VirtualItemView}.
      */
@@ -99,9 +85,24 @@ export default class VirtualItem {
      * Mark this view as needing layout. (This implicitly notifies the parent that its child needs layout.)
      */
     setNeedsLayout() {
-        if (this.parent && !this.parent.childNeedsLayout) {
-            this.parent.setChildNeedsLayout();
+        // Look up the tree for the parent - we need to tell it to layout itself!
+        let parent = this._parent;
+        while (parent && !parent.setChildNeedsLayout) {
+            parent = parent._parent;
         }
+        if (parent && !parent.childNeedsLayout) {
+            parent.setChildNeedsLayout();
+        }
+    }
+
+    componentDidMount() {
+        // Note: We can't just watch `this.children`, because this will only trigger if the array itself changes
+        // (it's kept as the same array for performance reasons).
+        this.listenTo(this, 'virtual.children', () => {
+            this.setNeedsLayout();
+
+        });
+        this.setNeedsLayout();
     }
 
     componentWillUnmount() {

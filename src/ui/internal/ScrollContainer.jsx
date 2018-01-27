@@ -11,8 +11,6 @@
  *
  */
 
-import { TaskQueue } from '@twist/core';
-
 import TouchMapper from './interaction/TouchMapper';
 import ScrollInteraction from './interaction/ScrollInteraction';
 
@@ -50,7 +48,7 @@ function isDefined(x) {
 }
 
 const _scrollAnimation = Symbol('scrollAnimation');
-const _autoScrollAnimation = Symbol('autoScrollAnimation')
+const _autoScrollAnimation = Symbol('autoScrollAnimation');
 
 /**
  * The ScrollContainer component simulates a scrollable view. It intercepts mouse events (and, optionally,
@@ -351,7 +349,6 @@ export default class ScrollContainer {
         if (!this.element) {
             return;
         }
-
         this.viewWidth = this.element.clientWidth;
         this.viewHeight = this.element.clientHeight;
 
@@ -399,6 +396,9 @@ export default class ScrollContainer {
 
     @Task(15000)
     updateBoundingClientRect() {
+        if (!this.element) {
+            return;
+        }
         let clientRect = this.element.getBoundingClientRect();
         this.offsetX = this.displayScrollLeft - clientRect.left;
         this.offsetY = this.displayScrollTop - clientRect.top;
