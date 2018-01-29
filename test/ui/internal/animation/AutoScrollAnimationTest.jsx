@@ -15,8 +15,10 @@
 
 import assert from 'assert';
 import { render } from '../../../Utils';
-import { VBlockItem, VirtualScroll, VirtualItemView, VirtualItem } from '@twist/virtual-scroller';
 import FakeTime from '../../../mocks/FakeTime';
+
+import { TaskQueue } from '@twist/core';
+import { VBlockItem, VirtualScroll, VirtualItemView, VirtualItem } from '@twist/virtual-scroller';
 
 describe('AutoScrollAnimation', () => {
 
@@ -41,8 +43,8 @@ describe('AutoScrollAnimation', () => {
         let vs;
         let HEIGHT = 200;
 
-        let domNode = render(
-            <VirtualScroll ref={vs} mapping={{ item: ItemView }} vertical-scroll={true} style={`height: ${HEIGHT}px; width: 200px;`}>
+        let domNode = render.intoBody(() =>
+            <VirtualScroll ref={vs} mapping={{ item: ItemView }} verticalScroll={true} style={`height: ${HEIGHT}px; width: 200px;`}>
                 <VBlockItem>
                     <repeat collection={[ 1, 2, 3, 4, 5, 6 ]} as={data}>
                         <Item data={data} />
@@ -50,6 +52,7 @@ describe('AutoScrollAnimation', () => {
                 </VBlockItem>
             </VirtualScroll>
         );
+        TaskQueue.run();
 
         let anim = vs.scroll.autoScrollAnimation;
         let bounds = domNode.getBoundingClientRect();

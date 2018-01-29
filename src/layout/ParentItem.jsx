@@ -82,6 +82,6 @@ export default class ParentItem extends VirtualItem {
         if (super.resolveBookmark(bookmark)) {
             return true;
         }
-        return this.any((item) => item.resolveBookmark(bookmark));
+        return this.children.some((item) => item.resolveBookmark(bookmark));
     }
 }

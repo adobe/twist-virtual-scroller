@@ -14,13 +14,25 @@
 /* global describe it */
 
 import assert from 'assert';
+import { render } from '../Utils';
+
+import { TaskQueue } from '@twist/core';
 import { PlaceholderItem } from '@twist/virtual-scroller';
 
 describe('PlaceholderItem', () => {
     it('layout', () => {
-        let item = new PlaceholderItem();
+        class Data {
+            @Observable lazyWidth;
+            @Observable lazyHeight;
+        }
+        let data = new Data;
+
+        let item;
+        render(() => <PlaceholderItem ref={item} bind:lazyWidth={ data.lazyWidth } bind:lazyHeight={ data.lazyHeight } />);
+
         item.lazyWidth = 100;
         item.lazyHeight = 200;
+        TaskQueue.run();
 
         let wasExpanded = false;
         item.on('expand', () => wasExpanded = true);

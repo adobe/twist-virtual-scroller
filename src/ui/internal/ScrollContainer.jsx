@@ -47,9 +47,6 @@ function isDefined(x) {
     return x !== null && x !== undefined;
 }
 
-const _scrollAnimation = Symbol('scrollAnimation');
-const _autoScrollAnimation = Symbol('autoScrollAnimation');
-
 /**
  * The ScrollContainer component simulates a scrollable view. It intercepts mouse events (and, optionally,
  * keyboard events), interprets them as scroll events, and repositions the inner view accordingly.
@@ -126,8 +123,8 @@ export default class ScrollContainer {
     // Notification that the last scroll event is triggered by the user.
     userEvent = false;
 
-    [_scrollAnimation] = this.link(new ScrollAnimation);
-    [_autoScrollAnimation] = this.link(new AutoScrollAnimation);
+    scrollAnimation = this.link(new ScrollAnimation);
+    autoScrollAnimation = this.link(new AutoScrollAnimation);
 
     constructor() {
         super();
@@ -145,8 +142,8 @@ export default class ScrollContainer {
         this.watch(() => this.scrollBarMargin, this.updateScroll);
         this.watch(() => this.scrollBarPadding, this.updateScroll);
 
-        this.listenTo(this[_scrollAnimation], 'update', this.onAnimationUpdate);
-        this.listenTo(this[_autoScrollAnimation], 'update', this.onAutoScrollUpdate);
+        this.listenTo(this.scrollAnimation, 'update', this.onAnimationUpdate);
+        this.listenTo(this.autoScrollAnimation, 'update', this.onAutoScrollUpdate);
 
         if (this.keyboardEnabled) {
             this.keyboardManager = this.link(new KeyboardManager(this, this.keyHandlers));
@@ -169,17 +166,17 @@ export default class ScrollContainer {
     }
 
     animateTo(left, top) {
-        this[_scrollAnimation].scroll(this.displayScrollLeft, this.displayScrollTop, left, top, this.animationDuration);
+        this.scrollAnimation.scroll(this.displayScrollLeft, this.displayScrollTop, left, top, this.animationDuration);
     }
 
     updateAutoScroll() {
         let touches = this.scope.touchMapper.touchManager.touches;
         if (touches.length === 1) {
             let { clientX: x, clientY: y } = touches.at(0).event;
-            this[_autoScrollAnimation].setCoords(x, y);
+            this.autoScrollAnimation.setCoords(x, y);
         }
         else {
-            this[_autoScrollAnimation].clear();
+            this.autoScrollAnimation.clear();
         }
     }
 
@@ -189,7 +186,7 @@ export default class ScrollContainer {
             this.listenTo(this.scope.touchMapper.touchManager, 'update', this.onUpdate);
             this.listenTo(this.scope.touchMapper.touchManager, 'end', this.onEnd);
 
-            this[_autoScrollAnimation].start(this.element.getBoundingClientRect(), {
+            this.autoScrollAnimation.start(this.element.getBoundingClientRect(), {
                 autoScrollRegionSize: this.autoScrollRegionSize,
                 minVelocity: this.autoScrollMinVelocity,
                 maxVelocity: this.autoScrollMaxVelocity,
@@ -205,7 +202,7 @@ export default class ScrollContainer {
     onEnd() {
         this.stopListening(this.scope.touchMapper.touchManager, 'update', this.onUpdate);
         this.stopListening(this.scope.touchMapper.touchManager, 'end', this.onEnd);
-        this[_autoScrollAnimation].stop();
+        this.autoScrollAnimation.stop();
     }
 
     @Bind
@@ -340,7 +337,7 @@ export default class ScrollContainer {
                 left: delta.velocityX ? delta.velocityX : 0,
                 top: delta.velocityY ? delta.velocityY : 0
             };
-            this[_scrollAnimation].start(this.displayScrollLeft, this.displayScrollTop, velocity);
+            this.scrollAnimation.start(this.displayScrollLeft, this.displayScrollTop, velocity);
         }
     }
 
@@ -414,7 +411,7 @@ export default class ScrollContainer {
 
     scrollTo(left, top, immediate = false, userEvent = false) {
         this.userEvent = userEvent;
-        this[_scrollAnimation].stop();
+        this.scrollAnimation.stop();
 
         left = this.horizontalScroll ? Math.min(Math.max(0, left), Math.max(0, this.contentWidth - this.innerWidth)) : 0;
         top = this.verticalScroll ? Math.min(Math.max(0, top), Math.max(0, this.contentHeight - this.innerHeight)) : 0;
@@ -453,8 +450,8 @@ export default class ScrollContainer {
 
     @Bind
     onMouseWheel(event) {
-        var animationData = this[_scrollAnimation].animationData;
-        this[_scrollAnimation].stop();
+        var animationData = this.scrollAnimation.animationData;
+        this.scrollAnimation.stop();
 
         var deltaX = 0, deltaY = 0;
         var useAnimation = false;
@@ -513,7 +510,7 @@ export default class ScrollContainer {
         this.userEvent = true;
 
         if (useAnimation) {
-            this[_scrollAnimation].scroll(this.requestedScrollLeft, this.requestedScrollTop, requestLeft, requestTop, this.animationDuration);
+            this.scrollAnimation.scroll(this.requestedScrollLeft, this.requestedScrollTop, requestLeft, requestTop, this.animationDuration);
         }
         else {
             this.request(requestLeft, requestTop);

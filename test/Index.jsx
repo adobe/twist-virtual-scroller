@@ -11,5 +11,5 @@
  *
  */
 
-var testsContext = require.context('.', true, /VirtualScrollTest\.jsx$/);
+var testsContext = require.context('.', true, /Test\.jsx$/);
 testsContext.keys().forEach(testsContext);

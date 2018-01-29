@@ -18,7 +18,7 @@ import { VirtualItem } from '@twist/virtual-scroller';
 
 describe('VirtualItem', () => {
     it('metrics', () => {
-        let vitem = new VirtualItem();
+        let vitem = new VirtualItem({});
         vitem.left = 50;
         vitem.top = 20;
         vitem.width = 100;
@@ -32,6 +32,7 @@ describe('VirtualItem', () => {
             top: 20,
             width: 100,
             height: 200,
+            children: []
         });
 
         assert.equal(vitem.inViewport({ left: 0, right: 100, top: 0, bottom: 100 }), true);

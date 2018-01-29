@@ -14,8 +14,9 @@
 /* global describe it afterEach */
 
 import assert from 'assert';
-import { TaskQueue } from '@twist/core';
 import { render } from '../Utils';
+
+import { TaskQueue } from '@twist/core';
 import { LazyItem, VirtualItem, VirtualItemView, VirtualScroll, VBlockItem } from '@twist/virtual-scroller';
 
 describe('LazyItem', () => {
@@ -50,10 +51,10 @@ describe('LazyItem', () => {
             }
         }
 
-        let domNode = render(
+        let domNode = render.intoBody(() =>
             <VirtualScroll mapping={{ item: ItemView }} style={`height: 100px; width: ${REAL_WIDTH}px;`}>
                 <VBlockItem>
-                    <LazyItem loader={loader} lazy-width={LAZY_WIDTH} lazy-height={LAZY_HEIGHT}>
+                    <LazyItem loader={loader} lazyWidth={LAZY_WIDTH} lazyHeight={LAZY_HEIGHT}>
                         <repeat collection={ITEMS} as={data}>
                             <Item data={data} />
                         </repeat>
@@ -61,6 +62,7 @@ describe('LazyItem', () => {
                 </VBlockItem>
             </VirtualScroll>
         );
+        TaskQueue.run();
 
         function getItemViewDiv(index) {
             // We use `index + 1` because the 0th element is the VBlockItem.

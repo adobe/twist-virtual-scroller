@@ -15,6 +15,8 @@
 
 import assert from 'assert';
 import { render } from '../Utils';
+
+import { TaskQueue } from '@twist/core';
 import { VirtualItem, VirtualItemView, VirtualScroll,  VKnuthPlassBlockItem, HKnuthPlassBlockItem } from '@twist/virtual-scroller';
 
 describe('KnuthPlassBlockItem', () => {
@@ -27,7 +29,7 @@ describe('KnuthPlassBlockItem', () => {
         render.dispose();
     });
 
-    function testLayout(KnuthPlassClass, cb) {
+    let testLayout = (KnuthPlassClass, cb) => {
         class Item extends VirtualItem {
             get aspectRatio() {
                 return this.data / SIZE;
@@ -41,23 +43,24 @@ describe('KnuthPlassBlockItem', () => {
             }
         }
 
-        let domNode = render(
+        let domNode = render.intoBody(() =>
             <VirtualScroll mapping={{ item: ItemView }} style={`height: ${HEIGHT}px; width: ${WIDTH}px;`}>
-                <using value={KnuthPlassClass} as={KnuthPlassClass}>
-                    <KnuthPlassClass size={SIZE}>
+                <using value={KnuthPlassClass} as={LayoutClass}>
+                    <LayoutClass size={SIZE}>
                         <repeat collection={ITEMS} as={data}>
                             <Item data={data} />
                         </repeat>
-                    </KnuthPlassClass>
+                    </LayoutClass>
                 </using>
             </VirtualScroll>
         );
+        TaskQueue.run();
 
         cb(function getItemViewDiv(index) {
             // We use `index + 1` because the 0th element is the VKnuthPlassBlockItem.
             return domNode.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
         });
-    }
+    };
 
     it('vertical layout', () => {
         testLayout(VKnuthPlassBlockItem, (getItemViewDiv) => {

@@ -159,14 +159,16 @@ export default class VirtualItem {
         return this.prototype.type;
     }
 
-    toJSON(includeComments = false) {
-        var json = super.toJSON(includeComments);
-        json.name = this.constructor.name;
-        json.left = this.left;
-        json.top = this.top;
-        json.width = this.width;
-        json.height = this.height;
-        return json;
+    toJSON() {
+        return {
+            type: this.type,
+            name: this.constructor.name,
+            left: this.left,
+            top: this.top,
+            width: this.width,
+            height: this.height,
+            children: this.children.map(c => c.toJSON())
+        };
     }
 
     resolveBookmark(bookmark) {

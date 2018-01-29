@@ -14,8 +14,9 @@
 /* global describe it afterEach */
 
 import assert from 'assert';
-import { TaskQueue } from '@twist/core';
 import { render } from '../Utils';
+
+import { TaskQueue } from '@twist/core';
 import { VirtualItem, StickyItem, VirtualItemView, VirtualScroll, VBlockItem } from '@twist/virtual-scroller';
 
 describe('StickyItem', () => {
@@ -25,11 +26,21 @@ describe('StickyItem', () => {
     });
 
     it('layout', () => {
-        let item = new StickyItem();
+        class Data {
+            @Observable stickyWidth;
+            @Observable stickyHeight;
+        }
+        let data = new Data;
+
+        let item;
+        render(() => <StickyItem ref={item} bind:stickyWidth={ data.stickyWidth } bind:stickyHeight={ data.stickyHeight } />);
+        TaskQueue.run();
+
         assert.equal(item.sticky, true);
 
         // With a stickyWidth, don't change the width when updating layout.
         item.stickyWidth = 100;
+        TaskQueue.run();
         item.updateLayout(50, 50);
         assert.equal(item.width, 100);
         assert.equal(item.height, 50);
@@ -37,6 +48,7 @@ describe('StickyItem', () => {
         // With a stickyHeight, don't change the height when updating layout.
         item.stickyWidth = -1;
         item.stickyHeight = 100;
+        TaskQueue.run();
         item.updateLayout(50, 50);
         assert.equal(item.width, 50);
         assert.equal(item.height, 100);
@@ -77,19 +89,20 @@ describe('StickyItem', () => {
 
         let vs;
 
-        render(
-            <VirtualScroll ref={vs} mapping={{ item: ItemView }} vertical-scroll={true} horizontal-scroll={true}
+        render.intoBody(() =>
+            <VirtualScroll ref={vs} mapping={{ item: ItemView }} verticalScroll={true} horizontalScroll={true}
                 style={`height: ${HEIGHT}px; width: ${WIDTH}px;`}>
                 <VBlockItem>
                     <repeat collection={SECTIONS} as={section}>
-                        <Sticky data={section} sticky-width={STICKY_WIDTH} sticky-height={STICKY_HEIGHT}/>
+                        <Sticky data={section} stickyWidth={STICKY_WIDTH} stickyHeight={STICKY_HEIGHT}/>
                         <repeat collection={ITEMS_IN_SECTIONS} as={data}>
-                            <Item data={data} item-height={ITEM_HEIGHT} />
+                            <Item data={data} itemHeight={ITEM_HEIGHT} />
                         </repeat>
                     </repeat>
                 </VBlockItem>
             </VirtualScroll>
         );
+        TaskQueue.run();
 
         function getView(data) {
             return document.getElementById('view-' + data);

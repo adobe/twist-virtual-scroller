@@ -40,6 +40,9 @@ class ItemView extends VirtualItemView {
 
 const SCROLL_HEIGHT = 100;
 
+// Test collection of virtual items
+const testCollection = new Array(1000).fill(1).map((i, index) => index);
+
 describe('Virtual Scroll', () => {
 
     afterEach(() => {
@@ -224,13 +227,13 @@ describe('Virtual Scroll', () => {
                 </VirtualScroll>;
             }
         }
-        render(<VS />);
+        render.intoBody(<VS />);
         TaskQueue.run();
 
-        assert.equal(vs.scroll.viewHeight, model.height);
+        assert.equal(vs.scroll.viewHeight, model.height, 'view height should match initial model height');
         model.height = 200;
         TaskQueue.run();
-        assert.equal(vs.scroll.viewHeight, model.height);
+        assert.equal(vs.scroll.viewHeight, model.height, 'view height should match changed model height');
     });
 
     it('updates viewHeight when `class` attribute changes', () => {
@@ -249,7 +252,7 @@ describe('Virtual Scroll', () => {
         @Component
         class VS {
             render() {
-                return <VirtualScroll ref={vs} class={model.className} vertical-scroll={true} mapping={{ 'any': ItemView }}>
+                return <VirtualScroll ref={vs} class={model.className} verticalScroll={true} mapping={{ 'any': ItemView }}>
                     <VBlockItem>
                         <repeat collection={[ 1, 2, 3 ]} as={item}>
                             <SimpleBlockItem data={item} />
@@ -258,24 +261,23 @@ describe('Virtual Scroll', () => {
                 </VirtualScroll>;
             }
         }
-        render(<VS />);
+        render.intoBody(<VS />);
+        TaskQueue.run();
 
-        assert.equal(vs.scroll.viewHeight, 100);
+        assert.equal(vs.scroll.viewHeight, 100, 'view height should match height from initial class');
         model.className = 'height-200';
         TaskQueue.run();
-        assert.equal(vs.scroll.viewHeight, 200);
+        assert.equal(vs.scroll.viewHeight, 200, 'view height should match height from updated class');
     });
 
     it('scrollToElement works in a vertical layout', () => {
-        const collection = new Array(1000).keys();
-
         let vs, vItem;
 
         // Test align top
         render.intoBody(() =>
-            <VirtualScroll ref={vs} vertical-scroll={true} horizontal-scroll={false} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
+            <VirtualScroll ref={vs} verticalScroll={true} horizontalScroll={false} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
-                    <repeat collection={collection} as={item}>
+                    <repeat collection={ testCollection} as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
                 </VBlockItem>
@@ -316,15 +318,13 @@ describe('Virtual Scroll', () => {
     });
 
     it('scrollToElement works in a horizontal layout', () => {
-        const collection = new Array(1000).keys();
-
         let vs, vItem;
 
         // Test align left
         render.intoBody(() =>
-            <VirtualScroll ref={vs} vertical-scroll={false} horizontal-scroll={true} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
+            <VirtualScroll ref={vs} verticalScroll={false} horizontalScroll={true} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
                 <HBlockItem>
-                    <repeat collection={collection} as={item}>
+                    <repeat collection={testCollection} as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
                 </HBlockItem>
@@ -365,15 +365,13 @@ describe('Virtual Scroll', () => {
     });
 
     it('elementVisibility works in a vertical layout', () => {
-        const collection = new Array(1000).keys();
-
         let vs, vItem;
 
         // Test align top
         render.intoBody(() =>
-            <VirtualScroll ref={vs} vertical-scroll={true} horizontal-scroll={false} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
+            <VirtualScroll ref={vs} verticalScroll={true} horizontalScroll={false} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
                 <VBlockItem>
-                    <repeat collection={collection} as={item}>
+                    <repeat collection={testCollection} as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
                 </VBlockItem>
@@ -407,15 +405,13 @@ describe('Virtual Scroll', () => {
     });
 
     it('elementVisibility works in a horizontal layout', () => {
-        const collection = new Array(1000).keys();
-
         let vs, vItem;
 
         // Test align top
         render.intoBody(() =>
-            <VirtualScroll ref={vs} vertical-scroll={false} horizontal-scroll={true} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
+            <VirtualScroll ref={vs} verticalScroll={false} horizontalScroll={true} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
                 <HBlockItem>
-                    <repeat collection={collection} as={item}>
+                    <repeat collection={testCollection} as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
                 </HBlockItem>

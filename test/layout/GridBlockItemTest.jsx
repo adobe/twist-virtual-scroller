@@ -18,7 +18,7 @@ import { GridBlockItem } from '@twist/virtual-scroller';
 
 describe('GridBlockItem', () => {
     it('layout', () => {
-        let item = new GridBlockItem();
+        let item = new GridBlockItem({});
 
         item.updateLayout(50, 50);
         assert.equal(item.width, 50);

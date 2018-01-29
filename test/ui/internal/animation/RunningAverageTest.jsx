@@ -27,7 +27,6 @@ describe('RunningAverage', () => {
         assert.equal(ra.average, 2);
         assert.equal(ra.count, 2);
 
-
         ra.addItem(0);
         ra.addItem(4);
         assert.equal(ra.average, 2);
