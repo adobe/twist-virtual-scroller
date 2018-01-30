@@ -11,7 +11,7 @@
  *
  */
 
-import PlaceholderItem from './PlaceholderItem';
+import PlaceholderItem from './internal/PlaceholderItem';
 
 /**
  * A LazyItem can be used to hold space for an element that needs to load asynchronously.

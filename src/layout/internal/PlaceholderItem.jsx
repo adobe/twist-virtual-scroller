@@ -11,10 +11,10 @@
  *
  */
 
-import VirtualItem from './VirtualItem';
+import VirtualItem from '../VirtualItem';
 
 /**
- * PlaceholderItem is used internally by {@link LazyItem} as a view that merely "holds space"
+ * PlaceholderItem is used internally by {@link LazyLoader} as a view that merely "holds space"
  * for its loading item.
  * @protected
  */

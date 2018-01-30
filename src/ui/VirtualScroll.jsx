@@ -285,7 +285,7 @@ export default class VirtualScroll {
         if (sourceItem) {
             // Add an item to be displayed. Calling addItem() indicates that this item should be rendered,
             // and is thus visible or almost visible within the current rectangle (as calculated by each layout).
-            // If the item is expandable (i.e. a LazyItem), adding it for the first time triggers it to start the
+            // If the item is expandable (i.e. a LazyLoader), adding it for the first time triggers it to start the
             // loader. If the expandable item falls out of view and needs to be recycled, the tracking we do here
             // will allow us to stop the pending request if necessary.
             var addItem = (item) => {

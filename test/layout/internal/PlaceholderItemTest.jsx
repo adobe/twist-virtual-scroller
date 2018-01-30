@@ -14,10 +14,10 @@
 /* global describe it */
 
 import assert from 'assert';
-import { render } from '../Utils';
+import { render } from '../../Utils';
 
 import { TaskQueue } from '@twist/core';
-import { PlaceholderItem } from '@twist/virtual-scroller';
+import PlaceholderItem from '@twist/virtual-scroller/src/layout/internal/PlaceholderItem';
 
 describe('PlaceholderItem', () => {
     it('layout', () => {

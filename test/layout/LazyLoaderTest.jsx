@@ -17,9 +17,9 @@ import assert from 'assert';
 import { render } from '../Utils';
 
 import { TaskQueue } from '@twist/core';
-import { LazyItem, VirtualItem, VirtualItemView, VirtualScroll, VBlockItem } from '@twist/virtual-scroller';
+import { LazyLoader, VirtualItem, VirtualItemView, VirtualScroll, VBlockItem } from '@twist/virtual-scroller';
 
-describe('LazyItem', () => {
+describe('LazyLoader', () => {
 
     afterEach(() => {
         render.dispose();
@@ -54,11 +54,11 @@ describe('LazyItem', () => {
         let domNode = render.intoBody(() =>
             <VirtualScroll mapping={{ item: ItemView }} style={`height: 100px; width: ${REAL_WIDTH}px;`}>
                 <VBlockItem>
-                    <LazyItem loader={loader} lazyWidth={LAZY_WIDTH} lazyHeight={LAZY_HEIGHT}>
+                    <LazyLoader loader={loader} lazyWidth={LAZY_WIDTH} lazyHeight={LAZY_HEIGHT}>
                         <repeat collection={ITEMS} as={data}>
                             <Item data={data} />
                         </repeat>
-                    </LazyItem>
+                    </LazyLoader>
                 </VBlockItem>
             </VirtualScroll>
         );

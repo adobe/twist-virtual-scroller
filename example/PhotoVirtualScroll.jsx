@@ -11,7 +11,7 @@
  *
  */
 
-import { LazyItem, StickyItem, VirtualItem, VKnuthPlassBlockItem, VBlockItem, VirtualItemView, VirtualScroll } from '@twist/virtual-scroller';
+import { LazyLoader, StickyItem, VirtualItem, VKnuthPlassBlockItem, VBlockItem, VirtualItemView, VirtualScroll } from '@twist/virtual-scroller';
 
 // import TouchMapper from 'torq-interaction/TouchMapper';
 
@@ -221,13 +221,13 @@ class VirtualGroups {
 
     render() {
         return <repeat collection={ this.model.groups } as={ group, index }>
-            <LazyItem key={ index } lazyHeight={ 500 }>
+            <LazyLoader key={ index } lazyHeight={ 500 }>
                 <GroupHeaderItem data={{ text: `Group ${group.id}` }} stickyHeight={ 50 } />
 
                 <VKnuthPlassBlockItem margin={ 2 } size={ 120 }>
                     <VirtualGroupItems model={ group.items } />
                 </VKnuthPlassBlockItem>
-            </LazyItem>
+            </LazyLoader>
         </repeat>;
     }
 }
