@@ -16,11 +16,11 @@
 import assert from 'assert';
 import { render } from '../Utils';
 import { ObservableArray, TaskQueue } from '@twist/core';
-import { VirtualScroll, VirtualItemView, VirtualItem, VBlockItem, HBlockItem } from '@twist/virtual-scroller';
+import { VirtualScroll, VirtualItemView, BaseLayoutComponent, VerticalListLayout, HorizontalListLayout } from '@twist/virtual-scroller';
 import RecyclerView from '../../src/ui/internal/RecyclerView';
 
 @VirtualComponent
-class SimpleBlockItem extends VirtualItem {
+class SimpleBlockItem extends BaseLayoutComponent {
     static WIDTH = 40;
     static HEIGHT = 20;
     type = 'any';
@@ -55,11 +55,11 @@ describe('Virtual Scroll', () => {
 
         const domNode = render.intoBody(() =>
             <VirtualScroll style-test={ 'test' } style-height={ SCROLL_HEIGHT + 'px' } verticalScroll={true} mapping={{ 'any': ItemView }}>
-                <VBlockItem>
+                <VerticalListLayout>
                     <repeat collection={ children } as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
-                </VBlockItem>
+                </VerticalListLayout>
             </VirtualScroll>
         );
 
@@ -136,11 +136,11 @@ describe('Virtual Scroll', () => {
 
         render.intoBody(() =>
             <VirtualScroll ref={vs} style={'height: ' + SCROLL_HEIGHT + 'px'} verticalScroll={true} mapping={{ 'any': ItemView }}>
-                <VBlockItem>
+                <VerticalListLayout>
                     <repeat collection={children} as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
-                </VBlockItem>
+                </VerticalListLayout>
             </VirtualScroll>
         );
 
@@ -171,11 +171,11 @@ describe('Virtual Scroll', () => {
 
         render.intoBody(() =>
             <VirtualScroll ref={vs} style={'height: ' + SCROLL_HEIGHT + 'px'} verticalScroll={true} mapping={{ 'any': ItemView }}>
-                <VBlockItem>
+                <VerticalListLayout>
                     <repeat collection={children} as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
-                </VBlockItem>
+                </VerticalListLayout>
             </VirtualScroll>
         );
 
@@ -219,11 +219,11 @@ describe('Virtual Scroll', () => {
         class VS {
             render() {
                 return <VirtualScroll ref={vs} style={'height: ' + model.height + 'px'} verticalScroll={true} mapping={{ 'any': ItemView }}>
-                    <VBlockItem>
+                    <VerticalListLayout>
                         <repeat collection={[ 1, 2, 3 ]} as={item}>
                             <SimpleBlockItem data={item} />
                         </repeat>
-                    </VBlockItem>
+                    </VerticalListLayout>
                 </VirtualScroll>;
             }
         }
@@ -253,11 +253,11 @@ describe('Virtual Scroll', () => {
         class VS {
             render() {
                 return <VirtualScroll ref={vs} class={model.className} verticalScroll={true} mapping={{ 'any': ItemView }}>
-                    <VBlockItem>
+                    <VerticalListLayout>
                         <repeat collection={[ 1, 2, 3 ]} as={item}>
                             <SimpleBlockItem data={item} />
                         </repeat>
-                    </VBlockItem>
+                    </VerticalListLayout>
                 </VirtualScroll>;
             }
         }
@@ -276,11 +276,11 @@ describe('Virtual Scroll', () => {
         // Test align top
         render.intoBody(() =>
             <VirtualScroll ref={vs} verticalScroll={true} horizontalScroll={false} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
-                <VBlockItem>
+                <VerticalListLayout>
                     <repeat collection={ testCollection} as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
-                </VBlockItem>
+                </VerticalListLayout>
             </VirtualScroll>
         );
 
@@ -323,11 +323,11 @@ describe('Virtual Scroll', () => {
         // Test align left
         render.intoBody(() =>
             <VirtualScroll ref={vs} verticalScroll={false} horizontalScroll={true} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
-                <HBlockItem>
+                <HorizontalListLayout>
                     <repeat collection={testCollection} as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
-                </HBlockItem>
+                </HorizontalListLayout>
             </VirtualScroll>
         );
 
@@ -370,11 +370,11 @@ describe('Virtual Scroll', () => {
         // Test align top
         render.intoBody(() =>
             <VirtualScroll ref={vs} verticalScroll={true} horizontalScroll={false} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
-                <VBlockItem>
+                <VerticalListLayout>
                     <repeat collection={testCollection} as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
-                </VBlockItem>
+                </VerticalListLayout>
             </VirtualScroll>
         );
 
@@ -410,11 +410,11 @@ describe('Virtual Scroll', () => {
         // Test align top
         render.intoBody(() =>
             <VirtualScroll ref={vs} verticalScroll={false} horizontalScroll={true} style={{ height: 100, width: 100 }} mapping={{ 'any': ItemView }}>
-                <HBlockItem>
+                <HorizontalListLayout>
                     <repeat collection={testCollection} as={item}>
                         <SimpleBlockItem data={item} />
                     </repeat>
-                </HBlockItem>
+                </HorizontalListLayout>
             </VirtualScroll>
         );
 

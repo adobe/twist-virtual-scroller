@@ -14,11 +14,11 @@
 /* global describe it */
 
 import assert from 'assert';
-import { GridBlockItem } from '@twist/virtual-scroller';
+import { VerticalGridLayout } from '@twist/virtual-scroller';
 
-describe('GridBlockItem', () => {
+describe('GridLayout', () => {
     it('layout', () => {
-        let item = new GridBlockItem({});
+        let item = new VerticalGridLayout({});
 
         item.updateLayout(50, 50);
         assert.equal(item.width, 50);

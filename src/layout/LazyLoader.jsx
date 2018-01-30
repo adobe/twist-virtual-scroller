@@ -14,11 +14,11 @@
 import PlaceholderItem from './internal/PlaceholderItem';
 
 /**
- * A LazyItem can be used to hold space for an element that needs to load asynchronously.
- * When its loader's promise resolves, the placeholder space is replaced with the actual children of the LazyItem.
+ * A LazyLoader can be used to hold space for an element that needs to load asynchronously.
+ * When its loader's promise resolves, the placeholder space is replaced with the actual children of the LazyLoader.
  */
 @Component
-export default class LazyItem {
+export default class LazyLoader {
 
     /** The width of the placeholder item. */
     @Attribute lazyWidth = -1;

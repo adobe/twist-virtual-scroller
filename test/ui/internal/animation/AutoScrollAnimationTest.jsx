@@ -18,11 +18,11 @@ import { render } from '../../../Utils';
 import FakeTime from '../../../mocks/FakeTime';
 
 import { TaskQueue } from '@twist/core';
-import { VBlockItem, VirtualScroll, VirtualItemView, VirtualItem } from '@twist/virtual-scroller';
+import { VerticalListLayout, VirtualScroll, VirtualItemView, BaseLayoutComponent } from '@twist/virtual-scroller';
 
 describe('AutoScrollAnimation', () => {
 
-    class Item extends VirtualItem {
+    class Item extends BaseLayoutComponent {
         updateLayout() {
             this.height = 500;
         }
@@ -45,11 +45,11 @@ describe('AutoScrollAnimation', () => {
 
         let domNode = render.intoBody(() =>
             <VirtualScroll ref={vs} mapping={{ item: ItemView }} verticalScroll={true} style={`height: ${HEIGHT}px; width: 200px;`}>
-                <VBlockItem>
+                <VerticalListLayout>
                     <repeat collection={[ 1, 2, 3, 4, 5, 6 ]} as={data}>
                         <Item data={data} />
                     </repeat>
-                </VBlockItem>
+                </VerticalListLayout>
             </VirtualScroll>
         );
         TaskQueue.run();

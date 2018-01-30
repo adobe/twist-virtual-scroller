@@ -11,14 +11,14 @@
  *
  */
 
-import VirtualItem from './VirtualItem';
+import BaseLayoutComponent from './BaseLayoutComponent';
 
 /**
  * An item that "sticks" itself to the top of the viewport when it reaches the top.
  */
 @Prototype({ sticky: true })
 @VirtualComponent
-export default class StickyItem extends VirtualItem {
+export default class StickyItem extends BaseLayoutComponent {
 
     @Observable fixed = false;
     @Observable fixedLeft = 0;

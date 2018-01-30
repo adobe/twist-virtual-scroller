@@ -11,7 +11,7 @@
  *
  */
 
-import PaginatedBlockItem from './PaginatedBlockItem';
+import ContiguousLayout from './ContiguousLayout';
 import PaginatedList from './internal/PaginatedList';
 
 /**
@@ -21,7 +21,7 @@ import PaginatedList from './internal/PaginatedList';
  * (e.g. by overriding `updateLayout()` and setting `this.width` and `this.height`).
  */
 @VirtualComponent
-export default class GridBlockItem extends PaginatedBlockItem {
+class GridLayout extends ContiguousLayout {
     @Attribute hMargin;
     @Attribute vMargin;
 
@@ -74,3 +74,7 @@ export default class GridBlockItem extends PaginatedBlockItem {
         this.height = Math.max(0, top - this.top);
     }
 }
+
+// TODO: We need a horizontal (columns, flowing left->right) variant to the vertical vertical (rows, flowing top->bottom)
+@VirtualComponent
+export class VerticalGridLayout extends GridLayout { }

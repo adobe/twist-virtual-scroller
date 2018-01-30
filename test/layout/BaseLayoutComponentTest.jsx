@@ -14,11 +14,11 @@
 /* global describe it */
 
 import assert from 'assert';
-import { VirtualItem } from '@twist/virtual-scroller';
+import { BaseLayoutComponent } from '@twist/virtual-scroller';
 
-describe('VirtualItem', () => {
-    it('metrics', () => {
-        let vitem = new VirtualItem({});
+describe('BaseLayoutComponent', () => {
+    it('should have correct layout position', () => {
+        let vitem = new BaseLayoutComponent({});
         vitem.left = 50;
         vitem.top = 20;
         vitem.width = 100;
@@ -27,7 +27,7 @@ describe('VirtualItem', () => {
         assert.equal(vitem.bottom, vitem.top + vitem.height);
         assert.deepEqual(vitem.toJSON(), {
             type: 'item',
-            name: 'VirtualItem',
+            name: 'BaseLayoutComponent',
             left: 50,
             top: 20,
             width: 100,
@@ -55,6 +55,6 @@ describe('VirtualItem', () => {
         assert.equal(vitem.width, 10);
         assert.equal(vitem.height, 20);
 
-        assert.equal(VirtualItem.type, 'item');
+        assert.equal(BaseLayoutComponent.type, 'item');
     });
 });

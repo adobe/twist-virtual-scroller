@@ -11,7 +11,7 @@
  *
  */
 
-import VirtualItem from './VirtualItem';
+import BaseLayoutComponent from './BaseLayoutComponent';
 
 /**
  * An item that contains children. Parent items are responsible for passing layout and position
@@ -19,7 +19,7 @@ import VirtualItem from './VirtualItem';
  * VirtualScroll view, consider using a higher-level class like {@link BlockItem}.
  */
 @VirtualComponent
-export default class ParentItem extends VirtualItem {
+export default class LayoutContainer extends BaseLayoutComponent {
 
     setChildNeedsLayout() {
         this.childNeedsLayout = true;

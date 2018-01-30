@@ -17,7 +17,7 @@ import assert from 'assert';
 import { render } from '../Utils';
 
 import { TaskQueue } from '@twist/core';
-import { VirtualItem, StickyItem, VirtualItemView, VirtualScroll, VBlockItem, HBlockItem } from '@twist/virtual-scroller';
+import { BaseLayoutComponent, StickyItem, VirtualItemView, VirtualScroll, VerticalListLayout, HorizontalListLayout } from '@twist/virtual-scroller';
 
 describe('BlockItem', () => {
     const SCROLL_AMOUNT = 40;
@@ -40,7 +40,7 @@ describe('BlockItem', () => {
             }
         }
 
-        class Item extends VirtualItem {
+        class Item extends BaseLayoutComponent {
             updateLayout() {
                 this.width = this.data;
                 this.height = this.data;
@@ -78,7 +78,7 @@ describe('BlockItem', () => {
     };
 
     it('vertical layout', () => {
-        testLayout(VBlockItem, (vs, getItemViewDiv) => {
+        testLayout(VerticalListLayout, (vs, getItemViewDiv) => {
             let y = STICKY_HEIGHT;
             ITEMS.forEach((size, index) => {
                 assert.equal(getItemViewDiv(index).style.transform, `translate3d(0px, ${y}px, 0px)`);
@@ -100,7 +100,7 @@ describe('BlockItem', () => {
     });
 
     it('horizontal layout', () => {
-        testLayout(HBlockItem, (vs, getItemViewDiv) => {
+        testLayout(HorizontalListLayout, (vs, getItemViewDiv) => {
             let x = STICKY_WIDTH;
             ITEMS.forEach((size, index) => {
                 assert.equal(getItemViewDiv(index).style.transform, `translate3d(${x}px, 0px, 0px)`);

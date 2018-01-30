@@ -25,7 +25,7 @@ export function inRange(value, left, right) {
     type: 'item'
 })
 @VirtualComponent
-export default class VirtualItem {
+export default class BaseLayoutComponent {
 
     @Observable left = 0;
     @Observable top = 0;

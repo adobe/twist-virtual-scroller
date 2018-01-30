@@ -11,7 +11,7 @@
  *
  */
 
-import { LazyLoader, StickyItem, VirtualItem, VKnuthPlassBlockItem, VBlockItem, VirtualItemView, VirtualScroll } from '@twist/virtual-scroller';
+import { LazyLoader, StickyItem, BaseLayoutComponent, VerticalKnuthPlassLayout, VerticalListLayout, VirtualItemView, VirtualScroll } from '@twist/virtual-scroller';
 
 // import TouchMapper from 'torq-interaction/TouchMapper';
 
@@ -28,7 +28,7 @@ class GroupHeaderItem extends StickyItem {
 
 @Prototype({ type: 'photo' })
 @VirtualComponent
-class PhotoItem extends VirtualItem {
+class PhotoItem extends BaseLayoutComponent {
 
     constructor() {
         super();
@@ -195,11 +195,11 @@ export default class PhotoVirtualScroll {
                 onLog={ message => this.debugLog = message }
                 autoScroll={ true }>
 
-                <VBlockItem margin={ 2 }>
+                <VerticalListLayout margin={ 2 }>
                     <if condition={ !!this.model }>
                         <VirtualGroups model={ this.model }/>
                     </if>
-                </VBlockItem>
+                </VerticalListLayout>
 
             </VirtualScroll>
         </g>;
@@ -224,9 +224,9 @@ class VirtualGroups {
             <LazyLoader key={ index } lazyHeight={ 500 }>
                 <GroupHeaderItem data={{ text: `Group ${group.id}` }} stickyHeight={ 50 } />
 
-                <VKnuthPlassBlockItem margin={ 2 } size={ 120 }>
+                <VerticalKnuthPlassLayout margin={ 2 } size={ 120 }>
                     <VirtualGroupItems model={ group.items } />
-                </VKnuthPlassBlockItem>
+                </VerticalKnuthPlassLayout>
             </LazyLoader>
         </repeat>;
     }

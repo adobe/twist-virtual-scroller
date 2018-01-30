@@ -11,13 +11,13 @@
  *
  */
 
-import ParentItem from './ParentItem';
+import LayoutContainer from './LayoutContainer';
 
 /**
  * A layout that positions its children on top of each another, completely covering its area.
  */
 @VirtualComponent
-export default class OverlappingItem extends ParentItem {
+export default class OverlappingLayout extends LayoutContainer {
 
     updateLayout(width, height) {
         this.width = 0;

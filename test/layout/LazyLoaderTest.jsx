@@ -17,7 +17,7 @@ import assert from 'assert';
 import { render } from '../Utils';
 
 import { TaskQueue } from '@twist/core';
-import { LazyLoader, VirtualItem, VirtualItemView, VirtualScroll, VBlockItem } from '@twist/virtual-scroller';
+import { LazyLoader, BaseLayoutComponent, VirtualItemView, VirtualScroll, VerticalListLayout } from '@twist/virtual-scroller';
 
 describe('LazyLoader', () => {
 
@@ -37,7 +37,7 @@ describe('LazyLoader', () => {
             return new Promise(resolve => finishLoading = resolve);
         }
 
-        class Item extends VirtualItem {
+        class Item extends BaseLayoutComponent {
             updateLayout() {
                 this.width = REAL_WIDTH;
                 this.height = REAL_HEIGHT;
@@ -53,19 +53,19 @@ describe('LazyLoader', () => {
 
         let domNode = render.intoBody(() =>
             <VirtualScroll mapping={{ item: ItemView }} style={`height: 100px; width: ${REAL_WIDTH}px;`}>
-                <VBlockItem>
+                <VerticalListLayout>
                     <LazyLoader loader={loader} lazyWidth={LAZY_WIDTH} lazyHeight={LAZY_HEIGHT}>
                         <repeat collection={ITEMS} as={data}>
                             <Item data={data} />
                         </repeat>
                     </LazyLoader>
-                </VBlockItem>
+                </VerticalListLayout>
             </VirtualScroll>
         );
         TaskQueue.run();
 
         function getItemViewDiv(index) {
-            // We use `index + 1` because the 0th element is the VBlockItem.
+            // We use `index + 1` because the 0th element is the VerticalListLayout.
             return domNode.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
         }
 

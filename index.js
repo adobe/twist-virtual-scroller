@@ -11,17 +11,21 @@
  *
  */
 
+// Decorators
+export { default as LayoutComponent } from './src/layout/decorators/LayoutComponent';
+
 // UI Components
 export { default as VirtualScroll } from './src/ui/VirtualScroll';
 export { default as VirtualItemView } from './src/ui/VirtualItemView';
 
 // Layout
-export { HBlockItem, VBlockItem } from './src/layout/BlockItem';
-export { default as GridBlockItem } from './src/layout/GridBlockItem';
-export { HKnuthPlassBlockItem, VKnuthPlassBlockItem } from './src/layout/KnuthPlassBlockItem';
+export { default as BaseLayoutComponent } from './src/layout/BaseLayoutComponent';
+export { default as LayoutContainer } from './src/layout/LayoutContainer';
+export { default as OverlappingLayout } from './src/layout/OverlappingLayout';
+export { default as ContiguousLayout } from './src/layout/ContiguousLayout';
+export { HorizontalListLayout, VerticalListLayout } from './src/layout/ListLayout';
+export { VerticalGridLayout } from './src/layout/GridLayout';
+export { HorizontalKnuthPlassLayout, VerticalKnuthPlassLayout } from './src/layout/KnuthPlassLayout';
+
 export { default as LazyLoader } from './src/layout/LazyLoader';
-export { default as OverlappingItem } from './src/layout/OverlappingItem';
-export { default as PaginatedBlockItem } from './src/layout/PaginatedBlockItem';
-export { default as ParentItem } from './src/layout/ParentItem';
 export { default as StickyItem } from './src/layout/StickyItem';
-export { default as VirtualItem } from './src/layout/VirtualItem';

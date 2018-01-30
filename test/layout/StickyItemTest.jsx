@@ -17,7 +17,7 @@ import assert from 'assert';
 import { render } from '../Utils';
 
 import { TaskQueue } from '@twist/core';
-import { VirtualItem, StickyItem, VirtualItemView, VirtualScroll, VBlockItem } from '@twist/virtual-scroller';
+import { BaseLayoutComponent, StickyItem, VirtualItemView, VirtualScroll, VerticalListLayout } from '@twist/virtual-scroller';
 
 describe('StickyItem', () => {
 
@@ -61,7 +61,7 @@ describe('StickyItem', () => {
         }
     }
 
-    class Item extends VirtualItem {
+    class Item extends BaseLayoutComponent {
         @Attribute itemHeight;
         updateLayout() {
             this.height = this.itemHeight;
@@ -92,14 +92,14 @@ describe('StickyItem', () => {
         render.intoBody(() =>
             <VirtualScroll ref={vs} mapping={{ item: ItemView }} verticalScroll={true} horizontalScroll={true}
                 style={`height: ${HEIGHT}px; width: ${WIDTH}px;`}>
-                <VBlockItem>
+                <VerticalListLayout>
                     <repeat collection={SECTIONS} as={section}>
                         <Sticky data={section} stickyWidth={STICKY_WIDTH} stickyHeight={STICKY_HEIGHT}/>
                         <repeat collection={ITEMS_IN_SECTIONS} as={data}>
                             <Item data={data} itemHeight={ITEM_HEIGHT} />
                         </repeat>
                     </repeat>
-                </VBlockItem>
+                </VerticalListLayout>
             </VirtualScroll>
         );
         TaskQueue.run();

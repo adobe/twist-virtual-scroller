@@ -11,7 +11,7 @@
  *
  */
 
-import PaginatedBlockItem from './PaginatedBlockItem';
+import ContiguousLayout from './ContiguousLayout';
 import PaginatedList from './internal/PaginatedList';
 import KnuthPlass from './internal/KnuthPlass';
 
@@ -22,7 +22,7 @@ import KnuthPlass from './internal/KnuthPlass';
  * @see {@link https://www.ugrad.cs.ubc.ca/~cs490/2015W2/lectures/Knuth.pdf}
  */
 @VirtualComponent
-export default class KnuthPlassBlockItem extends PaginatedBlockItem {
+export default class KnuthPlassLayout extends ContiguousLayout {
 
     @Attribute size = 120;
 
@@ -122,7 +122,7 @@ export default class KnuthPlassBlockItem extends PaginatedBlockItem {
 }
 
 @Prototype({ direction: 'horizontal' })
-export class HKnuthPlassBlockItem extends KnuthPlassBlockItem { }
+export class HorizontalKnuthPlassLayout extends KnuthPlassLayout { }
 
 @Prototype({ direction: 'vertical' })
-export class VKnuthPlassBlockItem extends KnuthPlassBlockItem { }
+export class VerticalKnuthPlassLayout extends KnuthPlassLayout { }

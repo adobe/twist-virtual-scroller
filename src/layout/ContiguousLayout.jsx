@@ -11,14 +11,19 @@
  *
  */
 
-import ParentItem from './ParentItem';
+import LayoutContainer from './LayoutContainer';
 
 /**
- * A base class for {@link BlockItem} and {@link KnuthPlassBlockItem} that manages the implementation details of
- * its {@link PaginatedList} (used to optimize the collection process).
+ * Base class for contiguous (side-by-side, non-overlapping) layout. This includes:
+ *
+ * * List layout (single column/row): {@link VerticalListLayout}, {@link HorizontalListLayout}
+ * * Grid layout (grid of fixed-size items): {@link VerticalGridLayout}
+ * * Knuth-Plass layout (grid of variable aspect ratio items): {@link VerticalKnuthPlassLayout}, {@link HorizontalKnuthPlassLayout}
+ *
+ * Internally, this uses a {@link PaginatedList} (to optimize the collection process).
  */
 @VirtualComponent
-export default class PaginatedBlockItem extends ParentItem {
+export default class ContiguousLayout extends LayoutContainer {
 
     @Attribute margin = 0;
 

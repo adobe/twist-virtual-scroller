@@ -11,13 +11,13 @@
  *
  */
 
-import OverlappingItem from '../OverlappingItem';
+import OverlappingLayout from '../OverlappingLayout';
 
 @Prototype({
     type: 'root'
 })
 @VirtualComponent
-export default class VirtualScrollRoot extends OverlappingItem {
+export default class VirtualScrollRoot extends OverlappingLayout {
 
     setNeedsLayout() {
         super.setNeedsLayout();

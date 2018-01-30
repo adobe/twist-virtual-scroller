@@ -11,7 +11,7 @@
  *
  */
 
-import PaginatedBlockItem from './PaginatedBlockItem';
+import ContiguousLayout from './ContiguousLayout';
 import PaginatedList from './internal/PaginatedList';
 
 /**
@@ -21,7 +21,7 @@ import PaginatedList from './internal/PaginatedList';
  * headings and "hook" themselves to the top of the view when they reach the top.
  */
 @VirtualComponent
-export default class BlockItem extends PaginatedBlockItem {
+class ListLayout extends ContiguousLayout {
 
     updateLayout(width, height) {
         var margin = this.margin, start, left, top;
@@ -186,8 +186,8 @@ export default class BlockItem extends PaginatedBlockItem {
 
 @Prototype({ direction: 'horizontal' })
 @VirtualComponent
-export class HBlockItem extends BlockItem { }
+export class HorizontalListLayout extends ListLayout { }
 
 @Prototype({ direction: 'vertical' })
 @VirtualComponent
-export class VBlockItem extends BlockItem { }
+export class VerticalListLayout extends ListLayout { }

@@ -11,7 +11,7 @@
  *
  */
 
-import VirtualItem from '../VirtualItem';
+import BaseLayoutComponent from '../BaseLayoutComponent';
 
 /**
  * PlaceholderItem is used internally by {@link LazyLoader} as a view that merely "holds space"
@@ -19,7 +19,7 @@ import VirtualItem from '../VirtualItem';
  * @protected
  */
 @VirtualComponent({ events: [ 'expand', 'stop' ] })
-export default class PlaceholderItem extends VirtualItem {
+export default class PlaceholderItem extends BaseLayoutComponent {
 
     @Attribute lazyWidth = -1;
     @Attribute lazyHeight = -1;

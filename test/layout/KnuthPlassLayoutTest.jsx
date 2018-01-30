@@ -17,9 +17,9 @@ import assert from 'assert';
 import { render } from '../Utils';
 
 import { TaskQueue } from '@twist/core';
-import { VirtualItem, VirtualItemView, VirtualScroll,  VKnuthPlassBlockItem, HKnuthPlassBlockItem } from '@twist/virtual-scroller';
+import { BaseLayoutComponent, VirtualItemView, VirtualScroll,  VerticalKnuthPlassLayout, HorizontalKnuthPlassLayout } from '@twist/virtual-scroller';
 
-describe('KnuthPlassBlockItem', () => {
+describe('KnuthPlassLayout', () => {
     const HEIGHT = 200;
     const WIDTH = 200;
     const SIZE = 100;
@@ -30,7 +30,7 @@ describe('KnuthPlassBlockItem', () => {
     });
 
     let testLayout = (KnuthPlassClass, cb) => {
-        class Item extends VirtualItem {
+        class Item extends BaseLayoutComponent {
             get aspectRatio() {
                 return this.data / SIZE;
             }
@@ -57,13 +57,13 @@ describe('KnuthPlassBlockItem', () => {
         TaskQueue.run();
 
         cb(function getItemViewDiv(index) {
-            // We use `index + 1` because the 0th element is the VKnuthPlassBlockItem.
+            // We use `index + 1` because the 0th element is the VerticalKnuthPlassLayout.
             return domNode.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
         });
     };
 
     it('vertical layout', () => {
-        testLayout(VKnuthPlassBlockItem, (getItemViewDiv) => {
+        testLayout(VerticalKnuthPlassLayout, (getItemViewDiv) => {
             assert.equal(getItemViewDiv(0).style.transform, 'translate3d(0px, 0px, 0px)');
             assert.equal(getItemViewDiv(1).style.transform, 'translate3d(150px, 0px, 0px)');
             assert.equal(getItemViewDiv(2).style.transform, 'translate3d(0px, 120px, 0px)');
@@ -71,7 +71,7 @@ describe('KnuthPlassBlockItem', () => {
     });
 
     it('horizontal layout', () => {
-        testLayout(HKnuthPlassBlockItem, (getItemViewDiv) => {
+        testLayout(HorizontalKnuthPlassLayout, (getItemViewDiv) => {
             assert.equal(getItemViewDiv(0).style.transform, 'translate3d(0px, 0px, 0px)');
             assert.equal(getItemViewDiv(1).style.transform, 'translate3d(0px, 67px, 0px)');
             assert.equal(getItemViewDiv(2).style.transform, 'translate3d(100px, 0px, 0px)');
