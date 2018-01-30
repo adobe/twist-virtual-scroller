@@ -19,7 +19,7 @@ import { render } from '../Utils';
 import { TaskQueue } from '@twist/core';
 import { BaseLayoutComponent, StickyItem, VirtualItemView, VirtualScroll, VerticalListLayout, HorizontalListLayout } from '@twist/virtual-scroller';
 
-describe('BlockItem', () => {
+describe('ListLayout', () => {
     const SCROLL_AMOUNT = 40;
     const STICKY_WIDTH = 10;
     const STICKY_HEIGHT = 10;
@@ -31,7 +31,7 @@ describe('BlockItem', () => {
         render.dispose();
     });
 
-    let testLayout = (BlockClass, cb) => {
+    let testLayout = (ListClass, cb) => {
 
         class Sticky extends StickyItem {
             updateLayout() {
@@ -59,7 +59,7 @@ describe('BlockItem', () => {
         let domNode = render.intoBody(() =>
             <VirtualScroll ref={vs} mapping={{ item: ItemView }} verticalScroll={true} horizontalScroll={true}
                 style={`height: ${HEIGHT}px; width: ${WIDTH}px;`}>
-                <using value={BlockClass} as={LayoutClass}>
+                <using value={ListClass} as={LayoutClass}>
                     <LayoutClass>
                         <Sticky stickyWidth={STICKY_WIDTH} stickyHeight={STICKY_HEIGHT}/>
                         <repeat collection={ITEMS} as={data}>
@@ -72,7 +72,7 @@ describe('BlockItem', () => {
         TaskQueue.run();
 
         cb(vs, function getItemViewDiv(index) {
-            // We use `index + 1` because the 0th element is the BlockItem.
+            // We use `index + 1` because the 0th element is the ListLayout.
             return domNode.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
         });
     };

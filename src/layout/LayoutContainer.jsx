@@ -16,7 +16,7 @@ import BaseLayoutComponent from './BaseLayoutComponent';
 /**
  * An item that contains children. Parent items are responsible for passing layout and position
  * to their children as needed. This class is fairly low-level; if you're just implementing a
- * VirtualScroll view, consider using a higher-level class like {@link BlockItem}.
+ * VirtualScroll view, you'll want to use a higher-level layout component, like {@link VerticalListLayout}
  */
 @VirtualComponent
 export default class LayoutContainer extends BaseLayoutComponent {
