@@ -17,7 +17,7 @@ import Point from './Point';
 function getOffset(name, touch, target) {
     var layerPosition = touch[name];
     if (!layerPosition) {
-        var { left, top, width, height } = target.getBoundingClientRect();
+        var { left, top, width, height } = target.element.getBoundingClientRect();
         touch[name] = layerPosition = Point.create(left, top);
         touch[name].width = width;
         touch[name].height = height;
@@ -65,7 +65,7 @@ export default class ScrollInteraction extends Interaction {
     }
 
     start() {
-        this.scroll.animation.stop();
+        this.scroll.scrollAnimation.stop();
 
         this.active = true;
         this.startScrollLeft = this.scroll.requestedScrollLeft;
@@ -81,7 +81,7 @@ export default class ScrollInteraction extends Interaction {
     reset() {
         var model = this.getScrollBarModel(this.touch);
         if (!model || model.type === 'background') {
-            this.scroll.animation.start(this.scroll.requestedScrollLeft, this.scroll.requestedScrollTop, this.touch.history.velocity);
+            this.scroll.scrollAnimation.start(this.scroll.requestedScrollLeft, this.scroll.requestedScrollTop, this.touch.history.velocity);
         }
 
         this.touch = null;

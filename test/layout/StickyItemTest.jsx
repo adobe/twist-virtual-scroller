@@ -17,7 +17,7 @@ import assert from 'assert';
 import { render } from '../Utils';
 
 import { TaskQueue } from '@twist/core';
-import { BaseLayoutComponent, StickyItem, VirtualItemView, VirtualScroll, VerticalListLayout } from '@twist/virtual-scroller';
+import { StickyItem, VirtualScroll, VerticalListLayout } from '@twist/virtual-scroller';
 
 describe('StickyItem', () => {
 
@@ -61,15 +61,16 @@ describe('StickyItem', () => {
         }
     }
 
-    class Item extends BaseLayoutComponent {
+    @LayoutComponent
+    class Item {
         @Attribute itemHeight;
         updateLayout() {
             this.height = this.itemHeight;
         }
     }
 
-    @Component
-    class ItemView extends VirtualItemView {
+    @ViewComponent
+    class ItemView {
         render() {
             return <div id={'view-' + (this.virtualItem && this.virtualItem.data)} {...this.itemAttributes}>
                 {this.virtualItem && this.virtualItem.data}

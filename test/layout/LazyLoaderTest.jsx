@@ -17,7 +17,7 @@ import assert from 'assert';
 import { render } from '../Utils';
 
 import { TaskQueue } from '@twist/core';
-import { LazyLoader, BaseLayoutComponent, VirtualItemView, VirtualScroll, VerticalListLayout } from '@twist/virtual-scroller';
+import { LazyLoader, VirtualScroll, VerticalListLayout } from '@twist/virtual-scroller';
 
 describe('LazyLoader', () => {
 
@@ -37,15 +37,16 @@ describe('LazyLoader', () => {
             return new Promise(resolve => finishLoading = resolve);
         }
 
-        class Item extends BaseLayoutComponent {
+        @LayoutComponent
+        class Item {
             updateLayout() {
                 this.width = REAL_WIDTH;
                 this.height = REAL_HEIGHT;
             }
         }
 
-        @Component
-        class ItemView extends VirtualItemView {
+        @ViewComponent
+        class ItemView {
             render() {
                 return <div {...this.itemAttributes}>{this.virtualItem && this.virtualItem.data}</div>;
             }

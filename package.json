@@ -16,7 +16,8 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "@twist/core": "^0.1.0"
+    "@twist/core": "^0.1.0",
+    "@twist/react": "^0.1.5"
   },
   "devDependencies": {
     "@twist/core": "^0.1.0",

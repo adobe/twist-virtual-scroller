@@ -11,7 +11,7 @@
  *
  */
 
-import { LazyLoader, StickyItem, BaseLayoutComponent, VerticalKnuthPlassLayout, VerticalListLayout, VirtualItemView, VirtualScroll } from '@twist/virtual-scroller';
+import { LazyLoader, StickyItem, VerticalKnuthPlassLayout, VerticalListLayout, VirtualScroll } from '@twist/virtual-scroller';
 
 // import TouchMapper from 'torq-interaction/TouchMapper';
 
@@ -22,16 +22,16 @@ import PhotoDrag from './PhotoDrag';
 import PhotoVirtualScrollLess from './PhotoVirtualScroll.less';
 
 @Prototype({ type: 'groupHeader' })
-@VirtualComponent
+@LayoutComponent
 class GroupHeaderItem extends StickyItem {
 }
 
 @Prototype({ type: 'photo' })
-@VirtualComponent
-class PhotoItem extends BaseLayoutComponent {
+@LayoutComponent
+class PhotoItem {
 
-    constructor() {
-        super();
+    constructor(props, context) {
+        super(props, context);
         this.layoutAttributes(() => this.aspectRatio);
     }
 
@@ -40,8 +40,8 @@ class PhotoItem extends BaseLayoutComponent {
     }
 }
 
-@Component
-class GroupHeaderView extends VirtualItemView {
+@ViewComponent
+class GroupHeaderView {
     render() {
         return <div
             {...this.itemAttributes}
@@ -51,11 +51,11 @@ class GroupHeaderView extends VirtualItemView {
     }
 }
 
-@Component
-class PhotoView extends VirtualItemView {
+@ViewComponent
+class PhotoView {
 
-    constructor() {
-        super();
+    constructor(props, context) {
+        super(props, context);
 
         // For performance reasons, we need an intermediate observable. This is a bit different from @Cache, because
         // the cost of updating is cheap, but we don't want to invalidate the watchers unless its value actually changes
@@ -110,8 +110,8 @@ export default class PhotoVirtualScroll {
 
     @Observable debugLog = '';
     @Observable animation;
-    @Observable animationEnabled;
-    @Observable animationDuration;
+    @Observable animationEnabled = false;
+    @Observable animationDuration = undefined;
 
     constructor(props, context) {
         super(props, context);
@@ -168,6 +168,8 @@ export default class PhotoVirtualScroll {
 
     render() {
         return <g>
+            {/*
+                Animation doesn't work properly yet, so disabling the controls in the example:
             <label>
                 Animate:&nbsp;
                 <select bind:value={ this.animation }>
@@ -182,6 +184,7 @@ export default class PhotoVirtualScroll {
                 Duration
                 <input type="range" min={0} max={1000} bind:value={ this.animationDuration }  />
             </label>
+            */}
             <ScrollLog view={ this } />
             <PhotoDrag dragState={ this.scope.dragState } />
             <VirtualScroll

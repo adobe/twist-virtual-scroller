@@ -12,11 +12,11 @@
  */
 
 // Decorators
-export { default as LayoutComponent } from './src/layout/decorators/LayoutComponent';
+export { default as LayoutComponent } from './src/decorators/LayoutComponent';
 
 // UI Components
 export { default as VirtualScroll } from './src/ui/VirtualScroll';
-export { default as VirtualItemView } from './src/ui/VirtualItemView';
+export { default as BaseViewComponent } from './src/ui/BaseViewComponent';
 
 // Layout
 export { default as BaseLayoutComponent } from './src/layout/BaseLayoutComponent';

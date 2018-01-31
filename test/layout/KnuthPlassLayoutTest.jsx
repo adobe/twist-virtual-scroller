@@ -17,7 +17,7 @@ import assert from 'assert';
 import { render } from '../Utils';
 
 import { TaskQueue } from '@twist/core';
-import { BaseLayoutComponent, VirtualItemView, VirtualScroll,  VerticalKnuthPlassLayout, HorizontalKnuthPlassLayout } from '@twist/virtual-scroller';
+import { VirtualScroll,  VerticalKnuthPlassLayout, HorizontalKnuthPlassLayout } from '@twist/virtual-scroller';
 
 describe('KnuthPlassLayout', () => {
     const HEIGHT = 200;
@@ -30,14 +30,16 @@ describe('KnuthPlassLayout', () => {
     });
 
     let testLayout = (KnuthPlassClass, cb) => {
-        class Item extends BaseLayoutComponent {
+
+        @LayoutComponent
+        class Item {
             get aspectRatio() {
                 return this.data / SIZE;
             }
         }
 
-        @Component
-        class ItemView extends VirtualItemView {
+        @ViewComponent
+        class ItemView {
             render() {
                 return <div {...this.itemAttributes}>{this.virtualItem && this.virtualItem.data}</div>;
             }

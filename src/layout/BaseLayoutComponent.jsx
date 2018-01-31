@@ -18,8 +18,9 @@ export function inRange(value, left, right) {
 /**
  * The base class of the "model representation of an item" within a VirtualScroll view.
  * This class stores an item's position information and data: a model of the view, but
- * not the actual view itself. An actual view (which would extend {@link VirtualItemView})
- * would be recycled and reused as the VirtualScroll view scrolls.
+ * not the actual view itself. An actual view (which would extend {@link BaseViewComponent}
+ * - you can use the `@ViewComponent` decorator for this) would be recycled and reused as the
+ * VirtualScroll view scrolls.
  */
 @Prototype({
     type: 'item'
@@ -36,7 +37,7 @@ export default class BaseLayoutComponent {
     @Observable isBookmark = false;
 
     /**
-     * Data needed to render the {@link VirtualItemView}.
+     * Data needed to render the {@link ViewComponent}.
      */
     @Attribute data;
 

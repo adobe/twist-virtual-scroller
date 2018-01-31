@@ -13,6 +13,7 @@
 
 import TouchMapper from './interaction/TouchMapper';
 import ScrollInteraction from './interaction/ScrollInteraction';
+import InteractiveView from './interaction/InteractiveView';
 
 import KeyboardManager from './keyboard/KeyboardManager';
 
@@ -645,27 +646,27 @@ export default class ScrollContainer {
             onBlur={ () => this.focused = false }
             onWheel={ this.onMouseWheel }>
 
-            <div class={ ScrollLess.overflowView }
+            <InteractiveView class={ ScrollLess.overflowView }
                 style-width={ this.innerWidth }
                 style-height={ this.innerHeight }
                 interaction={{ name: 'scroll' }}>
                 <div class={ ScrollLess.innerView } style-transform={ this.scrollTransform }>
                     { this.children }
                 </div>
-            </div>
+            </InteractiveView>
 
             <if condition={this.verticalScroll}>
                 <div class={ScrollLess.scrollbar}
                     class="twist-scrollbar-vertical"
                     onMouseOver={ this.thumbHover }>
-                    <div ref={ this.verticalTrack } class={ ScrollLess.track }
+                    <InteractiveView ref={ this.verticalTrack } class={ ScrollLess.track }
                         style-transform={ this.verticalTrackTransform }
                         style-width={ this.verticalTrackWidth }
                         style-height={ this.verticalTrackHeight }
                         class="twist-scrollbar-track"
                         interaction={{ name: 'scrollbar', model: { type: 'track', x: 0, y: true, track: this.verticalTrack } }} />
 
-                    <div ref={ this.verticalThumb } class={ ScrollLess.thumb }
+                    <InteractiveView ref={ this.verticalThumb } class={ ScrollLess.thumb }
                         style-transform={ this.verticalThumbTransform }
                         style-width={ this.verticalThumbWidth }
                         style-height={ this.verticalThumbHeight }
@@ -679,14 +680,14 @@ export default class ScrollContainer {
                     class="twist-scrollbar-horizontal"
                     onMouseOver={ this.thumbHover }>
 
-                    <div ref={ this.horizontalTrack } class={ ScrollLess.track }
+                    <InteractiveView ref={ this.horizontalTrack } class={ ScrollLess.track }
                         style-transform={ this.horizontalTrackTransform }
                         style-width={ this.horizontalTrackWidth }
                         style-height={ this.horizontalTrackHeight }
                         class="twist-scrollbar-track"
                         interaction={{ name: 'scrollbar', model: { type: 'track', x: true, y: 0, track: this.horizontalTrack } }} />
 
-                    <div ref={ this.horizontalThumb } class={ ScrollLess.thumb }
+                    <InteractiveView ref={ this.horizontalThumb } class={ ScrollLess.thumb }
                         style-transform={ this.horizontalThumbTransform }
                         style-width={ this.horizontalThumbWidth }
                         style-height={ this.horizontalThumbHeight }

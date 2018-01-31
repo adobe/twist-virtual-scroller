@@ -15,9 +15,13 @@ function translate(x, y) {
     return `translate3D(${x}px, ${y}px, 0)`;
 }
 
+let _itemAttributes = Symbol('itemAttributes');
+
 /**
- * VirtualItemView is the base class for creating views for items in your VirtualScroll component.
- * Each `VirtualItemView` will be reused for rendering multiple elements; as such, its `virtualItem`
+ * BaseViewComponent is the base class for creating views for items in your VirtualScroll component.
+ * You should use the `@ViewComponent` decorator as a shorthand for extending this class.
+ *
+ * Each `ViewComponent` will be reused for rendering multiple elements; as such, its `layoutItem`
  * attribute will point to different objects, and may be `null` when a view isn't needed.
  *
  * When you extend this class, pass `{...this.itemAttributes}` into your view's root element to
@@ -28,15 +32,19 @@ function translate(x, y) {
  *     class MyComponent {
  *         render() {
  *             return <div {...this.itemAttributes}>
- *                 {this.virtualItem && this.virtualItem.data}
+ *                 {this.layoutItem && this.layoutItem.data}
  *             </div>;
  *         }
  *     }
  */
 @Component
-export default class VirtualItemView {
+export default class BaseViewComponent {
 
     @Attribute virtualItem;
+
+    // constructor() {
+    //     super();
+    // }
 
     get itemAttributes() {
         let style = {
@@ -54,4 +62,10 @@ export default class VirtualItemView {
         }
         return { style };
     }
+
+    // render() {
+    //     return <div {...this.itemAttributes}>
+    //         { this.content }
+    //     </div>;
+    // }
 }

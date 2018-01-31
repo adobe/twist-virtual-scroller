@@ -16,11 +16,11 @@
 import assert from 'assert';
 import { render } from '../Utils';
 import { ObservableArray, TaskQueue } from '@twist/core';
-import { VirtualScroll, VirtualItemView, BaseLayoutComponent, VerticalListLayout, HorizontalListLayout } from '@twist/virtual-scroller';
+import { VirtualScroll, VerticalListLayout, HorizontalListLayout } from '@twist/virtual-scroller';
 import RecyclerView from '../../src/ui/internal/RecyclerView';
 
-@VirtualComponent
-class Item extends BaseLayoutComponent {
+@LayoutComponent
+class Item {
     static WIDTH = 40;
     static HEIGHT = 20;
     type = 'any';
@@ -31,8 +31,8 @@ class Item extends BaseLayoutComponent {
     }
 }
 
-@Component
-class ItemView extends VirtualItemView {
+@ViewComponent
+class ItemView {
     render() {
         return <div {...this.itemAttributes}>{this.virtualItem && this.virtualItem.data}</div>;
     }
@@ -128,7 +128,7 @@ describe('Virtual Scroll', () => {
         assert.equal(visibleViewsCount, expectedNumberOfVisibleItems, 'should have views equal to expected visible items');
     });
 
-    xit('scrollbar track clicks', () => {
+    it('scrollbar track clicks', () => {
         // Start by making a list with fewer items than can be displayed in the visible area.
         const children = new ObservableArray([ ...Array(1000).keys() ]);
 
@@ -143,6 +143,7 @@ describe('Virtual Scroll', () => {
                 </VerticalListLayout>
             </VirtualScroll>
         );
+        TaskQueue.run();
 
         let track = document.body.querySelector('.twist-scrollbar-track');
         let rect = track.getBoundingClientRect();
@@ -163,7 +164,7 @@ describe('Virtual Scroll', () => {
         assert.equal(vs.scroll.displayScrollTop, 0);
     });
 
-    xit('scrollbar thumb dragging', () => {
+    it('scrollbar thumb dragging', () => {
         // Start by making a list with fewer items than can be displayed in the visible area.
         const children = new ObservableArray([ ...Array(1000).keys() ]);
 
@@ -178,6 +179,7 @@ describe('Virtual Scroll', () => {
                 </VerticalListLayout>
             </VirtualScroll>
         );
+        TaskQueue.run();
 
         let track = document.body.querySelector('.twist-scrollbar-track');
         let trackRect = track.getBoundingClientRect();

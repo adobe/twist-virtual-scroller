@@ -17,7 +17,7 @@ import assert from 'assert';
 import { render } from '../Utils';
 
 import { TaskQueue } from '@twist/core';
-import { BaseLayoutComponent, StickyItem, VirtualItemView, VirtualScroll, VerticalListLayout, HorizontalListLayout } from '@twist/virtual-scroller';
+import { StickyItem, VirtualScroll, VerticalListLayout, HorizontalListLayout } from '@twist/virtual-scroller';
 
 describe('ListLayout', () => {
     const SCROLL_AMOUNT = 40;
@@ -40,15 +40,16 @@ describe('ListLayout', () => {
             }
         }
 
-        class Item extends BaseLayoutComponent {
+        @LayoutComponent
+        class Item {
             updateLayout() {
                 this.width = this.data;
                 this.height = this.data;
             }
         }
 
-        @Component
-        class ItemView extends VirtualItemView {
+        @ViewComponent
+        class ItemView {
             render() {
                 return <div {...this.itemAttributes}>{this.virtualItem && this.virtualItem.data}</div>;
             }

@@ -2,5 +2,10 @@
     "libraries": [
         "@twist/core",
         "@twist/react" // TEMP: Need to add abstract decorators to Twist Core
+    ],
+    "decorators": [
+        [ "LayoutComponent", { "inherits": "BaseLayoutComponent" } ],
+        // TODO: We should not depend on react-twist, just twist-core:
+        [ "ViewComponent", { "module": "@twist/react", "export": "Component", "inherits": "BaseViewComponent" } ]
     ]
 }
