@@ -51,7 +51,7 @@ describe('ListLayout', () => {
         @ViewComponent
         class ItemView {
             render() {
-                return <div {...this.itemAttributes}>{this.virtualItem && this.virtualItem.data}</div>;
+                return this.renderContainer(<g>{this.virtualItem && this.virtualItem.data}</g>);
             }
         }
 

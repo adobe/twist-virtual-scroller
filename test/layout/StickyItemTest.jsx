@@ -71,10 +71,15 @@ describe('StickyItem', () => {
 
     @ViewComponent
     class ItemView {
+
+        getContainerAttributes() {
+            return {
+                id: 'view-' + (this.virtualItem && this.virtualItem.data)
+            };
+        }
+
         render() {
-            return <div id={'view-' + (this.virtualItem && this.virtualItem.data)} {...this.itemAttributes}>
-                {this.virtualItem && this.virtualItem.data}
-            </div>;
+            return this.renderContainer(<g>{this.virtualItem && this.virtualItem.data}</g>);
         }
     }
 

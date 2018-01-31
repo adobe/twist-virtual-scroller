@@ -42,12 +42,23 @@ class PhotoItem {
 
 @ViewComponent
 class GroupHeaderView {
+
+    getContainerStyle() {
+        return {
+            'backgroundColor': 'rgba(0, 0, 0, 0.3)',
+            'color': 'white',
+            'fontWeight': 'bold'
+        };
+    }
+
+    getInteraction() {
+        return 0;
+    }
+
     render() {
-        return <div
-            {...this.itemAttributes}
-            style="background: rgba(0, 0, 0, 0.3); color: white; font-weight: bold;">
-            { this.virtualItem ? this.virtualItem.data.text : null }
-        </div>;
+        return this.renderContainer(
+            <div>{ this.virtualItem ? this.virtualItem.data.text : null }</div>
+        );
     }
 }
 
@@ -75,22 +86,29 @@ class PhotoView {
         }
     }
 
+    getInteraction() {
+        return {
+            name: 'photo',
+            model: this.virtualItem ? this.virtualItem.data : null
+        };
+    }
+
+    getContainerStyle() {
+        return {
+            width: '100%',
+            border: this.virtualItem && PhotoController.isSelected(this.virtualItem.data) ? '2px solid black' : 'none'
+        };
+    }
+
     render() {
-        return <div
-            {...this.itemAttributes}
-            style="width: 100%; "
-            style-border={ this.virtualItem && PhotoController.isSelected(this.virtualItem.data) ? '2px solid black' : 'none' }
-            interaction={{
-                name: 'photo',
-                model: this.virtualItem ? this.virtualItem.data : null
-            }}>
+        return this.renderContainer(
             <div class={ PhotoVirtualScrollLess.photoViewInner } class={ this.insertClass }
                 style="width: 100%; height: 100%; padding: 10px; transform-style: preserve-3d; box-sizing: border-box"
                 style-background={ this.virtualItem ? ((this.virtualItem.data.id % 2) ? '#ccc' : '#ddd') : null }
             >
                 { this.virtualItem ? this.virtualItem.data.text : null }
             </div>
-        </div>;
+        );
     }
 }
 

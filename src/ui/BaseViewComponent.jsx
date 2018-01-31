@@ -11,11 +11,13 @@
  *
  */
 
+import InteractiveView from './internal/interaction/InteractiveView';
+
 function translate(x, y) {
     return `translate3D(${x}px, ${y}px, 0)`;
 }
 
-let _itemAttributes = Symbol('itemAttributes');
+const _containerStyle = Symbol('containerStyle');
 
 /**
  * BaseViewComponent is the base class for creating views for items in your VirtualScroll component.
@@ -24,16 +26,14 @@ let _itemAttributes = Symbol('itemAttributes');
  * Each `ViewComponent` will be reused for rendering multiple elements; as such, its `layoutItem`
  * attribute will point to different objects, and may be `null` when a view isn't needed.
  *
- * When you extend this class, pass `{...this.itemAttributes}` into your view's root element to
- * pass along its positioning attributes, like so:
+ * When you extend this class, call `this.renderContainer(myJSX)` inside your render function, so that
+ * the content gets rendered in a container with the correct positioning applied, like so:
  *
  * @example
  *     @Component
  *     class MyComponent {
  *         render() {
- *             return <div {...this.itemAttributes}>
- *                 {this.layoutItem && this.layoutItem.data}
- *             </div>;
+ *             return this.renderContainer(<g>{this.virtualItem && this.virtualItem.data}</g>);
  *         }
  *     }
  */
@@ -42,15 +42,10 @@ export default class BaseViewComponent {
 
     @Attribute virtualItem;
 
-    // constructor() {
-    //     super();
-    // }
-
-    get itemAttributes() {
-        let style = {
-            position: 'absolute',
-            visibility: 'hidden'
-        };
+    get [_containerStyle]() {
+        let style = this.getContainerStyle();
+        style.position = 'absolute';
+        style.visibility = 'hidden';
 
         if (this.virtualItem) {
             style.transform = this.virtualItem.fixed
@@ -60,12 +55,48 @@ export default class BaseViewComponent {
             style.width = this.virtualItem.width + 'px';
             style.height = this.virtualItem.height + 'px';
         }
-        return { style };
+        return style;
     }
 
-    // render() {
-    //     return <div {...this.itemAttributes}>
-    //         { this.content }
-    //     </div>;
-    // }
+    /**
+     * Subclasses should override this if they want the view to be interactive - it should return an object,
+     * that's passed to the interaction instance.
+     */
+    getInteraction() {
+    }
+
+    /**
+     * Subclasses should override this if they want to provide additional styling
+     */
+    getContainerStyle() {
+        return {};
+    }
+
+    /**
+     * Subclasses should override this if they want to provide additional attributes on the container
+     */
+    getContainerAttributes() {
+        return {};
+    }
+
+    /**
+     * Subclasses should call this from the render function to render their content inside a <div> container.
+     * This handles applying the correct layout style, so it's positioned correctly
+     *
+     * @param {jsx} content The content to render inside the container
+     */
+    renderContainer(content) {
+        return <g>
+            <if condition={ this.getInteraction() }>
+                <InteractiveView interaction={ this.getInteraction() } style={ this[_containerStyle] } { ...this.getContainerAttributes() }>
+                    { content }
+                </InteractiveView>
+            </if>
+            <else>
+                <div style={ this[_containerStyle] } { ...this.getContainerAttributes() }>
+                    { content }
+                </div>
+            </else>
+        </g>;
+    }
 }
