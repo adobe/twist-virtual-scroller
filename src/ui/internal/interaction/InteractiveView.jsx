@@ -42,12 +42,8 @@ export default class InteractiveView {
         });
     }
 
-    @Abstract
-    getInteraction() {
-    }
-
     render() {
-        return <div {...this.undeclaredAttributes()} ref={ this.element } >
+        return <div key="interactive" {...this.undeclaredAttributes()} ref={ this.element } >
             { this.children }
         </div>;
     }

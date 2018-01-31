@@ -17,6 +17,7 @@ import assert from 'assert';
 import { BaseLayoutComponent } from '@twist/virtual-scroller';
 
 describe('BaseLayoutComponent', () => {
+
     it('should have correct layout position', () => {
         let vitem = new BaseLayoutComponent({});
         vitem.left = 50;

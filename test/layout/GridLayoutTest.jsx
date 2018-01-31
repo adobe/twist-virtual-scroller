@@ -17,6 +17,7 @@ import assert from 'assert';
 import { VerticalGridLayout } from '@twist/virtual-scroller';
 
 describe('GridLayout', () => {
+    
     it('layout', () => {
         let item = new VerticalGridLayout({});
 

@@ -225,7 +225,6 @@ export default class TouchManager extends SignalDispatcher {
         pointer : true
     };
 
-
     get computePreventDefault() {
         return this.preventDefault && (!this.mobileScroll || this.started || this.usingMouse);
     }

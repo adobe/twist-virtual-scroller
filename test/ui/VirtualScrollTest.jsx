@@ -143,7 +143,6 @@ describe('Virtual Scroll', () => {
                 </VerticalListLayout>
             </VirtualScroll>
         );
-        TaskQueue.run();
 
         let track = document.body.querySelector('.twist-scrollbar-track');
         let rect = track.getBoundingClientRect();
@@ -179,7 +178,6 @@ describe('Virtual Scroll', () => {
                 </VerticalListLayout>
             </VirtualScroll>
         );
-        TaskQueue.run();
 
         let track = document.body.querySelector('.twist-scrollbar-track');
         let trackRect = track.getBoundingClientRect();

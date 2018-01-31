@@ -93,7 +93,7 @@ export default class BaseViewComponent {
                 </InteractiveView>
             </if>
             <else>
-                <div style={ this[_containerStyle] } { ...this.getContainerAttributes() }>
+                <div key="static" style={ this[_containerStyle] } { ...this.getContainerAttributes() }>
                     { content }
                 </div>
             </else>

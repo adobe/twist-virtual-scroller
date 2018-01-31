@@ -14,6 +14,7 @@
 import { ObjectId } from '@twist/core';
 import ScrollContainer from './internal/ScrollContainer';
 import RecyclerView from './internal/RecyclerView';
+import TouchMapper from './internal/interaction/TouchMapper';
 
 // This is the connector from the "virtual" layout configuration to the "physical" view
 import VirtualScrollRoot from '../layout/internal/VirtualScrollRoot';
@@ -105,6 +106,10 @@ export default class VirtualScroll {
             console.warn('You need to provide a layout in JSX children of VirtualScroll.');
             return;
         }
+
+        // The touch mapper is shared by the entire virtual scroll view for all interactions
+        // (this includes the scroll bar itself, inside the scroll view)
+        this.scope.touchMapper = this.link(new TouchMapper(this.allowHtmlDrag));
 
         this.sourceItem = new VirtualScrollRoot({}).linkToComponent(this);
         this.listenTo(this.sourceItem, 'setChildNeedsLayout', this.setChildNeedsLayout);
@@ -551,8 +556,7 @@ export default class VirtualScroll {
                     scrollBarPadding={ this.scrollBarPadding }
                     onScroll={ () => this.refresh() }
                     onLog={ message => this.trigger('log', message) }
-                    autoScroll={ this.autoScroll }
-                    allowHtmlDrag={ this.allowHtmlDrag }>
+                    autoScroll={ this.autoScroll }>
 
                     <repeat collection={ this.viewTypes } as={ typeInfo }>
                         <RecyclerView collection={ typeInfo.items } view={ typeInfo.viewType } />
