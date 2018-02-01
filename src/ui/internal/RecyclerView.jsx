@@ -14,7 +14,7 @@
 import { ObservableArray, ObjectId } from '@twist/core';
 
 class RecycledView {
-    @Observable virtualItem = null;
+    @Observable layoutItem = null;
 }
 
 /**
@@ -111,7 +111,7 @@ export default class RecyclerView {
 
             newItemById[id] = slot;
 
-            recycledView.virtualItem = item;
+            recycledView.layoutItem = item;
         }
 
         if (!newSlots) {
@@ -120,7 +120,7 @@ export default class RecyclerView {
                 if (!busySlots[i]) {
                     // this item is not busy. free it from the display list.
                     var view = this.views.base[i];
-                    view.virtualItem = null;
+                    view.layoutItem = null;
                 }
             }
         }
@@ -134,7 +134,7 @@ export default class RecyclerView {
     render() {
         return <using value={ this.view } as={ ItemView }>
             <repeat collection={ this.views } as={ view }>
-                <ItemView virtualItem={ view.virtualItem } />
+                <ItemView layoutItem={ view.layoutItem } />
             </repeat>
         </using>;
     }

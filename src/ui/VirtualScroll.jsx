@@ -424,17 +424,17 @@ export default class VirtualScroll {
     }
 
     elementVisibility(dataItem) {
-        const virtualItem = this.getVirtualItem(dataItem);
+        const layoutItem = this.getVirtualItem(dataItem);
 
-        if (!virtualItem) {
+        if (!layoutItem) {
             return { horizontal: 0, vertical: 0 };
         }
 
         const virtualRect = {
-            left: virtualItem.left,
-            right: virtualItem.right,
-            top: virtualItem.top,
-            bottom: virtualItem.bottom
+            left: layoutItem.left,
+            right: layoutItem.right,
+            top: layoutItem.top,
+            bottom: layoutItem.bottom
         };
 
         const viewportRect = {
@@ -457,7 +457,7 @@ export default class VirtualScroll {
             const maxLeft = Math.max(virtualRect.left, viewportRect.left);
             const minRight = Math.min(virtualRect.right, viewportRect.right);
 
-            horizontal = (minRight - maxLeft) / virtualItem.width;
+            horizontal = (minRight - maxLeft) / layoutItem.width;
         }
 
         // Check if the item completely covers the viewport or is completely inside on the y-axis
@@ -470,7 +470,7 @@ export default class VirtualScroll {
             const maxTop = Math.max(virtualRect.top, viewportRect.top);
             const minBottom = Math.min(virtualRect.bottom, viewportRect.bottom);
 
-            vertical = (minBottom - maxTop) / virtualItem.height;
+            vertical = (minBottom - maxTop) / layoutItem.height;
         }
 
         return { horizontal, vertical };
@@ -482,22 +482,22 @@ export default class VirtualScroll {
     }
 
     scrollToElement(dataItem, animate = false, align = { vertical: 'top', horizontal: 'left' }, offset = { left: 0, top: 0 }) {
-        const virtualItem = this.getVirtualItem(dataItem);
+        const layoutItem = this.getVirtualItem(dataItem);
 
-        if (!virtualItem) {
+        if (!layoutItem) {
             console.error('Virtual item to scroll was not found', dataItem);
             return false;
         }
 
-        let scrollTop  = virtualItem.top - offset.top;
-        let scrollLeft = virtualItem.left - offset.left;
+        let scrollTop  = layoutItem.top - offset.top;
+        let scrollLeft = layoutItem.left - offset.left;
 
         if (align && align.vertical === 'bottom') {
-            scrollTop += virtualItem.height - this.scroll.innerHeight + 2 * offset.top;
+            scrollTop += layoutItem.height - this.scroll.innerHeight + 2 * offset.top;
         }
 
         if (align && align.horizontal === 'right') {
-            scrollLeft += virtualItem.width - this.scroll.innerWidth + 2 * offset.left;
+            scrollLeft += layoutItem.width - this.scroll.innerWidth + 2 * offset.left;
         }
 
         this.scrollTo(scrollLeft, scrollTop, animate);

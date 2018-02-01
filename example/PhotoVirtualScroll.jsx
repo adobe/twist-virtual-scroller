@@ -55,7 +55,7 @@ class GroupHeaderView {
 
     render() {
         return this.renderContainer(
-            <div>{ this.virtualItem ? this.virtualItem.data.text : null }</div>
+            <div>{ this.layoutItem ? this.layoutItem.data.text : null }</div>
         );
     }
 }
@@ -76,10 +76,10 @@ class PhotoView {
     @Bind
     getInsertClass() {
         let dragState = this.scope.dragState;
-        if (dragState.leftItem === this.virtualItem) {
+        if (dragState.leftItem === this.layoutItem) {
             return 'left-insertion';
         }
-        else if (dragState.rightItem === this.virtualItem) {
+        else if (dragState.rightItem === this.layoutItem) {
             return 'right-insertion';
         }
     }
@@ -87,14 +87,14 @@ class PhotoView {
     getInteraction() {
         return {
             name: 'photo',
-            model: this.virtualItem ? this.virtualItem.data : null
+            model: this.layoutItem ? this.layoutItem.data : null
         };
     }
 
     getContainerStyle() {
         return {
             width: '100%',
-            border: this.virtualItem && PhotoController.isSelected(this.virtualItem.data) ? '2px solid black' : 'none'
+            border: this.layoutItem && PhotoController.isSelected(this.layoutItem.data) ? '2px solid black' : 'none'
         };
     }
 
@@ -102,9 +102,9 @@ class PhotoView {
         return this.renderContainer(
             <div class={ PhotoVirtualScrollLess.photoViewInner } class={ this.insertClass }
                 style="width: 100%; height: 100%; padding: 10px; transform-style: preserve-3d; box-sizing: border-box"
-                style-background={ this.virtualItem ? ((this.virtualItem.data.id % 2) ? '#ccc' : '#ddd') : null }
+                style-background={ this.layoutItem ? ((this.layoutItem.data.id % 2) ? '#ccc' : '#ddd') : null }
             >
-                { this.virtualItem ? this.virtualItem.data.text : null }
+                { this.layoutItem ? this.layoutItem.data.text : null }
             </div>
         );
     }
@@ -244,20 +244,11 @@ class VirtualGroups {
                 <GroupHeaderItem data={{ text: `Group ${group.id}` }} stickyHeight={ 50 } />
 
                 <VerticalKnuthPlassLayout margin={ 2 } size={ 120 }>
-                    <VirtualGroupItems model={ group.items } />
+                    <repeat collection={ group.items } as={ item } >
+                        <PhotoItem data={ item } />
+                    </repeat>
                 </VerticalKnuthPlassLayout>
             </LazyLoader>
-        </repeat>;
-    }
-}
-
-@Component
-class VirtualGroupItems {
-    @Attribute model;
-
-    render() {
-        return <repeat collection={ this.model } as={ item, index } >
-            <PhotoItem key={ index } data={ item } />
         </repeat>;
     }
 }

@@ -32,7 +32,7 @@ describe('AutoScrollAnimation', () => {
     @ViewComponent
     class ItemView {
         render() {
-            return this.renderContainer(<g>{this.virtualItem && this.virtualItem.data}</g>);
+            return this.renderContainer(<g>{this.layoutItem && this.layoutItem.data}</g>);
         }
     }
 

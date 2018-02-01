@@ -33,27 +33,27 @@ const _containerStyle = Symbol('containerStyle');
  *     @Component
  *     class MyComponent {
  *         render() {
- *             return this.renderContainer(<g>{this.virtualItem && this.virtualItem.data}</g>);
+ *             return this.renderContainer(<g>{this.layoutItem && this.layoutItem.data}</g>);
  *         }
  *     }
  */
 @Component
 export default class BaseViewComponent {
 
-    @Attribute virtualItem;
+    @Attribute layoutItem;
 
     get [_containerStyle]() {
         let style = this.getContainerStyle();
         style.position = 'absolute';
         style.visibility = 'hidden';
 
-        if (this.virtualItem) {
-            style.transform = this.virtualItem.fixed
-                ? translate(this.virtualItem.fixedLeft, this.virtualItem.fixedTop)
-                : translate(this.virtualItem.left, this.virtualItem.top);
+        if (this.layoutItem) {
+            style.transform = this.layoutItem.fixed
+                ? translate(this.layoutItem.fixedLeft, this.layoutItem.fixedTop)
+                : translate(this.layoutItem.left, this.layoutItem.top);
             style.visibility = 'visible';
-            style.width = this.virtualItem.width + 'px';
-            style.height = this.virtualItem.height + 'px';
+            style.width = this.layoutItem.width + 'px';
+            style.height = this.layoutItem.height + 'px';
         }
         return style;
     }

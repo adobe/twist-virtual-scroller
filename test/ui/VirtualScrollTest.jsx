@@ -34,7 +34,7 @@ class Item {
 @ViewComponent
 class ItemView {
     render() {
-        return this.renderContainer(<g>{this.virtualItem && this.virtualItem.data}</g>);
+        return this.renderContainer(<g>{this.layoutItem && this.layoutItem.data}</g>);
     }
 }
 
@@ -87,11 +87,11 @@ describe('Virtual Scroll', () => {
         // we can reasonably expect the visible DOM elements to be rendered in order. (This invariant no longer
         // holds when the view has been scrolled and views need to be recycled.)
         children.forEach((childText, index) => {
-            const virtualItem = scrollInnerView.children[index];
-            assert.equal(parseInt(virtualItem.style.height), Item.HEIGHT, 'virtual item should have correct height');
-            assert.equal(parseInt(virtualItem.style.width), Item.WIDTH, 'virtual item should have correct width');
-            assert.equal(virtualItem.style.visibility, 'visible', 'virtual item should be visible');
-            assert.equal(virtualItem.textContent, childText, 'virtual item should have correct text');
+            const layoutItem = scrollInnerView.children[index];
+            assert.equal(parseInt(layoutItem.style.height), Item.HEIGHT, 'virtual item should have correct height');
+            assert.equal(parseInt(layoutItem.style.width), Item.WIDTH, 'virtual item should have correct width');
+            assert.equal(layoutItem.style.visibility, 'visible', 'virtual item should be visible');
+            assert.equal(layoutItem.textContent, childText, 'virtual item should have correct text');
         });
 
         // The rest of the views should be hidden.
@@ -120,8 +120,8 @@ describe('Virtual Scroll', () => {
         // we can count the number of visible views, which should remain constant.
         let visibleViewsCount = 0;
         for (let i = 0; i < scrollInnerView.children.length; i++) {
-            const virtualItem = scrollInnerView.children[i];
-            if (virtualItem.style.visibility === 'visible') {
+            const layoutItem = scrollInnerView.children[i];
+            if (layoutItem.style.visibility === 'visible') {
                 visibleViewsCount++;
             }
         }
