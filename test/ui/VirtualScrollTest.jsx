@@ -96,8 +96,8 @@ describe('Virtual Scroll', () => {
 
         // The rest of the views should be hidden.
         for (let i = children.length; i < testRecycler.capacity; i++) {
-            const unusedVirtualItem = scrollInnerView.children[i];
-            assert.equal(unusedVirtualItem.style.visibility, 'hidden', 'virtual items outside recycler capacity should be hidden');
+            const unusedLayoutItem = scrollInnerView.children[i];
+            assert.equal(unusedLayoutItem.style.visibility, 'hidden', 'virtual items outside recycler capacity should be hidden');
         }
 
         // Now, let's add more items.
@@ -287,7 +287,7 @@ describe('Virtual Scroll', () => {
         TaskQueue.run();
 
         // Get reference to a virtual item.
-        vItem = vs.getVirtualItem(20);
+        vItem = vs.getLayoutItem(20);
 
         // scroll to 0, 0;
         vs.scrollTo(0, 0);
@@ -334,7 +334,7 @@ describe('Virtual Scroll', () => {
         TaskQueue.run();
 
         // Get reference to a virtual item.
-        vItem = vs.getVirtualItem(20);
+        vItem = vs.getLayoutItem(20);
 
         // scroll to 0, 0;
         vs.scrollTo(0, 0);
@@ -364,7 +364,7 @@ describe('Virtual Scroll', () => {
         vs.scrollTo(0, 0);
     });
 
-    it('elementVisibility works in a vertical layout', () => {
+    it('getElementVisibility works in a vertical layout', () => {
         let vs, vItem;
 
         // Test align top
@@ -381,30 +381,33 @@ describe('Virtual Scroll', () => {
         TaskQueue.run();
 
         // Get reference to a virtual item.
-        vItem = vs.getVirtualItem(20);
+        vItem = vs.getLayoutItem(20);
 
         vs.scrollTo(0, vItem.top + vItem.height * 0.4);
         TaskQueue.run();
-        assert.equal(vs.elementVisibility(vItem.data).vertical, 0.6);
+        assert.equal(vs.getElementVisibility(vItem.data).vertical, 0.6);
+        assert.equal(vs.isElementInViewport(vItem.data), false);
+        assert.equal(vs.isElementInViewport(vItem.data, 0.6), true);
 
         vs.scrollTo(0, vItem.top - vItem.height);
         TaskQueue.run();
-        assert.equal(vs.elementVisibility(vItem.data).vertical, 1);
+        assert.equal(vs.getElementVisibility(vItem.data).vertical, 1);
+        assert.equal(vs.isElementInViewport(vItem.data), true);
 
         vs.scrollTo(0, vItem.top + vItem.height * 2);
         TaskQueue.run();
-        assert.equal(vs.elementVisibility(vItem.data).vertical, 0);
+        assert.equal(vs.getElementVisibility(vItem.data).vertical, 0);
 
         vs.scrollTo(0, vItem.top - vs.scroll.innerHeight + vItem.height * 0.6);
         TaskQueue.run();
-        assert.equal(vs.elementVisibility(vItem.data).vertical, 0.6);
+        assert.equal(vs.getElementVisibility(vItem.data).vertical, 0.6);
 
         vs.scrollTo(0, vItem.top - vs.scroll.innerHeight);
         TaskQueue.run();
-        assert.equal(vs.elementVisibility(vItem.data).vertical, 0);
+        assert.equal(vs.getElementVisibility(vItem.data).vertical, 0);
     });
 
-    it('elementVisibility works in a horizontal layout', () => {
+    it('getElementVisibility works in a horizontal layout', () => {
         let vs, vItem;
 
         // Test align top
@@ -421,26 +424,29 @@ describe('Virtual Scroll', () => {
         TaskQueue.run();
 
         // Get reference to a virtual item.
-        vItem = vs.getVirtualItem(20);
+        vItem = vs.getLayoutItem(20);
 
         vs.scrollTo(vItem.left + vItem.width * 0.4, 0);
         TaskQueue.run();
-        assert.equal(vs.elementVisibility(vItem.data).horizontal, 0.6);
+        assert.equal(vs.getElementVisibility(vItem.data).horizontal, 0.6);
+        assert.equal(vs.isElementInViewport(vItem.data), false);
+        assert.equal(vs.isElementInViewport(vItem.data, 0.6), true);
 
         vs.scrollTo(vItem.left - vItem.width, 0);
         TaskQueue.run();
-        assert.equal(vs.elementVisibility(vItem.data).horizontal, 1);
+        assert.equal(vs.getElementVisibility(vItem.data).horizontal, 1);
+        assert.equal(vs.isElementInViewport(vItem.data), true);
 
         vs.scrollTo(vItem.left + vItem.width * 2, 0);
         TaskQueue.run();
-        assert.equal(vs.elementVisibility(vItem.data).horizontal, 0);
+        assert.equal(vs.getElementVisibility(vItem.data).horizontal, 0);
 
         vs.scrollTo(vItem.left - vs.scroll.innerWidth + vItem.width * 0.6, 0);
         TaskQueue.run();
-        assert.equal(vs.elementVisibility(vItem.data).horizontal, 0.6);
+        assert.equal(vs.getElementVisibility(vItem.data).horizontal, 0.6);
 
         vs.scrollTo(vItem.left - vs.scroll.innerWidth, 0);
         TaskQueue.run();
-        assert.equal(vs.elementVisibility(vItem.data).horizontal, 0);
+        assert.equal(vs.getElementVisibility(vItem.data).horizontal, 0);
     });
 });

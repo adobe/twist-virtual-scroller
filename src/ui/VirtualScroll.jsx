@@ -59,6 +59,26 @@ class ViewInfo {
     }
 }
 
+// Private methods/getters
+const _contentWidth = Symbol('contentWidth');
+const _contentHeight = Symbol('contentHeight');
+const _refreshNow = Symbol('refreshNow');
+const _updateSticky = Symbol('updateSticky');
+const _loadPage = Symbol('loadPage');
+const _computeBookmark = Symbol('computeBookmark');
+const _preloadLeft = Symbol('preloadLeft');
+const _preloadRight = Symbol('preloadRight');
+const _preloadTop = Symbol('preloadTop');
+const _preloadBottom = Symbol('preloadBottom');
+const _setChildNeedsLayout = Symbol('setChildNeedsLayout');
+
+// Private properties
+const _childNeedsLayout = Symbol('childNeedsLayout');
+const _sourceItem = Symbol('sourceItem');
+const _viewTypes = Symbol('viewTypes');
+const _savedLayoutBookmark = Symbol('savedLayoutBookmark');
+
+
 /**
  * The VirtualScroll component allows you to display long, scrollable lists without sacrificing performance.
  * See the docs for more usage information.
@@ -67,9 +87,7 @@ class ViewInfo {
 export default class VirtualScroll {
 
     @Attribute mapping;
-    @Attribute item;
     @Attribute margin = 0;
-    @Attribute layoutTracker = false;
     @Attribute focusOnAttach = true;
     @Attribute autoScroll = false;
 
@@ -88,9 +106,6 @@ export default class VirtualScroll {
 
     @Attribute allowHtmlDrag = false;
     @Attribute interactionManager;
-
-    @Observable contentWidth = 0;
-    @Observable contentHeight = 0;
 
     constructor() {
         super();
@@ -113,44 +128,57 @@ export default class VirtualScroll {
             this.interactionManager._init(this.scope.touchMapper);
         }
 
-        this.sourceItem = new VirtualScrollRoot({}).linkToComponent(this);
-        this.listenTo(this.sourceItem, 'setChildNeedsLayout', this.setChildNeedsLayout);
+        this[_sourceItem] = new VirtualScrollRoot({}).linkToComponent(this);
+        this.listenTo(this[_sourceItem], 'setChildNeedsLayout', this[_setChildNeedsLayout]);
 
         this.viewTypeById = {};
-        this.viewTypes = [];
+        this[_viewTypes] = [];
         for (let type in mapping) {
             const viewType = mapping[type];
             var viewInfo = new ViewInfo(type, viewType);
             this.viewTypeById[type] = viewInfo;
-            this.viewTypes.push(viewInfo);
+            this[_viewTypes].push(viewInfo);
         }
-
-        this.watch(() => this.layoutTracker, (layoutTracker) => {
-            if (!layoutTracker) {
-                // Make sure we remove the saved bookmark when the layout tracker goes back to false only.
-                if (this.savedBookmark) {
-                    this.savedBookmark.item.isBookmark = false;
-                }
-                this.savedBookmark = null;
-            }
-        });
     }
 
-    // This method is called from our VirtualScrollRoot.
-    setChildNeedsLayout() {
+    /**
+     * Width of the content (virtual view)
+     * @private
+     */
+    get [_contentWidth]() {
+        return ((this[_sourceItem] && this[_sourceItem].width) + this.margin) || 0;
+    }
+
+    /**
+     * Height of the content (virtual view)
+     * @private
+     */
+    get [_contentHeight]() {
+        return ((this[_sourceItem] && this[_sourceItem].height) + this.margin) || 0;
+    }
+
+    /**
+     * This method is called from our VirtualScrollRoot.
+     * @private
+     */
+    [_setChildNeedsLayout]() {
         // Save a bookmark before the layout starts, so that we can replace the scroll position
         // at the same element after the layout is done.
-        this.savedLayoutBookmark = this.computeBookmark();
-        this.childNeedsLayout = true;
+        this[_savedLayoutBookmark] = this[_computeBookmark]();
+        this[_childNeedsLayout] = true;
         this.refresh();
     }
 
     @Task(10000)
     refresh() {
-        this.refreshNow();
+        this[_refreshNow]();
     }
 
-    refreshNow(force = false, bookmark = null) {
+    /**
+     * Refresh the layout (e.g. if the dimensions of the view change)
+     * @private
+     */
+    [_refreshNow](force = false, bookmark = null) {
         // The task might execute after the scroll is removed, so prevent that.
         if (!this.scroll) {
             return;
@@ -165,45 +193,43 @@ export default class VirtualScroll {
         var top = this.scroll.displayScrollTop;
         var bottom = top + height;
 
-        // console.log(`Preload left: ${this.preloadLeft}, right: ${this.preloadRight}, top: ${this.preloadTop}, bottom: ${this.preloadBottom}`);
-
         if (this.layoutTracker) {
             bookmark = this.savedBookmark;
             if (!bookmark) {
                 // We've just started to drag the size of something in the layout, save the upper
                 // most item in the current layout as a bookmark of where we need to be after the new layout is finished.
                 // We will update the scroll position, so that this item is still in the same position.
-                bookmark = this.savedBookmark = this.computeBookmark();
+                bookmark = this.savedBookmark = this[_computeBookmark]();
                 if (bookmark) {
                     bookmark.item.isBookmark = true;
                 }
             }
         }
-        else if (this.savedLayoutBookmark) {
-            bookmark = this.savedLayoutBookmark;
-            this.savedLayoutBookmark = null;
+        else if (this[_savedLayoutBookmark]) {
+            bookmark = this[_savedLayoutBookmark];
+            this[_savedLayoutBookmark] = null;
         }
 
-        if (this.loadPage(left, right, top, bottom, width, height, force, bookmark)) {
+        if (this[_loadPage](left, right, top, bottom, width, height, force, bookmark)) {
             // We need to backout now, no sticky update necessary.
             return;
         }
-        this.updateSticky();
+        this[_updateSticky]();
     }
 
-    get preloadLeft() {
+    get [_preloadLeft]() {
         return this.horizontalScroll ? (this.scroll.directionLeft < 0 ? 1 : 0) : null;
     }
 
-    get preloadRight() {
+    get [_preloadRight]() {
         return this.horizontalScroll ? (this.scroll.directionLeft > 0 ? 1 : 0) : null;
     }
 
-    get preloadTop() {
+    get [_preloadTop]() {
         return this.verticalScroll ? (this.scroll.directionTop < 0 ? 1 : 0) : null;
     }
 
-    get preloadBottom() {
+    get [_preloadBottom]() {
         return this.verticalScroll ? (this.scroll.directionTop > 0 ? 1 : 0) : null;
     }
 
@@ -227,16 +253,18 @@ export default class VirtualScroll {
      * @param {number} height
      * @param {boolean} force
      * @param {Bookmark} bookmark
+     *
+     * @private
      */
-    loadPage(viewLeft, viewRight, viewTop, viewBottom, width, height, force, bookmark) {
+    [_loadPage](viewLeft, viewRight, viewTop, viewBottom, width, height, force, bookmark) {
         // Determine the rectangle we'd like to render by quantizing it to a page-like offset, and
         // potentially adding an additional page-size of preload content. If this quantized area
         // is the same as last time, we don't need to do anything else right now.
-        var left = lowerNearest(viewLeft, width, this.preloadLeft);
-        var right = upperNearest(viewRight, width, this.preloadRight);
-        var top = lowerNearest(viewTop, height, this.preloadTop);
-        var bottom = upperNearest(viewBottom, height, this.preloadBottom);
-        if (!force && !this.childNeedsLayout && this.left === left && this.right === right
+        var left = lowerNearest(viewLeft, width, this[_preloadLeft]);
+        var right = upperNearest(viewRight, width, this[_preloadRight]);
+        var top = lowerNearest(viewTop, height, this[_preloadTop]);
+        var bottom = upperNearest(viewBottom, height, this[_preloadBottom]);
+        if (!force && !this[_childNeedsLayout] && this.left === left && this.right === right
                 && this.top === top && this.bottom === bottom) {
             return;
         }
@@ -246,13 +274,11 @@ export default class VirtualScroll {
         this.top = top;
         this.bottom = bottom;
 
-        var margin = this.margin;
-        var sourceItem = this.sourceItem;
+        var sourceItem = this[_sourceItem];
         if (sourceItem) {
             // Tell our root item to layout itself within our current area, then update bookmarks if needed.
-            sourceItem.layout(margin, margin, this.scroll.innerWidth - margin, this.scroll.innerHeight - margin);
-            this.contentWidth = sourceItem.width + margin;
-            this.contentHeight = sourceItem.height + margin;
+            sourceItem.layout(this.margin, this.margin, this.scroll.innerWidth - this.margin, this.scroll.innerHeight - this.margin);
+
             if (!force && bookmark) {
                 if (bookmark.dataItem && !bookmark.item) {
                     sourceItem.resolveBookmark(bookmark);
@@ -271,7 +297,7 @@ export default class VirtualScroll {
 
                     if (this.scroll.scrollTo(preferredLeft, preferredTop, true)) {
                         // We've actually scrolled, so save the bookmark as we will need to do the layout again.
-                        this.refreshNow(true, bookmark);
+                        this[_refreshNow](true, bookmark);
                         return true;
                     }
                 }
@@ -307,7 +333,7 @@ export default class VirtualScroll {
                 if (item.expand()) {
                     pendingItems.push(item);
                     if (!bookmark) {
-                        bookmark = this.computeBookmark();
+                        bookmark = this[_computeBookmark]();
                     }
                 }
 
@@ -325,7 +351,7 @@ export default class VirtualScroll {
                 stickyContainers.push(item);
             };
 
-            this.viewTypes.forEach((typeInfo) => collections[typeInfo.type] = [ ]);
+            this[_viewTypes].forEach((typeInfo) => collections[typeInfo.type] = [ ]);
             // Start visiting the tree of items, starting at the root. Layouts will look at the items they contain,
             // and compare themselves to this rectangle; items that touch this rectangle should be passed to `addItem`.
             sourceItem.collect({ left, right, top, bottom, addItem, addStickyContainer });
@@ -337,12 +363,12 @@ export default class VirtualScroll {
             pendingMap[key].stopPendingItem();
         }
 
-        this.viewTypes.forEach((typeInfo) => typeInfo.items = collections[typeInfo.type]);
+        this[_viewTypes].forEach((typeInfo) => typeInfo.items = collections[typeInfo.type]);
 
-        this.childNeedsLayout = false;
+        this[_childNeedsLayout] = false;
     }
 
-    computeBookmark() {
+    [_computeBookmark]() {
         var bookmark = null;
 
         var displayScrollLeft = this.scroll.displayScrollLeft;
@@ -382,6 +408,22 @@ export default class VirtualScroll {
         return bookmark;
     }
 
+    [_updateSticky]() {
+        var stickyContainers = this.stickyContainers;
+        if (!stickyContainers || !stickyContainers.length) {
+            return;
+        }
+
+        var left = this.scroll.displayScrollLeft;
+        var right = left + this.scroll.innerWidth;
+
+        var top = this.scroll.displayScrollTop;
+        var bottom = top + this.scroll.innerHeight;
+
+        var view = { left, right, top, bottom };
+        stickyContainers.forEach((container) => container.updateSticky(view));
+    }
+
     /**
      * The current scroll position.
      * @type {{left: number, top: number}}
@@ -399,32 +441,34 @@ export default class VirtualScroll {
         this.scrollTo(left, top);
     }
 
-    updateSticky() {
-        var stickyContainers = this.stickyContainers;
-        if (!stickyContainers || !stickyContainers.length) {
-            return;
-        }
-
-        var left = this.scroll.displayScrollLeft;
-        var right = left + this.scroll.innerWidth;
-
-        var top = this.scroll.displayScrollTop;
-        var bottom = top + this.scroll.innerHeight;
-
-        var view = { left, right, top, bottom };
-        stickyContainers.forEach((container) => container.updateSticky(view));
-    }
-
-    getVirtualItem(dataItem) {
+    /**
+     * Get a LayoutComponent instance based on its data. For example, when you create a layout component
+     * via `<MyLayoutComponent data={ compData }/>`, then you can obtain its instance from the virtual
+     * scroller via `scroller.getLayoutItem(compData)`.
+     *
+     * @param {Object} dataItem
+     * @return {Object} LayoutComponent instance
+     */
+    getLayoutItem(dataItem) {
         var bookmark = {
             dataItem
         };
-        this.sourceItem.resolveBookmark(bookmark);
+        this[_sourceItem].resolveBookmark(bookmark);
         return bookmark.item;
     }
 
-    elementVisibility(dataItem) {
-        const layoutItem = this.getVirtualItem(dataItem);
+    /**
+     * Get the horizontal and vertical proportion of the element that's visible. The element is
+     * identified by its data.
+     *
+     * For example, if the full width of the element is visible, but half it's height is cut off,
+     * then this will return `{ horizontal: 1, vertical: 0.5 }`.
+     *
+     * @param {Object} dataItem
+     * @return {Object} Horizontal and vertical proportion of element that's visible
+     */
+    getElementVisibility(dataItem) {
+        const layoutItem = this.getLayoutItem(dataItem);
 
         if (!layoutItem) {
             return { horizontal: 0, vertical: 0 };
@@ -476,13 +520,31 @@ export default class VirtualScroll {
         return { horizontal, vertical };
     }
 
-    elementInViewport(dataItem, visibleRatio = 1) {
-        const { horizontal, vertical } = this.elementVisibility(dataItem);
-        return horizontal >= visibleRatio && vertical >= visibleRatio;
+    /**
+     * Is the given element in the viewport? The item is identified by its data source.
+     * By default this only return true if the element is completely visible, but you can
+     * adjust the `visibleRatio` if you want to allow partially-visible elements.
+     * (e.g. `visibleRatio=0.5` means that at least half the element, by area, is visible)
+     *
+     * @param {Object} dataItem
+     * @param {number} [visibleRatio = 1] Proportion of the element's area that must be visible, to count as being in the viewport
+     * @return {Boolean} Whether the element is visible
+     */
+    isElementInViewport(dataItem, visibleRatio = 1) {
+        const { horizontal, vertical } = this.getElementVisibility(dataItem);
+        return horizontal * vertical >= visibleRatio;
     }
 
+    /**
+     * Scroll to the given virtual element, so that it's visible - the item is identified by its data source.
+     *
+     * @param {Object} dataItem
+     * @param {Boolean} [animate=false]
+     * @param {Object} [align]
+     * @param {Object} [offset]
+     */
     scrollToElement(dataItem, animate = false, align = { vertical: 'top', horizontal: 'left' }, offset = { left: 0, top: 0 }) {
-        const layoutItem = this.getVirtualItem(dataItem);
+        const layoutItem = this.getLayoutItem(dataItem);
 
         if (!layoutItem) {
             console.error('Virtual item to scroll was not found', dataItem);
@@ -504,6 +566,13 @@ export default class VirtualScroll {
         return true;
     }
 
+    /**
+     * Scroll to the given position.
+     *
+     * @param {number} left
+     * @param {number} top
+     * @param {Boolean} [animate=false] Whether to animate the scrolling
+     */
     scrollTo(left, top, animate = false) {
         if (animate) {
             this.scroll.animateTo(left, top);
@@ -513,6 +582,16 @@ export default class VirtualScroll {
         }
     }
 
+    /**
+     * Convert the given (x,y) coordinate on screen (relative to the rectangle that the scroll view occupies),
+     * to the virtual coordinate of the content (i.e. taking the scroll offest into account).
+     *
+     * You can use this to map event coordinates onto virtual items.
+     *
+     * @param {number} x
+     * @param {number} y
+     * @return {Object} The virtual coordinates - this includes the view dimensions.
+     */
     windowCoordsToVirtualCoords(x, y) {
         let virtualX = x + this.scroll.offsetX;
         let virtualY = y + this.scroll.offsetY;
@@ -547,18 +626,18 @@ export default class VirtualScroll {
             keyboardEnabled={ this.animationDuration }
             keyboardMove={ this.keyboadMove }
             focusOnAttach={ this.focusOnAttach }
-            contentWidth={ this.contentWidth }
-            contentHeight={ this.contentHeight }
+            contentWidth={ this[_contentWidth] }
+            contentHeight={ this[_contentHeight] }
             verticalScroll={ this.verticalScroll }
             horizontalScroll={ this.horizontalScroll }
             scrollBarSize={ this.scrollBarSize }
             scrollBarMargin={ this.scrollBarMargin }
             scrollBarPadding={ this.scrollBarPadding }
-            onScroll={ () => this.refresh() }
+            onScroll={ this.refresh }
             onLog={ message => this.trigger('log', message) }
             autoScroll={ this.autoScroll }>
 
-            <repeat collection={ this.viewTypes } as={ typeInfo }>
+            <repeat collection={ this[_viewTypes] } as={ typeInfo }>
                 <RecyclerView collection={ typeInfo.items } view={ typeInfo.viewType } />
             </repeat>
 
