@@ -50,7 +50,6 @@ function upperNearest(value, pageSize, additionalPageCount) {
 }
 
 class ViewInfo {
-
     @Observable items;
 
     constructor(type, viewType) {
@@ -107,6 +106,9 @@ export default class VirtualScroll {
     @Attribute allowHtmlDrag = false;
     @Attribute interactionManager;
 
+    // Each type of view has a set of components that we recycle - we store them here:
+    [_viewTypes] = [];
+
     constructor() {
         super();
         var mapping = this.mapping;
@@ -131,13 +133,8 @@ export default class VirtualScroll {
         this[_sourceItem] = new VirtualScrollRoot({}).linkToComponent(this);
         this.listenTo(this[_sourceItem], 'setChildNeedsLayout', this[_setChildNeedsLayout]);
 
-        this.viewTypeById = {};
-        this[_viewTypes] = [];
         for (let type in mapping) {
-            const viewType = mapping[type];
-            var viewInfo = new ViewInfo(type, viewType);
-            this.viewTypeById[type] = viewInfo;
-            this[_viewTypes].push(viewInfo);
+            this[_viewTypes].push(new ViewInfo(type, mapping[type]));
         }
     }
 
@@ -455,6 +452,22 @@ export default class VirtualScroll {
         };
         this[_sourceItem].resolveBookmark(bookmark);
         return bookmark.item;
+    }
+
+    /**
+     * Get all the views of a given type (these are the concrete views, not the layout components)
+     *
+     * @param {string} type
+     * @return {Array.<BaseViewComponent>}
+     */
+    getViews(type) {
+        for (let i = 0; i < this[_viewTypes].length; i++) {
+            let viewType = this[_viewTypes][i];
+            if (viewType.type === type) {
+                return viewType.items;
+            }
+        }
+        return [];
     }
 
     /**

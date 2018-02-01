@@ -144,7 +144,7 @@ export default class PhotoVirtualScroll {
 
         let { x, y } = this.scroller.windowCoordsToVirtualCoords(event.clientX, event.clientY);
 
-        let items = this.scroller.viewTypeById.photo.items;
+        let items = this.scroller.getViews('photo');
         for (let item of items) {
             if (item.top > y) {
                 break;
