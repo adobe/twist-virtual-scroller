@@ -86,9 +86,8 @@ export default class VirtualScroll {
     @Attribute verticalScroll = false;
     @Attribute horizontalScroll = false;
 
-    @Attribute scrollComponent = ScrollContainer;
-
     @Attribute allowHtmlDrag = false;
+    @Attribute interactionManager;
 
     @Observable contentWidth = 0;
     @Observable contentHeight = 0;
@@ -110,6 +109,9 @@ export default class VirtualScroll {
         // The touch mapper is shared by the entire virtual scroll view for all interactions
         // (this includes the scroll bar itself, inside the scroll view)
         this.scope.touchMapper = this.link(new TouchMapper(this.allowHtmlDrag));
+        if (this.interactionManager) {
+            this.interactionManager._init(this.scope.touchMapper);
+        }
 
         this.sourceItem = new VirtualScrollRoot({}).linkToComponent(this);
         this.listenTo(this.sourceItem, 'setChildNeedsLayout', this.setChildNeedsLayout);
@@ -536,35 +538,31 @@ export default class VirtualScroll {
     }
 
     render() {
-        return <g>
-            <using value={ this.scrollComponent } as={ ScrollComponent }>
-                <ScrollComponent
-                    { ...this.undeclaredAttributes() }
-                    ref={ this.scroll }
-                    animation={ this.animation }
-                    animationDuration={ this.animationDuration }
-                    bind:animationEnabled={ this.animationEnabled }
-                    keyboardEnabled={ this.animationDuration }
-                    keyboardMove={ this.keyboadMove }
-                    focusOnAttach={ this.focusOnAttach }
-                    contentWidth={ this.contentWidth }
-                    contentHeight={ this.contentHeight }
-                    verticalScroll={ this.verticalScroll }
-                    horizontalScroll={ this.horizontalScroll }
-                    scrollBarSize={ this.scrollBarSize }
-                    scrollBarMargin={ this.scrollBarMargin }
-                    scrollBarPadding={ this.scrollBarPadding }
-                    onScroll={ () => this.refresh() }
-                    onLog={ message => this.trigger('log', message) }
-                    autoScroll={ this.autoScroll }>
+        return <ScrollContainer
+            { ...this.undeclaredAttributes() }
+            ref={ this.scroll }
+            animation={ this.animation }
+            animationDuration={ this.animationDuration }
+            bind:animationEnabled={ this.animationEnabled }
+            keyboardEnabled={ this.animationDuration }
+            keyboardMove={ this.keyboadMove }
+            focusOnAttach={ this.focusOnAttach }
+            contentWidth={ this.contentWidth }
+            contentHeight={ this.contentHeight }
+            verticalScroll={ this.verticalScroll }
+            horizontalScroll={ this.horizontalScroll }
+            scrollBarSize={ this.scrollBarSize }
+            scrollBarMargin={ this.scrollBarMargin }
+            scrollBarPadding={ this.scrollBarPadding }
+            onScroll={ () => this.refresh() }
+            onLog={ message => this.trigger('log', message) }
+            autoScroll={ this.autoScroll }>
 
-                    <repeat collection={ this.viewTypes } as={ typeInfo }>
-                        <RecyclerView collection={ typeInfo.items } view={ typeInfo.viewType } />
-                    </repeat>
+            <repeat collection={ this.viewTypes } as={ typeInfo }>
+                <RecyclerView collection={ typeInfo.items } view={ typeInfo.viewType } />
+            </repeat>
 
-                </ScrollComponent>
-            </using>
-        </g>;
+        </ScrollContainer>;
     }
 
 }

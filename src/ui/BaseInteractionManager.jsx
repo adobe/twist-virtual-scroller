@@ -12,16 +12,29 @@
  */
 
 import { SignalDispatcher } from '@twist/core';
-import TouchMapper from './TouchMapper';
+import TouchMapper from './internal/interaction/TouchMapper';
 
-export default class Interaction extends SignalDispatcher {
+/**
+ * An Interaction lets you manage mouse/touch interactions on the virtual scroller
+ * Subclasses should implement methods corresponding to drag events
+ *
+ * * start() - a drag event starts
+ * * update() - a drag event updates
+ * * end() - a drag event ends
+ * * click() - a click event happens
+ */
+export default class BaseInteractionManager extends SignalDispatcher {
 
     @Observable active = false;
 
-    constructor(mapper = TouchMapper.instance) {
-        super();
+    /**
+     * Called by the touch mapper to initialize the interaction (so it knows to call it when events happpen)
+     * @private
+     */
+    _init(mapper = TouchMapper.instance) {
         this.mapper = mapper;
         mapper.pushInteraction(this);
+        this.link(() => this.mapper.removeInteraction(this));
     }
 
     get touches() {
@@ -42,10 +55,5 @@ export default class Interaction extends SignalDispatcher {
 
     wait(milliseconds) {
         this.mapper.wait(milliseconds);
-    }
-
-    dispose() {
-        super.dispose();
-        this.mapper.removeInteraction(this);
     }
 }

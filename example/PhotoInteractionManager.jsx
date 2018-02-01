@@ -11,15 +11,11 @@
  *
  */
 
-//import Interaction from 'torq-interaction/Interaction';
-//TODO
-class Interaction {
-}
+@InteractionManager
+export default class PhotoInteractionManager {
 
-export default class PhotoInteraction extends Interaction {
-
-    constructor(touchMapper, dragState, photoScroller) {
-        super(touchMapper);
+    constructor(dragState, photoScroller) {
+        super();
         this.dragState = dragState;
         this.photoScroller = photoScroller;
     }

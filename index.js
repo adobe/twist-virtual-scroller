@@ -13,10 +13,12 @@
 
 // Decorators
 export { default as LayoutComponent } from './src/decorators/LayoutComponent';
+export { default as InteractionManager } from './src/decorators/InteractionManager';
 
-// UI Components
+// UI Components and related classes
 export { default as VirtualScroll } from './src/ui/VirtualScroll';
 export { default as BaseViewComponent } from './src/ui/BaseViewComponent';
+export { default as BaseInteractionManager } from './src/ui/BaseInteractionManager';
 
 // Layout
 export { default as BaseLayoutComponent } from './src/layout/BaseLayoutComponent';
@@ -26,6 +28,5 @@ export { default as ContiguousLayout } from './src/layout/ContiguousLayout';
 export { HorizontalListLayout, VerticalListLayout } from './src/layout/ListLayout';
 export { VerticalGridLayout } from './src/layout/GridLayout';
 export { HorizontalKnuthPlassLayout, VerticalKnuthPlassLayout } from './src/layout/KnuthPlassLayout';
-
 export { default as LazyLoader } from './src/layout/LazyLoader';
 export { default as StickyItem } from './src/layout/StickyItem';

@@ -11,7 +11,7 @@
  *
  */
 
-import Interaction from './Interaction';
+import BaseInteractionManager from '../../BaseInteractionManager';
 import Point from './Point';
 
 function getOffset(name, touch, target) {
@@ -29,10 +29,10 @@ function getOffset(name, touch, target) {
  * ScrollInteraction manages the behavior linking a Scroll component with its scrollbars,
  * and handles mouse/pointer/touch input.
  */
-export default class ScrollInteraction extends Interaction {
+export default class ScrollInteractionManager extends BaseInteractionManager {
 
-    constructor(touchMapper, scroll) {
-        super(touchMapper);
+    constructor(scroll) {
+        super();
         this.scroll = scroll;
     }
 

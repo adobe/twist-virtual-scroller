@@ -55,8 +55,8 @@ export default class Model {
     }
 
     moveItems(items, itemBefore, itemAfter) {
-        let beforeId = itemBefore ? itemBefore.data._id : null;
-        let afterId = itemAfter ? itemAfter.data._id : null;
+        let beforeId = itemBefore ? itemBefore.data.id : null;
+        let afterId = itemAfter ? itemAfter.data.id : null;
         let itemIds = new Set(items.map((item) => item.id));
 
         this.groups.forEach((group) => {

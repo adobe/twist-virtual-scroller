@@ -13,9 +13,7 @@
 
 import { LazyLoader, StickyItem, VerticalKnuthPlassLayout, VerticalListLayout, VirtualScroll } from '@twist/virtual-scroller';
 
-// import TouchMapper from 'torq-interaction/TouchMapper';
-
-import PhotoInteraction from './PhotoInteraction';
+import PhotoInteractionManager from './PhotoInteractionManager';
 import PhotoController from './PhotoController';
 import DragState from './DragState';
 import PhotoDrag from './PhotoDrag';
@@ -134,9 +132,8 @@ export default class PhotoVirtualScroll {
     constructor(props, context) {
         super(props, context);
 
-        //this.scope.touchMapper = this.link(new TouchMapper);
         this.scope.dragState = this.link(new DragState);
-        //this.interaction = this.link(new PhotoInteraction(this.scope.touchMapper, this.scope.dragState, this));
+        this.interactionManager = this.link(new PhotoInteractionManager(this.scope.dragState, this));
     }
 
     findDropInsertionPoint(event) {
@@ -214,6 +211,7 @@ export default class PhotoVirtualScroll {
                 animationDuration={ this.animationDuration }
                 bind:animationEnabled={ this.animationEnabled }
                 onLog={ message => this.debugLog = message }
+                interactionManager={ this.interactionManager }
                 autoScroll={ true }>
 
                 <VerticalListLayout margin={ 2 }>

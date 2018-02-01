@@ -11,7 +11,7 @@
  *
  */
 
-import ScrollInteraction from './interaction/ScrollInteraction';
+import ScrollInteractionManager from './interaction/ScrollInteractionManager';
 import InteractiveView from './interaction/InteractiveView';
 
 import KeyboardManager from './keyboard/KeyboardManager';
@@ -125,7 +125,8 @@ export default class ScrollContainer {
     constructor() {
         super();
 
-        this.scrollInteraction = this.link(new ScrollInteraction(this.scope.touchMapper, this));
+        this.scrollInteraction = this.link(new ScrollInteractionManager(this));
+        this.scrollInteraction._init(this.scope.touchMapper);
 
         this.watch(() => this.style, this.updateSize);
         this.watch(() => this.className, this.updateSize);
