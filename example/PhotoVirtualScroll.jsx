@@ -30,8 +30,8 @@ class GroupHeaderItem extends StickyItem {
 @LayoutComponent
 class PhotoItem {
 
-    constructor(props, context) {
-        super(props, context);
+    constructor() {
+        super();
         this.layoutAttributes(() => this.aspectRatio);
     }
 
@@ -65,8 +65,8 @@ class GroupHeaderView {
 @ViewComponent
 class PhotoView {
 
-    constructor(props, context) {
-        super(props, context);
+    constructor() {
+        super();
 
         // For performance reasons, we need an intermediate observable. This is a bit different from @Cache, because
         // the cost of updating is cheap, but we don't want to invalidate the watchers unless its value actually changes
