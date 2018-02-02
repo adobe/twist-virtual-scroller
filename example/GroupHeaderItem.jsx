@@ -29,7 +29,7 @@ export class GroupHeaderView {
 
     render() {
         return this.renderContainer(
-            <div>{ this.layoutItem ? this.layoutItem.data.text : null }</div>
+            <div>{ this.data && this.data.text }</div>
         );
     }
 }

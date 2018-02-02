@@ -438,12 +438,12 @@ export default class VirtualScroll {
     /**
      * Get a LayoutComponent instance based on its data. For example, when you create a layout component
      * via `<MyLayoutComponent data={ compData }/>`, then you can obtain its instance from the virtual
-     * scroller via `scroller.getLayoutItem(compData)`.
+     * scroller via `scroller.getlayoutComponent(compData)`.
      *
      * @param {Object} dataItem
      * @return {Object} LayoutComponent instance
      */
-    getLayoutItem(dataItem) {
+    getlayoutComponent(dataItem) {
         var bookmark = {
             dataItem
         };
@@ -474,17 +474,17 @@ export default class VirtualScroll {
      * @return {Object} Horizontal and vertical proportion of element that's visible
      */
     getElementVisibility(dataItem) {
-        const layoutItem = this.getLayoutItem(dataItem);
+        const layoutComponent = this.getlayoutComponent(dataItem);
 
-        if (!layoutItem) {
+        if (!layoutComponent) {
             return { horizontal: 0, vertical: 0 };
         }
 
         const virtualRect = {
-            left: layoutItem.left,
-            right: layoutItem.right,
-            top: layoutItem.top,
-            bottom: layoutItem.bottom
+            left: layoutComponent.left,
+            right: layoutComponent.right,
+            top: layoutComponent.top,
+            bottom: layoutComponent.bottom
         };
 
         const viewportRect = {
@@ -507,7 +507,7 @@ export default class VirtualScroll {
             const maxLeft = Math.max(virtualRect.left, viewportRect.left);
             const minRight = Math.min(virtualRect.right, viewportRect.right);
 
-            horizontal = (minRight - maxLeft) / layoutItem.width;
+            horizontal = (minRight - maxLeft) / layoutComponent.width;
         }
 
         // Check if the item completely covers the viewport or is completely inside on the y-axis
@@ -520,7 +520,7 @@ export default class VirtualScroll {
             const maxTop = Math.max(virtualRect.top, viewportRect.top);
             const minBottom = Math.min(virtualRect.bottom, viewportRect.bottom);
 
-            vertical = (minBottom - maxTop) / layoutItem.height;
+            vertical = (minBottom - maxTop) / layoutComponent.height;
         }
 
         return { horizontal, vertical };
@@ -550,22 +550,22 @@ export default class VirtualScroll {
      * @param {Object} [offset]
      */
     scrollToElement(dataItem, animate = false, align = { vertical: 'top', horizontal: 'left' }, offset = { left: 0, top: 0 }) {
-        const layoutItem = this.getLayoutItem(dataItem);
+        const layoutComponent = this.getlayoutComponent(dataItem);
 
-        if (!layoutItem) {
+        if (!layoutComponent) {
             console.error('Virtual item to scroll was not found', dataItem);
             return false;
         }
 
-        let scrollTop  = layoutItem.top - offset.top;
-        let scrollLeft = layoutItem.left - offset.left;
+        let scrollTop  = layoutComponent.top - offset.top;
+        let scrollLeft = layoutComponent.left - offset.left;
 
         if (align && align.vertical === 'bottom') {
-            scrollTop += layoutItem.height - this.scroll.innerHeight + 2 * offset.top;
+            scrollTop += layoutComponent.height - this.scroll.innerHeight + 2 * offset.top;
         }
 
         if (align && align.horizontal === 'right') {
-            scrollLeft += layoutItem.width - this.scroll.innerWidth + 2 * offset.left;
+            scrollLeft += layoutComponent.width - this.scroll.innerWidth + 2 * offset.left;
         }
 
         this.scrollTo(scrollLeft, scrollTop, animate);

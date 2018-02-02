@@ -18,3 +18,14 @@ To use the virtual scroller in your Twist application, you'll need to install `@
 ```
 
 Note that the virtual scroller provides UI components, and so requires an implementation of Twist components - this means that it can't be used just with Twist core, but requires a framework implementation, like [React-Twist](https://github.com/adobe/react-twist).
+
+## Example
+
+To play with the example in this repo, run:
+
+```
+npm install
+npm run watch
+```
+
+Then go to `http://localhost:9000/` in your browser.

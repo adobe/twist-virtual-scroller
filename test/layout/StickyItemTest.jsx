@@ -59,12 +59,12 @@ describe('StickyItem', () => {
 
         getContainerAttributes() {
             return {
-                id: 'view-' + (this.layoutItem && this.layoutItem.data)
+                id: 'view-' + (this.layoutComponent && this.layoutComponent.data)
             };
         }
 
         render() {
-            return this.renderContainer(<g>{this.layoutItem && this.layoutItem.data}</g>);
+            return this.renderContainer(this.data);
         }
     }
 

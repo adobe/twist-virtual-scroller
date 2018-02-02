@@ -20,9 +20,9 @@ import RecyclerView from '../../../src/ui/internal/RecyclerView';
 
 @Component
 class RecycledView {
-    @Attribute layoutItem;
+    @Attribute layoutComponent;
     render() {
-        return <div>{ this.layoutItem || '-' }</div>;
+        return <div>{ this.layoutComponent || '-' }</div>;
     }
 }
 

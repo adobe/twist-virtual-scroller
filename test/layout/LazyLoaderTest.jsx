@@ -40,7 +40,7 @@ describe('LazyLoader', () => {
         @ViewComponent
         class ItemView {
             render() {
-                return this.renderContainer(<g>{this.layoutItem && this.layoutItem.data}</g>);
+                return this.renderContainer(this.data);
             }
         }
 

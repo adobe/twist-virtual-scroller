@@ -33,10 +33,10 @@ export class PhotoView {
     @Bind
     getInsertClass() {
         let dragState = this.scope.dragState;
-        if (dragState.leftItem === this.layoutItem) {
+        if (dragState.leftItem === this.layoutComponent) {
             return 'left-insertion';
         }
-        else if (dragState.rightItem === this.layoutItem) {
+        else if (dragState.rightItem === this.layoutComponent) {
             return 'right-insertion';
         }
     }
@@ -44,14 +44,14 @@ export class PhotoView {
     getInteraction() {
         return {
             name: 'photo',
-            model: this.layoutItem ? this.layoutItem.data : null
+            model: this.data
         };
     }
 
     getContainerStyle() {
         return {
             width: '100%',
-            border: this.layoutItem && PhotoController.isSelected(this.layoutItem.data) ? '2px solid black' : 'none'
+            border: this.data && PhotoController.isSelected(this.data) ? '2px solid black' : 'none'
         };
     }
 
@@ -59,9 +59,9 @@ export class PhotoView {
         return this.renderContainer(
             <div class={ PhotoItemLess.photoViewInner } class={ this.insertClass }
                 style="width: 100%; height: 100%; padding: 10px; transform-style: preserve-3d; box-sizing: border-box"
-                style-background={ this.layoutItem ? ((this.layoutItem.data.id % 2) ? '#ccc' : '#ddd') : null }
+                style-background={ this.layoutComponent ? ((this.layoutComponent.data.id % 2) ? '#ccc' : '#ddd') : null }
             >
-                { this.layoutItem ? this.layoutItem.data.text : null }
+                { this.data && this.data.text }
             </div>
         );
     }

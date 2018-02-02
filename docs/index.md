@@ -42,18 +42,18 @@ Here's a really simple example:
 class TODOItemView {
     render() {
         // We call renderContainer to render the given view in a container with the right positioning.
-        return this.renderContainer(
-            <div>{ this.layoutItem && this.layoutItem.data.description }</div>
-        );
+        // Note that we can pass in any JSX - but in this case we're just rendering a string
+        return this.renderContainer(this.data && this.data.description);
     }
 }
 
+// The view option links the layout component to its view.
 @LayoutComponent({ view: ViewComponent })
 class TODOItem {
 }
 ```
 
-Note that the layout component registers its view component via the `view` decorator option (`@LayoutComponent({ view: ... })`), and the view component gets its corresponding layout component via the `layoutItem` attribute. You pass data to the layout component via the `data` attribute.
+When we instantiate a layout component, like `TODOItem`, we pass in some model data via a `data` attribute. The view component can then access the data via `this.data` (you can also access the corresponding layout component via `this.layoutComponent`, if you need more than just the data). Remember though that the view component might be rendered without a layout component (i.e. as a placeholder), so you need to check that `this.data` and `this.layoutComponent` are defined before you access them.
 
 Here's an example of a scrolling list of items:
 

@@ -22,7 +22,7 @@ import RecyclerView from '../../src/ui/internal/RecyclerView';
 @ViewComponent
 class ItemView {
     render() {
-        return this.renderContainer(<g>{this.layoutItem && this.layoutItem.data}</g>);
+        return this.renderContainer(this.data);
     }
 }
 
@@ -87,17 +87,17 @@ describe('Virtual Scroll', () => {
         // we can reasonably expect the visible DOM elements to be rendered in order. (This invariant no longer
         // holds when the view has been scrolled and views need to be recycled.)
         children.forEach((childText, index) => {
-            const layoutItem = scrollInnerView.children[index];
-            assert.equal(parseInt(layoutItem.style.height), Item.HEIGHT, 'virtual item should have correct height');
-            assert.equal(parseInt(layoutItem.style.width), Item.WIDTH, 'virtual item should have correct width');
-            assert.equal(layoutItem.style.visibility, 'visible', 'virtual item should be visible');
-            assert.equal(layoutItem.textContent, childText, 'virtual item should have correct text');
+            const layoutComponent = scrollInnerView.children[index];
+            assert.equal(parseInt(layoutComponent.style.height), Item.HEIGHT, 'virtual item should have correct height');
+            assert.equal(parseInt(layoutComponent.style.width), Item.WIDTH, 'virtual item should have correct width');
+            assert.equal(layoutComponent.style.visibility, 'visible', 'virtual item should be visible');
+            assert.equal(layoutComponent.textContent, childText, 'virtual item should have correct text');
         });
 
         // The rest of the views should be hidden.
         for (let i = children.length; i < testRecycler.capacity; i++) {
-            const unusedLayoutItem = scrollInnerView.children[i];
-            assert.equal(unusedLayoutItem.style.visibility, 'hidden', 'virtual items outside recycler capacity should be hidden');
+            const unusedlayoutComponent = scrollInnerView.children[i];
+            assert.equal(unusedlayoutComponent.style.visibility, 'hidden', 'virtual items outside recycler capacity should be hidden');
         }
 
         // Now, let's add more items.
@@ -120,8 +120,8 @@ describe('Virtual Scroll', () => {
         // we can count the number of visible views, which should remain constant.
         let visibleViewsCount = 0;
         for (let i = 0; i < scrollInnerView.children.length; i++) {
-            const layoutItem = scrollInnerView.children[i];
-            if (layoutItem.style.visibility === 'visible') {
+            const layoutComponent = scrollInnerView.children[i];
+            if (layoutComponent.style.visibility === 'visible') {
                 visibleViewsCount++;
             }
         }
@@ -287,7 +287,7 @@ describe('Virtual Scroll', () => {
         TaskQueue.run();
 
         // Get reference to a virtual item.
-        vItem = vs.getLayoutItem(20);
+        vItem = vs.getlayoutComponent(20);
 
         // scroll to 0, 0;
         vs.scrollTo(0, 0);
@@ -334,7 +334,7 @@ describe('Virtual Scroll', () => {
         TaskQueue.run();
 
         // Get reference to a virtual item.
-        vItem = vs.getLayoutItem(20);
+        vItem = vs.getlayoutComponent(20);
 
         // scroll to 0, 0;
         vs.scrollTo(0, 0);
@@ -381,7 +381,7 @@ describe('Virtual Scroll', () => {
         TaskQueue.run();
 
         // Get reference to a virtual item.
-        vItem = vs.getLayoutItem(20);
+        vItem = vs.getlayoutComponent(20);
 
         vs.scrollTo(0, vItem.top + vItem.height * 0.4);
         TaskQueue.run();
@@ -424,7 +424,7 @@ describe('Virtual Scroll', () => {
         TaskQueue.run();
 
         // Get reference to a virtual item.
-        vItem = vs.getLayoutItem(20);
+        vItem = vs.getlayoutComponent(20);
 
         vs.scrollTo(vItem.left + vItem.width * 0.4, 0);
         TaskQueue.run();

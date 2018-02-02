@@ -23,7 +23,7 @@ const _containerStyle = Symbol('containerStyle');
  * BaseViewComponent is the base class for creating views for items in your VirtualScroll component.
  * You should use the `@ViewComponent` decorator as a shorthand for extending this class.
  *
- * Each `ViewComponent` will be reused for rendering multiple elements; as such, its `layoutItem`
+ * Each `ViewComponent` will be reused for rendering multiple elements; as such, its `layoutComponent`
  * attribute will point to different objects, and may be `null` when a view isn't needed.
  *
  * When you extend this class, call `this.renderContainer(myJSX)` inside your render function, so that
@@ -33,27 +33,38 @@ const _containerStyle = Symbol('containerStyle');
  *     @Component
  *     class MyComponent {
  *         render() {
- *             return this.renderContainer(<g>{this.layoutItem && this.layoutItem.data}</g>);
+ *             return this.renderContainer(this.data);
  *         }
  *     }
  */
 @Component
 export default class BaseViewComponent {
 
-    @Attribute layoutItem;
+    /**
+     * The layout component that the view is currently rendering
+     * @type {BaseLayoutComponent}
+     */
+    @Attribute layoutComponent;
+
+    /**
+     * Shorthand for accessing the data on the layout component
+     */
+    get data() {
+        return this.layoutComponent && this.layoutComponent.data;
+    }
 
     get [_containerStyle]() {
         let style = this.getContainerStyle();
         style.position = 'absolute';
         style.visibility = 'hidden';
 
-        if (this.layoutItem) {
-            style.transform = this.layoutItem.fixed
-                ? translate(this.layoutItem.fixedLeft, this.layoutItem.fixedTop)
-                : translate(this.layoutItem.left, this.layoutItem.top);
+        if (this.layoutComponent) {
+            style.transform = this.layoutComponent.fixed
+                ? translate(this.layoutComponent.fixedLeft, this.layoutComponent.fixedTop)
+                : translate(this.layoutComponent.left, this.layoutComponent.top);
             style.visibility = 'visible';
-            style.width = this.layoutItem.width + 'px';
-            style.height = this.layoutItem.height + 'px';
+            style.width = this.layoutComponent.width + 'px';
+            style.height = this.layoutComponent.height + 'px';
         }
         return style;
     }
