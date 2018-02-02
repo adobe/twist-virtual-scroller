@@ -22,7 +22,7 @@ import { VerticalListLayout, VirtualScroll } from '@twist/virtual-scroller';
 
 describe('AutoScrollAnimation', () => {
 
-    @LayoutComponent
+    @LayoutComponent({ view: ItemView })
     class Item {
         updateLayout() {
             this.height = 500;
@@ -45,7 +45,7 @@ describe('AutoScrollAnimation', () => {
         let HEIGHT = 200;
 
         let domNode = render.intoBody(() =>
-            <VirtualScroll ref={vs} mapping={{ item: ItemView }} verticalScroll={true} style={`height: ${HEIGHT}px; width: 200px;`}>
+            <VirtualScroll ref={vs} verticalScroll={true} style={`height: ${HEIGHT}px; width: 200px;`}>
                 <VerticalListLayout>
                     <repeat collection={[ 1, 2, 3, 4, 5, 6 ]} as={data}>
                         <Item data={data} />

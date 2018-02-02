@@ -24,6 +24,10 @@ export default DecoratorUtils.makeClassDecorator((target, args = {}) => {
     Object.keys(DEFAULT_OPTIONS).forEach(key => {
         let value = args.hasOwnProperty(key) ? args[key] : DEFAULT_OPTIONS[key];
         target.prototype[key] = value;
+        if (key === 'view') {
+            // We also store the view on the class itself, for convenience
+            target[key] = value;
+        }
     });
 
     // If the user passed in properties we don't recognise, emit a warning

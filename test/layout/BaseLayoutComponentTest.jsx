@@ -27,8 +27,8 @@ describe('BaseLayoutComponent', () => {
         assert.equal(vitem.right, vitem.left + vitem.width);
         assert.equal(vitem.bottom, vitem.top + vitem.height);
         assert.deepEqual(vitem.toJSON(), {
-            type: 'item',
             name: 'BaseLayoutComponent',
+            viewName: undefined,
             left: 50,
             top: 20,
             width: 100,
@@ -56,6 +56,6 @@ describe('BaseLayoutComponent', () => {
         assert.equal(vitem.width, 10);
         assert.equal(vitem.height, 20);
 
-        assert.equal(BaseLayoutComponent.type, 'item');
+        assert.equal(BaseLayoutComponent.view, undefined);
     });
 });

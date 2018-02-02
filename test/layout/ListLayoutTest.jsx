@@ -40,14 +40,6 @@ describe('ListLayout', () => {
             }
         }
 
-        @LayoutComponent
-        class Item {
-            updateLayout() {
-                this.width = this.data;
-                this.height = this.data;
-            }
-        }
-
         @ViewComponent
         class ItemView {
             render() {
@@ -55,10 +47,18 @@ describe('ListLayout', () => {
             }
         }
 
+        @LayoutComponent({ view: ItemView })
+        class Item {
+            updateLayout() {
+                this.width = this.data;
+                this.height = this.data;
+            }
+        }
+
         let vs;
 
         let domNode = render.intoBody(() =>
-            <VirtualScroll ref={vs} mapping={{ item: ItemView }} verticalScroll={true} horizontalScroll={true}
+            <VirtualScroll ref={vs} verticalScroll={true} horizontalScroll={true}
                 style={`height: ${HEIGHT}px; width: ${WIDTH}px;`}>
                 <using value={ListClass} as={LayoutClass}>
                     <LayoutClass>
@@ -73,8 +73,7 @@ describe('ListLayout', () => {
         TaskQueue.run();
 
         cb(vs, function getItemViewDiv(index) {
-            // We use `index + 1` because the 0th element is the ListLayout.
-            return domNode.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
+            return domNode.firstElementChild.firstElementChild.firstElementChild.children[index];
         });
     };
 

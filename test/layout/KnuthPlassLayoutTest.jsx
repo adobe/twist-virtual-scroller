@@ -31,13 +31,6 @@ describe('KnuthPlassLayout', () => {
 
     let testLayout = (KnuthPlassClass, cb) => {
 
-        @LayoutComponent
-        class Item {
-            get aspectRatio() {
-                return this.data / SIZE;
-            }
-        }
-
         @ViewComponent
         class ItemView {
             render() {
@@ -45,8 +38,15 @@ describe('KnuthPlassLayout', () => {
             }
         }
 
+        @LayoutComponent({ view: ItemView })
+        class Item {
+            get aspectRatio() {
+                return this.data / SIZE;
+            }
+        }
+
         let domNode = render.intoBody(() =>
-            <VirtualScroll mapping={{ item: ItemView }} style={`height: ${HEIGHT}px; width: ${WIDTH}px;`}>
+            <VirtualScroll style={`height: ${HEIGHT}px; width: ${WIDTH}px;`}>
                 <using value={KnuthPlassClass} as={LayoutClass}>
                     <LayoutClass size={SIZE}>
                         <repeat collection={ITEMS} as={data}>
@@ -59,8 +59,7 @@ describe('KnuthPlassLayout', () => {
         TaskQueue.run();
 
         cb(function getItemViewDiv(index) {
-            // We use `index + 1` because the 0th element is the VerticalKnuthPlassLayout.
-            return domNode.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
+            return domNode.firstElementChild.firstElementChild.firstElementChild.children[index];
         });
     };
 

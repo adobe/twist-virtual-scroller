@@ -11,8 +11,11 @@
  *
  */
 
+/**
+ * View to display when dragging a photo
+ */
 @Component
-export default class PhotoDrag {
+export default class PhotoDragView {
     @Attribute dragState;
 
     get item() {

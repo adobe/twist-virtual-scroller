@@ -11,14 +11,32 @@
  *
  */
 
-import OverlappingLayout from '../OverlappingLayout';
+import { StickyItem } from '@twist/virtual-scroller';
 
-@VirtualComponent
-export default class VirtualScrollRoot extends OverlappingLayout {
+/**
+ * UI view for a group header
+ */
+@ViewComponent
+export class GroupHeaderView {
 
-    setNeedsLayout() {
-        super.setNeedsLayout();
-        this.trigger('setChildNeedsLayout');
+    getContainerStyle() {
+        return {
+            'backgroundColor': 'rgba(0, 0, 0, 0.3)',
+            'color': 'white',
+            'fontWeight': 'bold'
+        };
     }
 
+    render() {
+        return this.renderContainer(
+            <div>{ this.layoutItem ? this.layoutItem.data.text : null }</div>
+        );
+    }
+}
+
+/**
+ * Virtual component (for layout) for a group header
+ */
+@LayoutComponent({ view: GroupHeaderView })
+export default class GroupHeaderItem extends StickyItem {
 }

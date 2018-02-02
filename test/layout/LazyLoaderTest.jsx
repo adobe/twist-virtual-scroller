@@ -37,14 +37,6 @@ describe('LazyLoader', () => {
             return new Promise(resolve => finishLoading = resolve);
         }
 
-        @LayoutComponent
-        class Item {
-            updateLayout() {
-                this.width = REAL_WIDTH;
-                this.height = REAL_HEIGHT;
-            }
-        }
-
         @ViewComponent
         class ItemView {
             render() {
@@ -52,33 +44,50 @@ describe('LazyLoader', () => {
             }
         }
 
+        @LayoutComponent({ view: ItemView })
+        class Item {
+            updateLayout() {
+                this.width = REAL_WIDTH;
+                this.height = REAL_HEIGHT;
+            }
+        }
+
         let domNode = render.intoBody(() =>
-            <VirtualScroll mapping={{ item: ItemView }} style={`height: 100px; width: ${REAL_WIDTH}px;`}>
+            <VirtualScroll style={`height: 100px; width: ${REAL_WIDTH}px;`}>
                 <VerticalListLayout>
                     <LazyLoader loader={loader} lazyWidth={LAZY_WIDTH} lazyHeight={LAZY_HEIGHT}>
                         <repeat collection={ITEMS} as={data}>
                             <Item data={data} />
                         </repeat>
                     </LazyLoader>
+                    <Item data="afterlazy" />
                 </VerticalListLayout>
             </VirtualScroll>
         );
         TaskQueue.run();
 
         function getItemViewDiv(index) {
-            // We use `index + 1` because the 0th element is the VerticalListLayout.
-            return domNode.firstElementChild.firstElementChild.firstElementChild.children[index + 1];
+            return domNode.firstElementChild.firstElementChild.firstElementChild.children[index];
         }
 
-        assert.equal(parseInt(getItemViewDiv(0).style.width), LAZY_WIDTH);
-        assert.equal(parseInt(getItemViewDiv(0).style.height), LAZY_HEIGHT);
+        assert.equal(getItemViewDiv(0).style.transform, `translate3d(0px, ${LAZY_HEIGHT}px, 0px)`);
+        assert.equal(getItemViewDiv(0).textContent, 'afterlazy');
+        assert.equal(getItemViewDiv(1).style.visibility, 'hidden');
         finishLoading();
 
         setTimeout(() => {
             TaskQueue.run();
-            assert.equal(parseInt(getItemViewDiv(0).style.width), REAL_WIDTH);
-            assert.equal(parseInt(getItemViewDiv(0).style.height), REAL_HEIGHT);
-            assert.equal(getItemViewDiv(0).textContent, ITEMS[0]);
+
+            // Item after lazy block should have its position updated
+            assert.equal(getItemViewDiv(0).style.transform, `translate3d(0px, ${REAL_HEIGHT * ITEMS.length}px, 0px)`);
+            assert.equal(getItemViewDiv(0).textContent, 'afterlazy');
+
+            // Lazy items should be there
+            ITEMS.forEach((item, i) => {
+                assert.equal(parseInt(getItemViewDiv(i + 1).style.width), REAL_WIDTH);
+                assert.equal(parseInt(getItemViewDiv(i + 1).style.height), REAL_HEIGHT);
+                assert.equal(getItemViewDiv(i + 1).textContent, item);
+            });
             done();
         });
     });

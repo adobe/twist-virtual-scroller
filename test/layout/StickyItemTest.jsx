@@ -54,21 +54,6 @@ describe('StickyItem', () => {
         assert.equal(item.height, 100);
     });
 
-    class Sticky extends StickyItem {
-        updateLayout() {
-            this.width = this.stickyWidth;
-            this.height = this.stickyHeight;
-        }
-    }
-
-    @LayoutComponent
-    class Item {
-        @Attribute itemHeight;
-        updateLayout() {
-            this.height = this.itemHeight;
-        }
-    }
-
     @ViewComponent
     class ItemView {
 
@@ -80,6 +65,22 @@ describe('StickyItem', () => {
 
         render() {
             return this.renderContainer(<g>{this.layoutItem && this.layoutItem.data}</g>);
+        }
+    }
+
+    @LayoutComponent({ view: ItemView })
+    class Item {
+        @Attribute itemHeight;
+        updateLayout() {
+            this.height = this.itemHeight;
+        }
+    }
+
+    @LayoutComponent({ view: ItemView })
+    class Sticky extends StickyItem {
+        updateLayout() {
+            this.width = this.stickyWidth;
+            this.height = this.stickyHeight;
         }
     }
 
@@ -96,7 +97,7 @@ describe('StickyItem', () => {
         let vs;
 
         render.intoBody(() =>
-            <VirtualScroll ref={vs} mapping={{ item: ItemView }} verticalScroll={true} horizontalScroll={true}
+            <VirtualScroll ref={vs} verticalScroll={true} horizontalScroll={true}
                 style={`height: ${HEIGHT}px; width: ${WIDTH}px;`}>
                 <VerticalListLayout>
                     <repeat collection={SECTIONS} as={section}>

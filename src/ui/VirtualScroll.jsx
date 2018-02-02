@@ -11,7 +11,7 @@
  *
  */
 
-import { ObjectId } from '@twist/core';
+import { ObjectId, ObservableArray } from '@twist/core';
 import ScrollContainer from './internal/ScrollContainer';
 import RecyclerView from './internal/RecyclerView';
 import TouchMapper from './internal/interaction/TouchMapper';
@@ -52,9 +52,8 @@ function upperNearest(value, pageSize, additionalPageCount) {
 class ViewInfo {
     @Observable items;
 
-    constructor(type, viewType) {
-        this.type = type;
-        this.viewType = viewType;
+    constructor(viewClass) {
+        this.viewClass = viewClass;
     }
 }
 
@@ -74,7 +73,7 @@ const _setChildNeedsLayout = Symbol('setChildNeedsLayout');
 // Private properties
 const _childNeedsLayout = Symbol('childNeedsLayout');
 const _sourceItem = Symbol('sourceItem');
-const _viewTypes = Symbol('viewTypes');
+const _views = Symbol('views');
 const _savedLayoutBookmark = Symbol('savedLayoutBookmark');
 
 
@@ -85,7 +84,6 @@ const _savedLayoutBookmark = Symbol('savedLayoutBookmark');
 @Component({ events: [ 'log' ] })
 export default class VirtualScroll {
 
-    @Attribute mapping;
     @Attribute margin = 0;
     @Attribute focusOnAttach = true;
     @Attribute autoScroll = false;
@@ -107,15 +105,10 @@ export default class VirtualScroll {
     @Attribute interactionManager;
 
     // Each type of view has a set of components that we recycle - we store them here:
-    [_viewTypes] = [];
+    [_views] = new ObservableArray;
 
     constructor() {
         super();
-        var mapping = this.mapping;
-        if (!mapping) {
-            console.warn('You need to provide a mapping.');
-            return;
-        }
 
         var children = this.children;
         if (!children) {
@@ -132,10 +125,6 @@ export default class VirtualScroll {
 
         this[_sourceItem] = new VirtualScrollRoot({}).linkToComponent(this);
         this.listenTo(this[_sourceItem], 'setChildNeedsLayout', this[_setChildNeedsLayout]);
-
-        for (let type in mapping) {
-            this[_viewTypes].push(new ViewInfo(type, mapping[type]));
-        }
     }
 
     /**
@@ -334,21 +323,29 @@ export default class VirtualScroll {
                     }
                 }
 
-                // Add the item to the list corresponding to its item type.
-                var viewCollection = collections[item.type];
-                if (viewCollection) {
-                    viewCollection.push(item);
+                if (!item.view) {
+                    // Ignore items that don't have a corresponding view
+                    return;
                 }
+
+                // Add the item to the list corresponding to its item type.
+                var viewCollection = collections[ObjectId.get(item.view)];
+                if (!viewCollection) {
+                    // If we discovered a new type of view, create an entry for it
+                    this[_views].push(new ViewInfo(item.view));
+                    viewCollection = collections[ObjectId.get(item.view)] = [];
+                }
+                viewCollection.push(item);
             };
 
             var addStickyContainer = (item) => {
                 if (!stickyContainers) {
-                    stickyContainers = this.stickyContainers = [ ];
+                    stickyContainers = this.stickyContainers = [];
                 }
                 stickyContainers.push(item);
             };
 
-            this[_viewTypes].forEach((typeInfo) => collections[typeInfo.type] = [ ]);
+            this[_views].forEach(viewInfo => collections[ObjectId.get(viewInfo.viewClass)] = []);
             // Start visiting the tree of items, starting at the root. Layouts will look at the items they contain,
             // and compare themselves to this rectangle; items that touch this rectangle should be passed to `addItem`.
             sourceItem.collect({ left, right, top, bottom, addItem, addStickyContainer });
@@ -360,7 +357,7 @@ export default class VirtualScroll {
             pendingMap[key].stopPendingItem();
         }
 
-        this[_viewTypes].forEach((typeInfo) => typeInfo.items = collections[typeInfo.type]);
+        this[_views].forEach(viewInfo => viewInfo.items = collections[ObjectId.get(viewInfo.viewClass)]);
 
         this[_childNeedsLayout] = false;
     }
@@ -455,19 +452,15 @@ export default class VirtualScroll {
     }
 
     /**
-     * Get all the views of a given type (these are the concrete views, not the layout components)
+     * Get all the views of a given layout class (these are the concrete views, not the layout components)
      *
-     * @param {string} type
+     * @param {class} layoutClass
      * @return {Array.<BaseViewComponent>}
      */
-    getViews(type) {
-        for (let i = 0; i < this[_viewTypes].length; i++) {
-            let viewType = this[_viewTypes][i];
-            if (viewType.type === type) {
-                return viewType.items;
-            }
-        }
-        return [];
+    getViews(layoutClass) {
+        let viewClass = layoutClass && layoutClass.view;
+        let viewInfo = this[_views].find(viewInfo => viewInfo.viewClass === viewClass);
+        return viewInfo ? viewInfo.items : [];
     }
 
     /**
@@ -650,8 +643,8 @@ export default class VirtualScroll {
             onLog={ message => this.trigger('log', message) }
             autoScroll={ this.autoScroll }>
 
-            <repeat collection={ this[_viewTypes] } as={ typeInfo }>
-                <RecyclerView collection={ typeInfo.items } view={ typeInfo.viewType } />
+            <repeat collection={ this[_views] } as={ viewInfo }>
+                <RecyclerView collection={ viewInfo.items } view={ viewInfo.viewClass } />
             </repeat>
 
         </ScrollContainer>;

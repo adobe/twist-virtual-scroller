@@ -11,114 +11,26 @@
  *
  */
 
-import { LazyLoader, StickyItem, VerticalKnuthPlassLayout, VerticalListLayout, VirtualScroll } from '@twist/virtual-scroller';
+import { LazyLoader, VerticalKnuthPlassLayout, VerticalListLayout, VirtualScroll } from '@twist/virtual-scroller';
+
+import PhotoItem from './PhotoItem';
+import GroupHeaderItem from './GroupHeaderItem';
 
 import PhotoInteractionManager from './PhotoInteractionManager';
-import PhotoController from './PhotoController';
-import DragState from './DragState';
-import PhotoDrag from './PhotoDrag';
-import PhotoVirtualScrollLess from './PhotoVirtualScroll.less';
+import PhotoDragState from './PhotoDragState';
+import PhotoDragView from './PhotoDragView';
 
-@Prototype({ type: 'groupHeader' })
-@LayoutComponent
-class GroupHeaderItem extends StickyItem {
-}
-
-@Prototype({ type: 'photo' })
-@LayoutComponent
-class PhotoItem {
-
-    constructor() {
-        super();
-        this.layoutAttributes(() => this.aspectRatio);
-    }
-
-    get aspectRatio() {
-        return this.data.aspectRatio;
-    }
-}
-
-@ViewComponent
-class GroupHeaderView {
-
-    getContainerStyle() {
-        return {
-            'backgroundColor': 'rgba(0, 0, 0, 0.3)',
-            'color': 'white',
-            'fontWeight': 'bold'
-        };
-    }
-
-    getInteraction() {
-        return 0;
-    }
+// Note: ScrollLog has to be a separate view since it re-renders on every scroll event. If we
+// don't separate it out, it would cause the entire virtual scroller to re-render on every scroll
+// event, which is too expensive.
+@Component
+class ScrollLog {
+    @Attribute view;
 
     render() {
-        return this.renderContainer(
-            <div>{ this.layoutItem ? this.layoutItem.data.text : null }</div>
-        );
+        return <pre>{ (this.view && this.view.debugLog) || ' ' }</pre>;
     }
 }
-
-@ViewComponent
-class PhotoView {
-
-    constructor() {
-        super();
-
-        // For performance reasons, we need an intermediate observable. This is a bit different from @Cache, because
-        // the cost of updating is cheap, but we don't want to invalidate the watchers unless its value actually changes
-        this.watch(this.getInsertClass, newValue => this.insertClass = newValue);
-    }
-
-    @Observable insertClass;
-
-    @Bind
-    getInsertClass() {
-        let dragState = this.scope.dragState;
-        if (dragState.leftItem === this.layoutItem) {
-            return 'left-insertion';
-        }
-        else if (dragState.rightItem === this.layoutItem) {
-            return 'right-insertion';
-        }
-    }
-
-    getInteraction() {
-        return {
-            name: 'photo',
-            model: this.layoutItem ? this.layoutItem.data : null
-        };
-    }
-
-    getContainerStyle() {
-        return {
-            width: '100%',
-            border: this.layoutItem && PhotoController.isSelected(this.layoutItem.data) ? '2px solid black' : 'none'
-        };
-    }
-
-    render() {
-        return this.renderContainer(
-            <div class={ PhotoVirtualScrollLess.photoViewInner } class={ this.insertClass }
-                style="width: 100%; height: 100%; padding: 10px; transform-style: preserve-3d; box-sizing: border-box"
-                style-background={ this.layoutItem ? ((this.layoutItem.data.id % 2) ? '#ccc' : '#ddd') : null }
-            >
-                { this.layoutItem ? this.layoutItem.data.text : null }
-            </div>
-        );
-    }
-}
-
-// We create a mapping in order to separate three things:
-// 1. Data model -> The layout will look at data and create virtual items.
-// 2. Layout -> Computes by the list of virtual items.
-// 3. View -> We recycle the views based on their types. The mapping below is used to
-// define the mapping from virtual items to actual views.
-var Mapping = {
-    [PhotoItem.type]: PhotoView,
-    [GroupHeaderItem.type]: GroupHeaderView
-};
 
 @Component
 export default class PhotoVirtualScroll {
@@ -132,7 +44,7 @@ export default class PhotoVirtualScroll {
     constructor(props, context) {
         super(props, context);
 
-        this.scope.dragState = this.link(new DragState);
+        this.scope.dragState = this.link(new PhotoDragState);
         this.interactionManager = this.link(new PhotoInteractionManager(this.scope.dragState, this));
     }
 
@@ -144,7 +56,7 @@ export default class PhotoVirtualScroll {
 
         let { x, y } = this.scroller.windowCoordsToVirtualCoords(event.clientX, event.clientY);
 
-        let items = this.scroller.getViews('photo');
+        let items = this.scroller.getViews(PhotoItem);
         for (let item of items) {
             if (item.top > y) {
                 break;
@@ -201,12 +113,11 @@ export default class PhotoVirtualScroll {
             </label>
             */}
             <ScrollLog view={ this } />
-            <PhotoDrag dragState={ this.scope.dragState } />
+            <PhotoDragView dragState={ this.scope.dragState } />
             <VirtualScroll
                 ref={ this.scroller }
                 style="width: 90%; height: 800px; box-sizing: border-box; border: 1px solid #ccc"
                 verticalScroll={ true }
-                mapping={ Mapping }
                 animation={ this.animation }
                 animationDuration={ this.animationDuration }
                 bind:animationEnabled={ this.animationEnabled }
@@ -216,7 +127,9 @@ export default class PhotoVirtualScroll {
 
                 <VerticalListLayout margin={ 2 }>
                     <if condition={ !!this.model }>
-                        <VirtualGroups model={ this.model }/>
+                        <repeat collection={ this.model.groups } as={ group }>
+                            <VirtualGroup group={ group } />
+                        </repeat>
                     </if>
                 </VerticalListLayout>
 
@@ -226,29 +139,18 @@ export default class PhotoVirtualScroll {
 }
 
 @Component
-class ScrollLog {
-    @Attribute view;
+class VirtualGroup {
+    @Attribute group
 
     render() {
-        return <pre>{ (this.view && this.view.debugLog) || ' ' }</pre>;
-    }
-}
+        return <LazyLoader lazyHeight={ 500 }>
+            <GroupHeaderItem data={{ text: `Group ${this.group.id}` }} stickyHeight={ 50 } />
 
-@Component
-class VirtualGroups {
-    @Attribute model
-
-    render() {
-        return <repeat collection={ this.model.groups } as={ group, index }>
-            <LazyLoader key={ index } lazyHeight={ 500 }>
-                <GroupHeaderItem data={{ text: `Group ${group.id}` }} stickyHeight={ 50 } />
-
-                <VerticalKnuthPlassLayout margin={ 2 } size={ 120 }>
-                    <repeat collection={ group.items } as={ item } >
-                        <PhotoItem data={ item } />
-                    </repeat>
-                </VerticalKnuthPlassLayout>
-            </LazyLoader>
-        </repeat>;
+            <VerticalKnuthPlassLayout margin={ 2 } size={ 120 }>
+                <repeat collection={ this.group.items } as={ item } >
+                    <PhotoItem data={ item } />
+                </repeat>
+            </VerticalKnuthPlassLayout>
+        </LazyLoader>;
     }
 }

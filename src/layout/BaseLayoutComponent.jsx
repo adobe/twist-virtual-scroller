@@ -22,9 +22,6 @@ export function inRange(value, left, right) {
  * - you can use the `@ViewComponent` decorator for this) would be recycled and reused as the
  * VirtualScroll view scrolls.
  */
-@Prototype({
-    type: 'item'
-})
 @VirtualComponent
 export default class BaseLayoutComponent {
 
@@ -162,8 +159,8 @@ export default class BaseLayoutComponent {
 
     toJSON() {
         return {
-            type: this.type,
             name: this.constructor.name,
+            viewName: this.view && this.view.constructor.name,
             left: this.left,
             top: this.top,
             width: this.width,
