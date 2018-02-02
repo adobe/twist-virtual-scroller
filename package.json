@@ -12,7 +12,9 @@
     "test": "karma start --browsers Firefox --single-run",
     "test:watch": "karma start --browsers Firefox",
     "linter": "eslint --ext .js,.jsx .",
-    "linter:fix": "eslint --ext .js,.jsx . --fix"
+    "linter:fix": "eslint --ext .js,.jsx . --fix",
+    "preversion": "npm run linter && npm run test",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {},
   "peerDependencies": {
