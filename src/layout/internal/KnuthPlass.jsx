@@ -11,27 +11,23 @@
  *
  */
 
-// Converted from coffeescript using http://coffeescript.org/
+const SHORT_THRESHOLD = 0.5;
+const SNAP_POINTS = [ [ 1, 4, 1.0 ], [ 1, 3, 1.0 ], [ 1, 2, 1.25 ], [ 2, 3, 1.0 ], [ 3, 4, 1.0 ] ];
 
-var KnuthPlass;
+export default class KnuthPlass {
 
-KnuthPlass = (function() {
-    KnuthPlass.prototype.SHORT_THRESHOLD = 0.5;
-
-    KnuthPlass.prototype.SNAP_POINTS = [ [ 1, 4, 1.0 ], [ 1, 3, 1.0 ], [ 1, 2, 1.25 ], [ 2, 3, 1.0 ], [ 3, 4, 1.0 ] ];
-
-    function KnuthPlass(getAspectRatio) {
+    constructor(getAspectRatio) {
         this.getAspectRatio = getAspectRatio;
     }
 
-    KnuthPlass.prototype._calculateBadness = function(availableWidth, contentWidth, isLast, shortLastLinePenalty) {
+    _calculateBadness(availableWidth, contentWidth, isLast, shortLastLinePenalty) {
         var badness, isShort;
         if (contentWidth < availableWidth * 0.1) {
             return 1000;
         }
         else {
             badness = this._calculateDelta(availableWidth, contentWidth);
-            isShort = contentWidth < availableWidth * this.SHORT_THRESHOLD;
+            isShort = contentWidth < availableWidth * SHORT_THRESHOLD;
             if (isShort) {
                 if (isLast) {
                     badness *= shortLastLinePenalty;
@@ -42,9 +38,9 @@ KnuthPlass = (function() {
             }
             return badness;
         }
-    };
+    }
 
-    KnuthPlass.prototype._calculateDelta = function(availableWidth, contentWidth) {
+    _calculateDelta(availableWidth, contentWidth) {
         var delta;
         delta = contentWidth - availableWidth;
         if (contentWidth < availableWidth) {
@@ -54,55 +50,46 @@ KnuthPlass = (function() {
             delta /= availableWidth;
         }
         return delta * delta;
-    };
+    }
 
-    KnuthPlass.prototype._calculateShortLastLinePenalty = function(assets, rowWidth, cellHeight) {
-        var asset, i, k, maxCells, minCells, numAssets, penalty, ref, width;
-        numAssets = assets.length;
-        minCells = 0;
-        maxCells = 2 * Math.ceil(rowWidth / cellHeight);
-        for (i = k = 0, ref = Math.min(maxCells, numAssets - 1); k <= ref; i = k += 1) {
-            asset = assets[numAssets - 1 - i];
-            width = this.getAspectRatio(asset) * cellHeight;
+    _calculateShortLastLinePenalty(assets, rowWidth, cellHeight) {
+        let numAssets = assets.length;
+        let minCells = 0;
+        let maxCells = 2 * Math.ceil(rowWidth / cellHeight);
+        for (var i = 0, k = 0, ref = Math.min(maxCells, numAssets - 1); k <= ref; i = k += 1) {
+            let asset = assets[numAssets - 1 - i];
+            let width = this.getAspectRatio(asset) * cellHeight;
             if (width >= rowWidth) {
                 break;
             }
         }
-        penalty = (i - minCells) / (maxCells - minCells);
+        let penalty = (i - minCells) / (maxCells - minCells);
         return penalty * penalty;
-    };
+    }
 
-    KnuthPlass.prototype.calculateBreaks = function(assets, rowWidth, cellGap, cellHeight) {
-        var aspectRatio, asset, availableWidth, badness, bestBadness, bestBreak, breaks, contentWidth, currentBestBadness, currentBestBreak, currentBreak, i, isLast, j, k, l, len, len1, len2, m, maxCellWidth, minCellWidth, numAssets, numCells, o, previousBreak, shortLastLinePenalty, totalWidth, width, widths;
-        minCellWidth = cellHeight * 0.80;
-        numAssets = assets.length;
-        maxCellWidth = rowWidth * 1.1;
-        shortLastLinePenalty = this._calculateShortLastLinePenalty(assets, rowWidth, cellHeight);
-        totalWidth = new Array(numAssets);
-        width = 0;
-        for (i = k = 0, len = assets.length; k < len; i = ++k) {
-            asset = assets[i];
-            aspectRatio = this.getAspectRatio(asset);
+    calculateBreaks(assets, rowWidth, cellGap, cellHeight) {
+        let minCellWidth = cellHeight * 0.80;
+        let numAssets = assets.length;
+        let maxCellWidth = rowWidth * 1.1;
+        let shortLastLinePenalty = this._calculateShortLastLinePenalty(assets, rowWidth, cellHeight);
+        let totalWidth = new Array(numAssets);
+        let width = 0;
+        for (let i = 0, k = 0, len = assets.length; k < len; i = ++k) {
+            let asset = assets[i];
+            let aspectRatio = this.getAspectRatio(asset);
             width += Math.max(minCellWidth, Math.min(maxCellWidth, aspectRatio * cellHeight));
             totalWidth[i] = width;
         }
-        bestBadness = new Array(numAssets);
-        bestBreak = new Array(numAssets);
-        for (i = l = 0, len1 = assets.length; l < len1; i = ++l) {
-            asset = assets[i];
-            isLast = i === numAssets - 1;
-            if (i === 0) {
-                contentWidth = totalWidth[i];
-                currentBestBadness = 0;
-            }
-            else {
-                contentWidth = totalWidth[i] - totalWidth[i - 1];
-                currentBestBadness = bestBadness[i - 1];
-            }
+        let bestBadness = new Array(numAssets);
+        let bestBreak = new Array(numAssets);
+        for (let i = 0, l = 0, len1 = assets.length; l < len1; i = ++l) {
+            let isLast = i === numAssets - 1;
+            let contentWidth = i === 0 ? totalWidth[i] : totalWidth[i] - totalWidth[i - 1];
+            let currentBestBadness = i === 0 ? 0 : bestBadness[i - 1];
             currentBestBadness += this._calculateBadness(rowWidth, contentWidth, isLast, shortLastLinePenalty);
-            currentBestBreak = i - 1;
-            availableWidth = rowWidth;
-            for (j = m = i - 2; m >= -1; j = m += -1) {
+            let currentBestBreak = i - 1;
+            let availableWidth = rowWidth;
+            for (let j = i - 2, m = j; m >= -1; j = m += -1) {
                 availableWidth -= cellGap;
                 if (availableWidth <= 0) {
                     break;
@@ -111,14 +98,13 @@ KnuthPlass = (function() {
                     contentWidth = totalWidth[i];
                 }
                 else {
-                    numCells = i - j;
                     contentWidth = totalWidth[i] - totalWidth[j];
                 }
-                numCells = i - j;
+                let numCells = i - j;
                 if (numCells >= 5 && availableWidth * 2 < contentWidth) {
                     break;
                 }
-                badness = 0;
+                let badness = 0;
                 if (j > -1) {
                     badness += bestBadness[j];
                 }
@@ -131,15 +117,15 @@ KnuthPlass = (function() {
             bestBadness[i] = currentBestBadness;
             bestBreak[i] = currentBestBreak;
         }
-        breaks = [];
-        currentBreak = numAssets - 1;
+        let breaks = [];
+        let currentBreak = numAssets - 1;
         while (currentBreak >= 0) {
             breaks.unshift(currentBreak);
             currentBreak = bestBreak[currentBreak];
         }
-        widths = [];
-        previousBreak = -1;
-        for (o = 0, len2 = breaks.length; o < len2; o++) {
+        let widths = [];
+        let previousBreak = -1;
+        for (let o = 0, len2 = breaks.length; o < len2; o++) {
             currentBreak = breaks[o];
             if (previousBreak === -1) {
                 width = totalWidth[currentBreak];
@@ -151,31 +137,30 @@ KnuthPlass = (function() {
             previousBreak = currentBreak;
         }
         return [ breaks, widths ];
-    };
+    }
 
-    KnuthPlass.prototype.calculateRowLayout = function(assets, contentWidth, rowWidth, startPosition, endPosition, cellGap, cellHeight, snapThreshold) {
-        var SNAP_POINTS, aspectRatio, aspectRatios, asset, availableWidth, averageCellWidth, bestSnapDelta, bestSnapIndex, bestSnapPosition, cellEndPosition, deltaAdjust, denominator, evenCellWidth, i, isShort, k, l, leftAssets, leftSnapFraction, leftSnapThreshold, leftWidths, len, len1, len2, len3, m, maxAspectRatio, minAspectRatio, minCellWidth, minimumWidth, n, numAssets, numerator, o, p, q, r, ref, ref1, ref2, rightAssets, rightSnapFraction, rightSnapThreshold, rightWidths, scale, shortThresholdWidth, snap, snapDelta, snapPosition, subdivisions, totalMinimumWidth, totalWidth, width, widths, x;
+    calculateRowLayout(assets, contentWidth, rowWidth, startPosition, endPosition, cellGap, cellHeight, snapThreshold) {
         if (snapThreshold === null || snapThreshold === undefined) {
             snapThreshold = 0.05;
         }
-        SNAP_POINTS = this.SNAP_POINTS;
-        minCellWidth = 0.80 * cellHeight;
-        numAssets = assets.length;
-        aspectRatios = new Array(numAssets);
-        for (i = k = 0, len = assets.length; k < len; i = ++k) {
-            asset = assets[i];
+        let minCellWidth = 0.80 * cellHeight;
+        let numAssets = assets.length;
+        let aspectRatios = new Array(numAssets);
+        for (let i = 0, k = 0, len = assets.length; k < len; i = ++k) {
+            let asset = assets[i];
             aspectRatios[i] = this.getAspectRatio(asset);
         }
-        minAspectRatio = Math.min.apply(Math, aspectRatios);
-        maxAspectRatio = Math.max.apply(Math, aspectRatios);
-        availableWidth = (endPosition - startPosition) - (numAssets - 1) * cellGap;
-        shortThresholdWidth = availableWidth * this.SHORT_THRESHOLD;
-        isShort = contentWidth < shortThresholdWidth;
+        let minAspectRatio = Math.min.apply(Math, aspectRatios);
+        let maxAspectRatio = Math.max.apply(Math, aspectRatios);
+        let availableWidth = (endPosition - startPosition) - (numAssets - 1) * cellGap;
+        let shortThresholdWidth = availableWidth * SHORT_THRESHOLD;
+        let isShort = contentWidth < shortThresholdWidth;
+        let subdivisions = 0;
         if (minAspectRatio > 0.95 * maxAspectRatio) {
             subdivisions = numAssets;
             if (isShort) {
-                averageCellWidth = contentWidth / numAssets;
-                n = Math.floor(availableWidth / averageCellWidth);
+                let averageCellWidth = contentWidth / numAssets;
+                let n = Math.floor(availableWidth / averageCellWidth);
                 if (n >= numAssets) {
                     if (this._calculateDelta(availableWidth, averageCellWidth * n) < this._calculateDelta(availableWidth, averageCellWidth * (n + 1))) {
                         subdivisions = n;
@@ -190,10 +175,11 @@ KnuthPlass = (function() {
             }
         }
         if (subdivisions > 0) {
-            widths = new Array(numAssets);
-            evenCellWidth = availableWidth / subdivisions;
-            x = startPosition;
-            for (i = l = 0, ref = numAssets - 1; l <= ref; i = l += 1) {
+            let widths = new Array(numAssets);
+            let evenCellWidth = availableWidth / subdivisions;
+            let x = startPosition;
+            let width;
+            for (let i = 0, l = 0, ref = numAssets - 1; l <= ref; i = l += 1) {
                 width = Math.round(startPosition + (i * cellGap) + (i + 1) * evenCellWidth) - x;
                 widths[i] = width;
                 x += width + cellGap;
@@ -201,79 +187,72 @@ KnuthPlass = (function() {
             if (subdivisions === numAssets) {
                 widths[numAssets - 1] = endPosition - (x - width - cellGap);
             }
+            return widths;
+        }
+        if (isShort) {
+            let widths = new Array(numAssets);
+            for (let i = 0, m = 0, len1 = assets.length; m < len1; i = ++m) {
+                let asset = assets[i];
+                widths[i] = Math.floor(this.getAspectRatio(asset) * cellHeight);
+            }
+            return widths;
+        }
+        let totalWidth = new Array(numAssets);
+        let width = 0;
+        for (let i = 0, o = 0, len2 = aspectRatios.length; o < len2; i = ++o) {
+            let aspectRatio = aspectRatios[i];
+            width += Math.max(minCellWidth, Math.min(aspectRatio * cellHeight, rowWidth * 1.1));
+            totalWidth[i] = width;
+        }
+        let totalMinimumWidth, scale;
+        if (contentWidth < availableWidth) {
+            totalMinimumWidth = (minCellWidth * numAssets) * 0.75;
+            scale = (availableWidth - totalMinimumWidth) / (contentWidth - totalMinimumWidth);
         }
         else {
-            if (isShort) {
-                widths = new Array(numAssets);
-                for (i = m = 0, len1 = assets.length; m < len1; i = ++m) {
-                    asset = assets[i];
-                    widths[i] = Math.floor(this.getAspectRatio(asset) * cellHeight);
-                }
-            }
-            else {
-                totalWidth = new Array(numAssets);
-                width = 0;
-                for (i = o = 0, len2 = aspectRatios.length; o < len2; i = ++o) {
-                    aspectRatio = aspectRatios[i];
-                    width += Math.max(minCellWidth, Math.min(aspectRatio * cellHeight, rowWidth * 1.1));
-                    totalWidth[i] = width;
-                }
-                if (contentWidth < availableWidth) {
-                    totalMinimumWidth = (minCellWidth * numAssets) * 0.75;
-                    scale = (availableWidth - totalMinimumWidth) / (contentWidth - totalMinimumWidth);
-                }
-                else {
-                    totalMinimumWidth = 0;
-                    scale = availableWidth / contentWidth;
-                }
-                bestSnapDelta = snapThreshold * rowWidth;
-                bestSnapIndex = -1;
-                for (i = p = 0, ref1 = numAssets - 2; p <= ref1; i = p += 1) {
-                    minimumWidth = (totalMinimumWidth / numAssets) * (i + 1);
-                    cellEndPosition = startPosition + minimumWidth + (i * cellGap) + scale * (totalWidth[i] - minimumWidth);
-                    for (q = 0, len3 = SNAP_POINTS.length; q < len3; q++) {
-                        snap = SNAP_POINTS[q];
-                        numerator = snap[0];
-                        denominator = snap[1];
-                        deltaAdjust = snap[2];
-                        snapPosition = Math.round((numerator / denominator) * (rowWidth - (denominator - 1) * cellGap) + (numerator - 1) * cellGap);
-                        snapDelta = Math.abs(cellEndPosition - snapPosition) / deltaAdjust;
-                        if (snapDelta < bestSnapDelta) {
-                            bestSnapPosition = snapPosition;
-                            bestSnapDelta = snapDelta;
-                            bestSnapIndex = i;
-                        }
-                    }
-                }
-                if (bestSnapIndex >= 0) {
-                    leftAssets = assets.slice(0, bestSnapIndex + 1);
-                    rightAssets = assets.slice(bestSnapIndex + 1);
-                    leftSnapFraction = (bestSnapPosition - startPosition) / (endPosition - startPosition);
-                    rightSnapFraction = (endPosition - bestSnapPosition) / (endPosition - startPosition);
-                    leftSnapThreshold = snapThreshold * leftSnapFraction * (2 - leftSnapFraction);
-                    rightSnapThreshold = snapThreshold * rightSnapFraction * (2 - rightSnapFraction);
-                    leftWidths = this.calculateRowLayout(leftAssets, totalWidth[bestSnapIndex], rowWidth, startPosition, bestSnapPosition, cellGap, cellHeight, leftSnapThreshold);
-                    rightWidths = this.calculateRowLayout(rightAssets, totalWidth[numAssets - 1] - totalWidth[bestSnapIndex], rowWidth, bestSnapPosition + cellGap, endPosition, cellGap, cellHeight, rightSnapThreshold);
-                    widths = leftWidths.concat(rightWidths);
-                }
-                else {
-                    widths = new Array(numAssets);
-                    x = startPosition;
-                    for (i = r = 0, ref2 = numAssets - 2; r <= ref2; i = r += 1) {
-                        minimumWidth = (totalMinimumWidth / numAssets) * (i + 1);
-                        width = Math.round(startPosition + minimumWidth + (i * cellGap) + scale * (totalWidth[i] - minimumWidth)) - x;
-                        widths[i] = width;
-                        x += width + cellGap;
-                    }
-                    widths[numAssets - 1] = endPosition - x;
+            totalMinimumWidth = 0;
+            scale = availableWidth / contentWidth;
+        }
+        let bestSnapPosition;
+        let bestSnapDelta = snapThreshold * rowWidth;
+        let bestSnapIndex = -1;
+        for (let i = 0, p = 0, ref1 = numAssets - 2; p <= ref1; i = p += 1) {
+            let minimumWidth = (totalMinimumWidth / numAssets) * (i + 1);
+            let cellEndPosition = startPosition + minimumWidth + (i * cellGap) + scale * (totalWidth[i] - minimumWidth);
+            for (let q = 0, len3 = SNAP_POINTS.length; q < len3; q++) {
+                let snap = SNAP_POINTS[q];
+                let numerator = snap[0];
+                let denominator = snap[1];
+                let deltaAdjust = snap[2];
+                let snapPosition = Math.round((numerator / denominator) * (rowWidth - (denominator - 1) * cellGap) + (numerator - 1) * cellGap);
+                let snapDelta = Math.abs(cellEndPosition - snapPosition) / deltaAdjust;
+                if (snapDelta < bestSnapDelta) {
+                    bestSnapPosition = snapPosition;
+                    bestSnapDelta = snapDelta;
+                    bestSnapIndex = i;
                 }
             }
         }
+        if (bestSnapIndex >= 0) {
+            let leftAssets = assets.slice(0, bestSnapIndex + 1);
+            let rightAssets = assets.slice(bestSnapIndex + 1);
+            let leftSnapFraction = (bestSnapPosition - startPosition) / (endPosition - startPosition);
+            let rightSnapFraction = (endPosition - bestSnapPosition) / (endPosition - startPosition);
+            let leftSnapThreshold = snapThreshold * leftSnapFraction * (2 - leftSnapFraction);
+            let rightSnapThreshold = snapThreshold * rightSnapFraction * (2 - rightSnapFraction);
+            let leftWidths = this.calculateRowLayout(leftAssets, totalWidth[bestSnapIndex], rowWidth, startPosition, bestSnapPosition, cellGap, cellHeight, leftSnapThreshold);
+            let rightWidths = this.calculateRowLayout(rightAssets, totalWidth[numAssets - 1] - totalWidth[bestSnapIndex], rowWidth, bestSnapPosition + cellGap, endPosition, cellGap, cellHeight, rightSnapThreshold);
+            return leftWidths.concat(rightWidths);
+        }
+        let widths = new Array(numAssets);
+        let x = startPosition;
+        for (let i = 0, r = 0, ref2 = numAssets - 2; r <= ref2; i = r += 1) {
+            let minimumWidth = (totalMinimumWidth / numAssets) * (i + 1);
+            width = Math.round(startPosition + minimumWidth + (i * cellGap) + scale * (totalWidth[i] - minimumWidth)) - x;
+            widths[i] = width;
+            x += width + cellGap;
+        }
+        widths[numAssets - 1] = endPosition - x;
         return widths;
-    };
-
-    return KnuthPlass;
-
-})();
-
-module.exports = KnuthPlass;
+    }
+}
