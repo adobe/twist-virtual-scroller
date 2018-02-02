@@ -1,5 +1,7 @@
 # Twist Virtual Scroller
 
+[![Build Status](https://travis-ci.org/adobe/twist-virtual-scroller.svg?branch=master)](https://travis-ci.org/adobe/twist-virtual-scroller)
+
 This is a library containing a virtual scroller component for [Twist](https://github.com/adobe/twist), including some example layout algorithms such as Knuth-Plass.
 
 See the [twist-virtual-scroller documentation](docs/index.md) for usage and API details.
