@@ -1,6 +1,6 @@
 {
   "name": "@twist/virtual-scroller",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Adobe Systems Inc.",
   "repository": "https://github.com/adobe/twist-virtual-scroller",
   "license": "Apache-2.0",
@@ -47,7 +47,7 @@
     "style-loader": "0.13.2",
     "webpack": "3.4.1",
     "webpack-dev-server": "2.6.1"
-},
+  },
   "publishConfig": {
     "access": "public"
   }
