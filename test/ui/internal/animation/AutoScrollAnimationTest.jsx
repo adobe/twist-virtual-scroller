@@ -14,7 +14,7 @@
 /* global describe it afterEach */
 
 import assert from 'assert';
-import { render } from '../../../Utils';
+import { render } from '@twist/react/test-utils';
 import FakeTime from '../../../mocks/FakeTime';
 
 import { TaskQueue } from '@twist/core';

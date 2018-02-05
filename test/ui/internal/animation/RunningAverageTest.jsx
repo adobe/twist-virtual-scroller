@@ -14,7 +14,7 @@
 /* global describe it */
 
 import assert from 'assert';
-import RunningAverage from '../../../../src/ui/internal/animation/RunningAverage';
+import RunningAverage from '@twist/virtual-scroller/src/ui/internal/animation/RunningAverage';
 
 describe('RunningAverage', () => {
     it('should perform a correct running average', () => {

@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@twist/core": "^0.1.0",
-    "@twist/react": "^0.1.5",
+    "@twist/react": "^0.1.7",
     "@twist/eslint-plugin-core": "^0.1.2",
     "@twist/react-webpack-plugin": "^0.1.4",
     "autoprefixer": "6.4.0",

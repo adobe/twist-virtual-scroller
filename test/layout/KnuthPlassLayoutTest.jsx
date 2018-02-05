@@ -14,7 +14,7 @@
 /* global describe it afterEach */
 
 import assert from 'assert';
-import { render } from '../Utils';
+import { render } from '@twist/react/test-utils';
 
 import { TaskQueue } from '@twist/core';
 import { VirtualScroll,  VerticalKnuthPlassLayout, HorizontalKnuthPlassLayout } from '@twist/virtual-scroller';
