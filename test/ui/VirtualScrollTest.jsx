@@ -14,10 +14,10 @@
 /* global describe it afterEach */
 
 import assert from 'assert';
-import { render } from '../Utils';
+import { render } from '@twist/react/test-utils';
 import { ObservableArray, TaskQueue } from '@twist/core';
 import { VirtualScroll, VerticalListLayout, HorizontalListLayout } from '@twist/virtual-scroller';
-import RecyclerView from '../../src/ui/internal/RecyclerView';
+import RecyclerView from '@twist/virtual-scroller/src/ui/internal/RecyclerView';
 
 @ViewComponent
 class ItemView {

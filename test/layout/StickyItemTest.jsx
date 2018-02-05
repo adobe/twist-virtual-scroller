@@ -14,7 +14,7 @@
 /* global describe it afterEach */
 
 import assert from 'assert';
-import { render } from '../Utils';
+import { render } from '@twist/react/test-utils';
 
 import { TaskQueue } from '@twist/core';
 import { StickyItem, VirtualScroll, VerticalListLayout } from '@twist/virtual-scroller';

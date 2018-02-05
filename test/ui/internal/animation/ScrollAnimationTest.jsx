@@ -14,7 +14,7 @@
 /* global describe it */
 
 import assert from 'assert';
-import ScrollAnimation from '../../../../src/ui/internal/animation/ScrollAnimation';
+import ScrollAnimation from '@twist/virtual-scroller/src/ui/internal/animation/ScrollAnimation';
 import FakeTime from '../../../mocks/FakeTime';
 
 describe('ScrollAnimation', () => {
