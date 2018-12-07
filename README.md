@@ -1,6 +1,6 @@
 # Twist Virtual Scroller
 
-[![Build Status](https://travis-ci.org/adobe/twist-virtual-scroller.svg?branch=master)](https://travis-ci.org/adobe/twist-virtual-scroller)
+[![Build Status](https://travis-ci.org/adobe/twist-virtual-scroller.svg?branch=master)](https://travis-ci.org/adobe/twist-virtual-scroller) [![Greenkeeper badge](https://badges.greenkeeper.io/adobe/twist-virtual-scroller.svg)](https://greenkeeper.io/)
 
 This is a library containing a virtual scroller component for [Twist](https://github.com/adobe/twist), including some example layout algorithms such as Knuth-Plass.
 
